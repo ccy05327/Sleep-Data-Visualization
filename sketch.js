@@ -35,8 +35,8 @@ function setup() {
   record.push(new Sleep('3/21'));
   record.push(new Sleep('3/22', 2.6, 15.45, false));
   record.push(new Sleep('3/23', 18.15, 13.95, false));
-  // record.push(new Sleep('3/24', 14, 9, false));
-  // record.push(new Sleep('3/25', 17, 9, false));
+  record.push(new Sleep('3/24'));
+  record.push(new Sleep('3/25', 16, 15, false));
   // record.push(new Sleep('3/26', 20, 9, false));
   // record.push(new Sleep('3/27', 23, 9, false));
   // record.push(new Sleep('3/28', 23, 9, true));
