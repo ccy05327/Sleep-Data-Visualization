@@ -9,7 +9,7 @@ let record = [];
 
 function setup() {
   // let canvasHeight = 375 + 28*record.length;
-  let canvasHeight = 375 + 28*30;
+  let canvasHeight = 375 + 28*35;
   createCanvas(1050, canvasHeight);
 
   record.push(new Sleep('3/1', 1.9, 6.15, false));
@@ -40,7 +40,7 @@ function setup() {
   record.push(new Sleep('3/26', 23.1, 9.35, true));
   record.push(new Sleep('3/27'));
   record.push(new Sleep('3/28', 0.75, 7.75, true));
-  // record.push(new Sleep('3/29', 23, 9, true));
+  record.push(new Sleep('3/29', 0, 6.3, true));
   // record.push(new Sleep('3/30', 23, 8, true));
   // record.push(new Sleep('3/31', 23, 8, true));
   // record.push(new Sleep('4/1', 23, 8, true));
