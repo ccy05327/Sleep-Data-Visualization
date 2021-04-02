@@ -44,7 +44,7 @@ function setup() {
   record.push(new Sleep('3/30', 0.05, 8.2, true));
   record.push(new Sleep('3/31', 2.85, 10.55, false));
   record.push(new Sleep('4/1', 3.25, 7.6, false));
-  // record.push(new Sleep('4/2', 23, 8, true));
+  record.push(new Sleep('4/2', 2.98, 9.26, false));
   // record.push(new Sleep('4/3', 23, 8, true));
   // record.push(new Sleep('4/4', 23, 8, true));
 }
