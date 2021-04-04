@@ -46,7 +46,7 @@ function setup() {
   record.push(new Sleep('4/1', 3.25, 7.6, false));
   record.push(new Sleep('4/2', 2.98, 9.26, false));
   record.push(new Sleep('4/3', 2.6, 8.66, false));
-  // record.push(new Sleep('4/4', 23, 8, true));
+  record.push(new Sleep('4/4', 2.5, 9.1, false));
 }
 
 let CynthFont;
