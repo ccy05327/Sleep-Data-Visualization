@@ -9,7 +9,7 @@ let record = [];
 
 function setup() {
   // let canvasHeight = 375 + 28*record.length;
-  let canvasHeight = 375 + 28*15;
+  let canvasHeight = 375 + 28*20;
   createCanvas(1050, canvasHeight);
 
 //   record.push(new Sleep('3/1', 1.9, 6.15, false));
@@ -47,6 +47,12 @@ function setup() {
   record.push(new Sleep('4/2', 2.98, 9.26, false));
   record.push(new Sleep('4/3', 2.6, 8.66, false));
   record.push(new Sleep('4/4', 2.5, 9.1, false));
+  record.push(new Sleep('4/5', 3.15, 8.96, false));
+//   record.push(new Sleep('4/4', 2.5, 9.1, false));
+//   record.push(new Sleep('4/4', 2.5, 9.1, false));
+//   record.push(new Sleep('4/4', 2.5, 9.1, false));
+//   record.push(new Sleep('4/4', 2.5, 9.1, false));
+//   record.push(new Sleep('4/4', 2.5, 9.1, false));
 }
 
 let CynthFont;
