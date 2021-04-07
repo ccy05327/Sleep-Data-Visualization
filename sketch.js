@@ -49,7 +49,7 @@ function setup() {
   record.push(new Sleep('4/4', 2.5, 9.1, false));
   record.push(new Sleep('4/5', 3.15, 8.96, false));
   record.push(new Sleep('4/6', 5.15, 6.35, true));
-//   record.push(new Sleep('4/4', 2.5, 9.1, false));
+  record.push(new Sleep('4/7', 6.41, 6.58, true));
 //   record.push(new Sleep('4/4', 2.5, 9.1, false));
 //   record.push(new Sleep('4/4', 2.5, 9.1, false));
 //   record.push(new Sleep('4/4', 2.5, 9.1, false));
