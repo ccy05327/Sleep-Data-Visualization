@@ -53,6 +53,16 @@ function setup() {
   record.push(new Sleep('4/8', 4.03, 10.85, false));
   record.push(new Sleep('4/9', 8.78, 9.5, false));
   record.push(new Sleep('4/10', 11.43, 7.45, false));
+  record.push(new Sleep('4/11', 13.03, 9.33, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+//   record.push(new Sleep('4/10', 11.43, 7.45, false));
 }
 
 let CynthFont;
