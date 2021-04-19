@@ -61,7 +61,7 @@ function setup() {
   record.push(new Sleep('4/16', 17.66, 8.41, false));
   record.push(new Sleep('4/17', 19.66, 1.66, true));
   record.push(new Sleep('4/18', 5.36, 16.88, false));
-//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+  record.push(new Sleep('4/19', 19.66, 10.86, false));
 //   record.push(new Sleep('4/10', 11.43, 7.45, false));
 }
 
