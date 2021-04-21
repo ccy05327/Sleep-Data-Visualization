@@ -62,7 +62,17 @@ function setup() {
   record.push(new Sleep('4/17', 19.66, 1.66, true));
   record.push(new Sleep('4/18', 5.36, 16.88, false));
   record.push(new Sleep('4/19', 19.66, 10.86, false));
-//   record.push(new Sleep('4/10', 11.43, 7.45, false));
+  record.push(new Sleep('4/20', 20.4, 3.71, true));
+//   record.push(new Sleep('4/21', 13.03, 9.33, false));
+//   record.push(new Sleep('4/22', 14.75, 7.08, false));
+//   record.push(new Sleep('4/23', 13, 3, true));
+//   record.push(new Sleep('4/24', 0.03, 16.25, false));
+//   record.push(new Sleep('4/25', 13.25, 10.58, false));
+//   record.push(new Sleep('4/26', 17.66, 8.41, false));
+//   record.push(new Sleep('4/27', 19.66, 1.66, true));
+//   record.push(new Sleep('4/28', 5.36, 16.88, false));
+//   record.push(new Sleep('4/29', 19.66, 10.86, false));
+//   record.push(new Sleep('4/30', 20.4, 3.71, true));
 }
 
 let CynthFont;
