@@ -1,2 +1,32 @@
 ## April record
 
+record.push(new Sleep('4/1', 3.25, 7.6, false));
+record.push(new Sleep('4/2', 2.98, 9.26, false));
+record.push(new Sleep('4/3', 2.6, 8.66, false));
+record.push(new Sleep('4/4', 2.5, 9.1, false));
+record.push(new Sleep('4/5', 3.15, 8.96, false));
+record.push(new Sleep('4/6', 5.15, 6.35, true));
+record.push(new Sleep('4/7', 4.41, 6.58, true));
+record.push(new Sleep('4/8', 4.03, 10.85, false));
+record.push(new Sleep('4/9', 8.78, 9.5, false));
+record.push(new Sleep('4/10', 11.43, 7.45, false));
+record.push(new Sleep('4/11', 13.03, 9.33, false));
+record.push(new Sleep('4/12', 14.75, 7.08, false));
+record.push(new Sleep('4/13', 13, 3, true));
+record.push(new Sleep('4/14', 0.03, 16.25, false));
+record.push(new Sleep('4/15', 13.25, 10.58, false));
+record.push(new Sleep('4/16', 17.66, 8.41, false));
+record.push(new Sleep('4/17', 19.66, 1.66, true));
+record.push(new Sleep('4/18', 5.36, 16.88, false));
+record.push(new Sleep('4/19', 19.66, 10.86, false));
+record.push(new Sleep('4/20', 20.4, 3.75, true));
+record.push(new Sleep('4/21', 19.68, 11.63, false));
+record.push(new Sleep('4/22'));
+record.push(new Sleep('4/23', 1.06, 8.36, false));
+record.push(new Sleep('4/24', 2, 9.55, false));
+record.push(new Sleep('4/25', 2.93, 9.58, false));
+record.push(new Sleep('4/26', 5.76, 10.3, false));
+record.push(new Sleep('4/27', 7.38, 6.7, false));
+record.push(new Sleep('4/28', 7, 8.25, false));
+record.push(new Sleep('4/29', 10.83, 6.81, false));
+record.push(new Sleep('4/30', 10.83, 7.5, false));
