@@ -20,7 +20,7 @@ function setup() {
   record.push(new Sleep('5/6', 23.63, 10.15, false));
   record.push(new Sleep('5/7'));
   record.push(new Sleep('5/8', 1.65, 7.75, false));
-  // record.push(new Sleep('5/9', 8.78, 9.5, false));
+  record.push(new Sleep('5/9', 3.61, 11.45, false));
   // record.push(new Sleep('5/10', 11.43, 7.45, false));
   // record.push(new Sleep('5/11', 13.03, 9.33, false));
   // record.push(new Sleep('5/12', 14.75, 7.08, false));
