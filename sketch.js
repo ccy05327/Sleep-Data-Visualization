@@ -32,6 +32,7 @@ function setup() {
   record.push(new Sleep('5/18', 11.5, 11.46, false));
   record.push(new Sleep('5/19', 18.16, 5.1, false));
   record.push(new Sleep('5/20', 1.83, 5.65, false));
+  record.push(new Sleep('5/20', 20, 6, false));
   // record.push(new Sleep('5/21', 19.68, 11.63, false));
   // record.push(new Sleep('5/22'));
   // record.push(new Sleep('5/23', 1.06, 8.36, false));
@@ -86,12 +87,26 @@ function draw() {
     } else {
       stroke(0, 206, 209);  // teal
     }
+
     strokeWeight(5);
-    line(record[i].newSleepTime, 124+i*28, record[i].newAwake, 124+i*28);
-    if (record[i].nextDay){
-      let newNextDay = map(record[i].nextDay, 0, 24, xpos, 980);
-      line(xpos+2, 126+(i+1)*28, newNextDay, 126+(i+1)*28);
-    }
+    let pre_index = i-1;
+    // console.log(record[i]["date"]);
+    // console.log(record[i].date, record[pre_index].date);
+    
+    // if((record[i].date).toString() === (record[i-1].date).toString()){ // if two same date entries
+    //   line(record[i].newSleepTime, 124+(i-1)*28, record[i].newAwake, 124+(i-1)*28);
+    //   if (record[i].nextDay){
+    //     let newNextDay = map(record[i].nextDay, 0, 24, xpos, 980);
+    //     line(xpos+2, 126+(i)*28, newNextDay, 126+(i)*28);
+    //   }
+    // } else {
+    //   line(record[i].newSleepTime, 124+i*28, record[i].newAwake, 124+i*28);
+    //   if (record[i].nextDay){
+    //     let newNextDay = map(record[i].nextDay, 0, 24, xpos, 980);
+    //     line(xpos+2, 126+(i+1)*28, newNextDay, 126+(i+1)*28);
+    //   }
+    // }
+    
   }
   date();
   printData();
