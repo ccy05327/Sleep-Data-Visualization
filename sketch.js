@@ -8,7 +8,7 @@
 /*
     5/20 Issues
     - Fixed same day i-1 index issue
-    - Can't resolve the first date now not showing
+    - Can't resolve the first date now not showing @5/21 solved
     - Can't resolve the same day line not showing (right record.sleepTimeX and all that), only show record.nextDay part
     - Font looking a bit wierd, the newest line look blur
 */
@@ -41,7 +41,7 @@ function setup() {
   record.push(new Sleep('5/18', 11.5, 11.46, false));
   record.push(new Sleep('5/19', 18.16, 5.1, false));
   record.push(new Sleep('5/20', 1.83, 5.65, false));
-  record.push(new Sleep('5/20', 21.85, 6.25, false)); //testing purpose
+  record.push(new Sleep('5/20', 21.85, 6.25, false)); 
   // record.push(new Sleep('5/21', 19.68, 11.63, false));
   // record.push(new Sleep('5/22'));
   // record.push(new Sleep('5/23', 1.06, 8.36, false));
@@ -98,7 +98,6 @@ function draw() {
     }
 
     strokeWeight(5);
-    // line(526, 656, 828.33, 656);
     if (i > 0){
       if(record[i].date === record[i-1].date){ // if two same date entries
         line(record[i].sleepTimeX, 124+(i-1)*28, record[i].newAwake, 124+(i-1)*28);
@@ -175,7 +174,10 @@ function date(){
       if (i > 0){
         if (record[i].date == record[i-1].date){
           text(record[i].date, xpos-35, 135 + (i-1)*28);
-        } else 
+        } else {
+          text(record[i].date, xpos-35, 135 + i*28);
+        }        
+      } else {
         text(record[i].date, xpos-35, 135 + i*28);
       }
     }
