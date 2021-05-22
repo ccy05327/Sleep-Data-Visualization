@@ -99,11 +99,19 @@ function draw() {
 
     strokeWeight(5);
     if (i > 0){
+      let sameDay = 0;
       if(record[i].date === record[i-1].date){ // if two same date entries
-        line(record[i].sleepTimeX, 124+(i-1)*28, record[i].newAwake, 124+(i-1)*28);
+        sameDay++;
+        line(record[i].sleepTimeX, 124+(i-sameDay)*28, record[i].newAwake, 124+(i-sameDay)*28);
         if (record[i].nextDay){
           let nextDayX = map(record[i].nextDay, 0, 24, xpos, 980);
-          line(xpos+2, 126+(i)*28, nextDayX, 126+(i)*28);
+          line(xpos+2, 126+(i+1-sameDay)*28, nextDayX, 126+(i+1-sameDay)*28);
+        }
+      } else if (sameDay > 0){
+        line(record[i-sameDay].sleepTimeX, 124+i*28, record[i-sameDay].awakeX, 124+i*28);
+        if (record[i].nextDay){
+          let nextDayX = map(record[i].nextDay, 0, 24, xpos, 980);
+          line(xpos+2, 126+(i+1-sameDay)*28, nextDayX, 126+(i+1-sameDay)*28);
         }
       } else {
         line(record[i].sleepTimeX, 124+i*28, record[i].awakeX, 124+i*28);
