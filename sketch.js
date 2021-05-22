@@ -7,10 +7,13 @@
 
 /*
     5/20 Issues
-    - Fixed same day i-1 index issue
+    - Fixed same day i-1 index issue @5/21 solved
     - Can't resolve the first date now not showing @5/21 solved
     - Can't resolve the same day line not showing (right record.sleepTimeX and all that), only show record.nextDay part
     - Font looking a bit wierd, the newest line look blur
+
+    @5/22 Issue
+    - After one same day record, next record still showed up in the next line not the same line
 */
 
 
