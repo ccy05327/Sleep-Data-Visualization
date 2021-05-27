@@ -49,7 +49,7 @@ function setup() {
   record.push(new Sleep('5/24', 21.41, 8.63, false));
   record.push(new Sleep('5/25'));
   record.push(new Sleep('5/26', 0.86, 71, false));
-  // record.push(new Sleep('5/27', 7.38, 6.7, false));
+  record.push(new Sleep('5/27', 4.85, 8.66, false));
   // record.push(new Sleep('5/28', 7, 8.25, false));
   // record.push(new Sleep('5/29', 10.83, 6.81, false));
   // record.push(new Sleep('5/30', 10.83, 7.5, false));
