@@ -53,7 +53,7 @@ function setup() {
   record.push(new Sleep('5/28', 4.51, 9.45, false));
   record.push(new Sleep('5/29', 7.05, 10.86, false));
   record.push(new Sleep('5/30', 9.25, 8.85, false));
-  // record.push(new Sleep('5/31', 10.83, 7.5, false));
+  record.push(new Sleep('5/31', 1.16, 8.66, false));
 }
 
 let CynthFont;
