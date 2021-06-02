@@ -11,11 +11,13 @@ function setup() {
   
   sleep.addRecord(2021, 6, 1, 14, 25, 0, 33, false);
   sleep.addRecord(2021, 6, 2, 14, 25, 22, 20, false);
+  sleep.addRecord(2021, 6, 2, 23, 30, 8, 0, false);
+  sleep.addRecord(2021, 6, 3, 18, 0, 1, 0, false);
+
   
   console.log(sleep);
 }
 
 function draw() {
-  background(255);
   sleep.toDraw();
 }

@@ -16,10 +16,10 @@ class Sleep{
     
     toDraw(){
       this.printText();
-      this.drawRecord();
       this.vLine();
       this.xAxes();
       this.yAxes();
+      this.drawRecord();
     }
   
     xAxes(){
@@ -56,6 +56,9 @@ class Sleep{
           text("—", 70, 129 + i*28);
       }
       triangle(70, 90, 60, 105, 80, 105);
+      let xpos = 70;
+      fill(0);
+      circle(xpos, height - 250, 10);
     }
   
     vLine(){
@@ -66,10 +69,10 @@ class Sleep{
       }
     }
   
-    printText(){      
-      let xpos = 70; 
-  
-      noStroke();
+    printText(printing = true){     
+      if(printing){
+        let xpos = 70; 
+        noStroke();
         background(255);
         textAlign(CENTER);
         fill(0);
@@ -91,8 +94,9 @@ class Sleep{
             text(date, xpos-35, 135+i*28);
           }
         }
-        
+          
         // some additional text
+        noStroke();
         stroke(0);
         strokeWeight(0.5);
         fill(0);
@@ -125,21 +129,19 @@ class Sleep{
         textAlign(LEFT);
         text(`Total: ${totalDur} hours of sleep, throughout ${totalDay} days, ${totalSleep} sleeps, ${sleepPercent}% of the time`, 20, height - 135); 
         text(`Average sleep: ${round(totalDur / totalDay, 2)} hours, average hour-day: ${hourDay} hours`, 20, height - 100);
+      }
     }
     
     
     drawRecord(){
       for(let i = 0; i < this.records.length; i++){  
-        let sleepTimeX, nextDay, awakeX, grey, duration;
+        let sleepTimeX, duration;
         let cal = this.dataCal(i);
   
         sleepTimeX = cal[0];
-        nextDay = cal[1];
-        awakeX = cal[2];
-        grey = cal[3];
-        duration = cal[4];
+        duration = cal[1];
   
-        if(sleepTimeX > 0 && duration > 0){
+        if(duration > 0){
           if (this.grey){
             stroke(200);
           } else if (this.duration <= 6){
@@ -149,41 +151,60 @@ class Sleep{
           } else {
             stroke(0, 206, 209);
           }
-    
-          fill(0);
           strokeWeight(5);
           line(this.sleepTimeX, 124+i*28, this.awakeX, 124+i*28);
           if(this.nextDay){
             let nextDayX = map(this.nextDay, 0, 24, 70, 980);
             line(72, 126+(i+1)*28, nextDayX, 126+(i+1)*28);
           }
+
+
+          // if(i > 0){
+          //   if(this.records[i][2] == this.records[i-1][2]){
+          //     line(this.sleepTimeX, 124+(i-1)*28, this.awakeX, 124+(i-1)*28);
+          //     if(this.nextDay){
+          //       let nextDayX = map(this.nextDay, 0, 24, 70, 980);
+          //       line(72, 126+(i)*28, nextDayX, 126+(i)*28);
+          //     }
+          //     console.log("same day");
+          //     noLoop();
+          //   } 
+          // } else {
+          //   line(this.sleepTimeX, 124+i*28, this.awakeX, 124+i*28);
+          //   if(this.nextDay){
+          //     let nextDayX = map(this.nextDay, 0, 24, 70, 980);
+          //     line(72, 126+(i+1)*28, nextDayX, 126+(i+1)*28);
+          //     console.log("normal day");
+          //     noLoop();
+          //   }
+          // }
         }
       }
     }
   
     dataCal(i=0){
-      // 0 year, 1 month, 2 day, 3 sleepHour, 4 sleepMin, 5 wakeHour, 6 wakeMin, 7 grey
-      //   2021,       5,    23,          22,         44,          8,         9,  false
-        this.sleepTime = new Date(this.records[i][0], this.records[i][1] - 1, this.records[i][2], this.records[i][3], this.records[i][4]);
-        this.wakeTime = new Date(this.records[i][0], this.records[i][1] - 1, this.records[i][2], this.records[i][5], this.records[i][6]);
-        if(this.records[i][5] - this.records[i][3] < 0){
-          this.wakeTime = new Date(this.records[i][0], this.records[i][1] - 1, this.records[i][2] + 1, this.records[i][5], this.records[i][6]);
-        }
-        
-        this.duration = round((this.wakeTime - this.sleepTime)/3600000, 2);
-        this.grey = this.records[i][7];
-  
-        if(this.duration > 0){
-          let sleep = parseFloat(this.records[i][3] + "." + round(this.records[i][4]/60*100));
-          this.awake = round(sleep + this.duration, 2);
-          this.sleepTimeX = round(map(sleep, 0, 24, 72, 980), 2);
-          this.nextDay = 0;
-          if (this.awake > 24){
-            this.nextDay = round(this.awake - 24, 2);
-            this.awake = 24;
-          }
-          this.awakeX = round(map(this.awake, 0, 24, 70, 980), 2);
-        }
-        return [this.sleepTimeX, this.nextDay, this.awakeX, this.grey, this.duration];
+    // 0 year, 1 month, 2 day, 3 sleepHour, 4 sleepMin, 5 wakeHour, 6 wakeMin, 7 grey
+    //   2021,       5,    23,          22,         44,          8,         9,  false
+      this.sleepTime = new Date(this.records[i][0], this.records[i][1] - 1, this.records[i][2], this.records[i][3], this.records[i][4]);
+      this.wakeTime = new Date(this.records[i][0], this.records[i][1] - 1, this.records[i][2], this.records[i][5], this.records[i][6]);
+      if(this.records[i][5] - this.records[i][3] < 0){
+        this.wakeTime = new Date(this.records[i][0], this.records[i][1] - 1, this.records[i][2] + 1, this.records[i][5], this.records[i][6]);
       }
+      
+      this.duration = round((this.wakeTime - this.sleepTime)/3600000, 2);
+      this.grey = this.records[i][7];
+
+      if(this.duration > 0){
+        let sleep = parseFloat(this.records[i][3] + "." + round(this.records[i][4]/60*100));
+        this.awake = round(sleep + this.duration, 2);
+        this.sleepTimeX = round(map(sleep, 0, 24, 85, 980), 2);
+        this.nextDay = 0;
+        if (this.awake > 24){
+          this.nextDay = round(this.awake - 24, 2);
+          this.awake = 24;
+        }
+        this.awakeX = round(map(this.awake, 0, 24, 115, 980), 2);
+      }
+      return [this.sleepTimeX, this.duration];
+    }
   }
