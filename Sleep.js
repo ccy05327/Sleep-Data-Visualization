@@ -197,13 +197,13 @@ class Sleep{
       if(this.duration > 0){
         let sleep = parseFloat(this.records[i][3] + "." + round(this.records[i][4]/60*100));
         this.awake = round(sleep + this.duration, 2);
-        this.sleepTimeX = round(map(sleep, 0, 24, 85, 980), 2);
+        this.sleepTimeX = round(map(sleep, 0, 24, 70, 980), 2);
         this.nextDay = 0;
         if (this.awake > 24){
           this.nextDay = round(this.awake - 24, 2);
           this.awake = 24;
         }
-        this.awakeX = round(map(this.awake, 0, 24, 115, 980), 2);
+        this.awakeX = round(map(this.awake, 0, 24, 70, 980), 2);
       }
       return [this.sleepTimeX, this.duration];
     }
