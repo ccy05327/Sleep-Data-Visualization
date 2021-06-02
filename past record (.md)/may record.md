@@ -32,3 +32,17 @@ record.push(new Sleep('5/28', 4.51, 9.45, false));
 record.push(new Sleep('5/29', 7.05, 10.86, false));
 record.push(new Sleep('5/30', 9.25, 8.85, false));
 record.push(new Sleep('5/31', 1.16, 8.66, false));
+
+
+
+sleep.addRecord(2021, 5, 1, 11, 46, 18, 18, false);
+sleep.addRecord(2021, 5, 2, 16, 42, 23, 34, false);
+sleep.addRecord(2021, 5, 3, 15, 17, 4, 9, false);
+sleep.addRecord(2021, 5, 4, 20, 42, 3, 38, false);
+sleep.addRecord(2021, 5, 5, 19, 16, 6, 39, false);
+sleep.addRecord(2021, 5, 6, 23, 38, 9, 47, false);
+sleep.addRecord(2021, 5, 7);
+sleep.addRecord(2021, 5, 8, 1, 39, 9, 24, false);
+sleep.addRecord(2021, 5, 8, 3, 37, 15, 4, false);
+sleep.addRecord(2021, 5, 9, 1, 20, 8, 51, false);
+sleep.addRecord(2021, 5, 10, 1, 29, 11, 54, false);
