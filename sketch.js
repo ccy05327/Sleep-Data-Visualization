@@ -1,6 +1,6 @@
-var sleep;
+let sleep;
 
-var CynthFont;
+let CynthFont;
 function preload(){
   CynthFont = loadFont("https://ccy05327.github.io/Sleep-Data-Visualization/Cynthfont-Regular.ttf");
 }
