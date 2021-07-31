@@ -2,7 +2,7 @@ let sleep;
 
 let CynthFont;
 function preload(){
-  CynthFont = loadFont("https://ccy05328.github.io/Sleep-Data-Visualization/Cynthfont-Regular.ttf");
+  CynthFont = loadFont("https://github.com/ccy05327/Sleep-Data-Visualization/blob/main/Cynthfont-Regular.ttf");
 }
 
 function setup() {
