@@ -1,5 +1,37 @@
 ## May record
 
+sleep.addRecord(2021, 5, 1, 11, 45, 18, 18, false);
+sleep.addRecord(2021, 5, 2, 16, 42, 23, 34, false);
+sleep.addRecord(2021, 5, 3, 15, 17, 4, 9, false);
+sleep.addRecord(2021, 5, 4, 20, 42, 3, 38, false);
+sleep.addRecord(2021, 5, 5, 19, 16, 6, 39, false);
+sleep.addRecord(2021, 5, 6, 23, 38, 9, 47, false);
+sleep.addRecord(2021, 5, 7);
+sleep.addRecord(2021, 5, 8, 1, 39, 9, 24, false);
+sleep.addRecord(2021, 5, 9, 3, 37, 15, 4, false);
+sleep.addRecord(2021, 5, 10, 1, 20, 8, 51, false);
+sleep.addRecord(2021, 5, 11, 1, 29, 11, 54, false);
+sleep.addRecord(2021, 5, 12, 3, 52, 11, 28, false);
+sleep.addRecord(2021, 5, 13, 4, 15, 15, 18, false);
+sleep.addRecord(2021, 5, 14, 8, 10, 18, 0, false);
+sleep.addRecord(2021, 5, 15, 10, 30, 18, 53, false);
+sleep.addRecord(2021, 5, 16, 12, 5, 16, 55, false);
+sleep.addRecord(2021, 5, 17, 9, 53, 18, 5, false);
+sleep.addRecord(2021, 5, 18, 11, 30, 25, 58, false);
+sleep.addRecord(2021, 5, 19, 18, 10, 23, 16, false);
+sleep.addRecord(2021, 5, 20, 1, 50, 7, 28, false);
+sleep.addRecord(2021, 5, 20, 21, 51, 4, 6, false);
+sleep.addRecord(2021, 5, 21, 18, 1, 5, 26, false);
+sleep.addRecord(2021, 5, 22, 21, 50, 6, 9, false);
+sleep.addRecord(2021, 5, 23, 22, 44, 8, 9, false);
+sleep.addRecord(2021, 5, 24, 21, 25, 6, 3, false);
+sleep.addRecord(2021, 5, 25);
+sleep.addRecord(2021, 5, 26, 0, 52, 12, 35, false);
+sleep.addRecord(2021, 5, 27, 4, 51, 13, 31, false);
+sleep.addRecord(2021, 5, 28, 4, 31, 13, 58, false);
+sleep.addRecord(2021, 5, 29, 7, 3, 17, 55, false);
+sleep.addRecord(2021, 5, 30, 9, 15, 18, 6, false);
+
 record.push(new Sleep('5/1', 11.76, 6.53, false));
 record.push(new Sleep('5/2', 16.7, 6.86, false));
 record.push(new Sleep('5/3', 15.28, 12.86, false));
