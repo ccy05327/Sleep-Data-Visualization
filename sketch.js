@@ -7,7 +7,7 @@ function preload(){
 
 function setup() {
   sleep = new Sleep();
-  createCanvas(1040, 450 + 28*25);
+  createCanvas(1040, 450 + 28*30);
 
   sleep.addRecord(2021, 9, 1, 10, 49, 22, 2, false);
   sleep.addRecord(2021, 9, 2, 12, 23, 20, 40, false);
@@ -32,7 +32,7 @@ function setup() {
   sleep.addRecord(2021, 9, 21, 9, 31, 19, 37, false);
   sleep.addRecord(2021, 9, 22, 14, 3, 19, 42, false);
   sleep.addRecord(2021, 9, 23, 11, 7, 21, 56, false);
-  // sleep.addRecord(2021, 9, 24, 4, 39, 7, 30, false);
+  sleep.addRecord(2021, 9, 24, 15, 11, 22, 25, false);
   // sleep.addRecord(2021, 9, 24, 19, 17, 12, 7, false);
   // sleep.addRecord(2021, 9, 25);
   // sleep.addRecord(2021, 9, 26, 4, 19, 7, 45, true);
