@@ -9,7 +9,7 @@ function setup() {
   sleep = new Sleep();
   createCanvas(1040, 450 + 28*10);
 
-  // sleep.addRecord(2021, 10, 1, 10, 410, 22, 2, false);
+  sleep.addRecord(2021, 10, 1, 1, 45, 8, 5, true);
   // sleep.addRecord(2021, 10, 2, 12, 23, 20, 40, false);
   // sleep.addRecord(2021, 10, 3, 10, 38, 110, 12, false);
   // sleep.addRecord(2021, 10, 4, 10, 55, 22, 33, false);
