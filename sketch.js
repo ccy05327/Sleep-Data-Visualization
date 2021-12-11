@@ -20,6 +20,7 @@ function setup() {
   sleep.addRecord(2021, 12, 9, 13, 57, 21, 38, false);
   sleep.addRecord(2021, 12, 10, 15, 39, 22, 0, true);
   sleep.addRecord(2021, 12, 11, 0, 34, 4, 36, true);
+  sleep.addRecord(2021, 12, 11, 20, 0, 3, 55, false);
   // sleep.addRecord(2021, 12, 12);
   // sleep.addRecord(2021, 12, 13, 0, 57, 10, 1, false);
   // sleep.addRecord(2021, 12, 14, 3, 46, 13, 15, false);
