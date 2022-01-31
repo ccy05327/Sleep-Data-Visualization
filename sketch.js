@@ -42,7 +42,7 @@ function setup() {
   sleep.addRecord(2022, 1, 28, 10, 40, 17, 49, false);
   sleep.addRecord(2022, 1, 29, 9, 31, 18, 2, true);
   sleep.addRecord(2022, 1, 30, 9, 59, 18, 8, false);
-  // sleep.addRecord(2022, 1, 31, 3, 28, 11, 3, true);
+  sleep.addRecord(2022, 1, 31, 8, 1, 13, 36, true);
   
   console.log(sleep);
 }
