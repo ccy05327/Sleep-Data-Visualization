@@ -30,23 +30,23 @@ def read_json(_file="SDV.json"):
 
 def draw_show(_df):
     fig = px.timeline(_df, color="Duration", x_start="Sleep",
-                      x_end="Wake", y="Date", color_continuous_scale=['#e574bc', '#2ec4b6', '#006d77'])
+                      x_end="Wake", y="Date", color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'])
     fig.update_yaxes(autorange="reversed")
     fig.show()
 
 
 def draw_save(_df, _file):
     fig = px.timeline(_df, color="Duration", x_start="Sleep",
-                      x_end="Wake", y="Date", color_continuous_scale=['#e574bc', '#2ec4b6', '#006d77'])
+                      x_end="Wake", y="Date", color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'])
     fig.update_yaxes(autorange="reversed")
-    pio.write_image(fig, _file + ".png")
+    pio.write_image(fig, _file)
 
 
 def draw_show_save(_df, _file):
     fig = px.timeline(_df, color="Duration", x_start="Sleep",
-                      x_end="Wake", y="Date", color_continuous_scale=['#e574bc', '#2ec4b6', '#006d77'])
+                      x_end="Wake", y="Date", color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'])
     fig.update_yaxes(autorange="reversed")
-    pio.write_image(fig, _file + ".png")
+    pio.write_image(fig, _file)
     fig.show()
 
 
