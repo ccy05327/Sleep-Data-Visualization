@@ -1,12 +1,7 @@
 import time
 import json
-# import numpy as np
-# from pandas import json_normalize
-# import pandas as pd
 import plotly.io as pio
 import plotly.express as px
-# import plotly.graph_objs as go
-# import plotly.figure_factory as ff
 
 # https://www.geeksforgeeks.org/append-to-json-file-using-python/
 W = '\033[0m'
@@ -55,11 +50,10 @@ def draw_show_save(_df, _file):
     fig.show()
 
 
-write_or_read = input("Do you want to " + B+"write" +
-                      W+" or " + P+"read" + W+" file? ")
+write_or_read = input("Do you want to "+B+"write" +
+                      W+" or "+P+"read"+W+" file? ")
 if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
-    file = input(B+"    File to write to" + W +
-                 " (default be SDV.json)" + B+": "+W)
+    file = input(B+"    File to write to: "+W)
     print(W+"    Please enter the following: ")
     time.sleep(1)
 
@@ -146,7 +140,7 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
 
 
 if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
-    file = input(P+"File to read " + W+"(default be SDV.json)" + P+": "+W)
+    file = input(P+"File to read: "+W)
     time.sleep(1)
     records = read_json(file)
     df = []
@@ -158,10 +152,9 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
                           i['wake']['hour'], i['wake']['min']),
                       Duration=i['duration'])
         df.append(record)
-    # print(df)
     print(W+"Reading the file...")
     time.sleep(1)
-    toDraw = input(Y+"Do you want to draw the data? " + W+"(yes/no): ")
+    toDraw = input(Y+"Do you want to draw the data? " + W+"(yes/[no]): ")
     if toDraw == "Yes" or toDraw == 'yes' or toDraw == 'Y' or toDraw == 'y':
         time.sleep(1)
         print("Choose one from the following ")
