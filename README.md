@@ -1,6 +1,6 @@
-# SDV aka Sleep Data Visualization
+# SDV aka Sleep Data Visualization v2
 
-## Introduction
+## Description
 
 This is a personal project I first started at the end of 2020, at that point I only know a little bit of JavaScript (p5js specifically, with 3-month learning), but I was desperate to find a sleep data visualization tool. I cannot find any existing apps out there to do this, so I thought... why not try it myself with p5.js?
 
@@ -14,13 +14,9 @@ Having my data in a JSON file can solve my second issue in V1, but at that time 
 
 After more than a year since I started this project, I have learned so much more, and am definitely comfortable dealing with reading and writing files, so after having my SDV drawn using plotly, I then change it to be writing and reading from a file.
 
-### V1. Using p5.js
+## V2. Using python + plotly
 
-[See here in the web](https://ccy05327.github.io/Sleep-Data-Visualization/)
-
-### V2. Using python plus plotly
-
-[See here for the most updated record as png](https://github.com/ccy05327/Sleep-Data-Visualization/blob/main/SDV.png)
+[See here for the current month record as png](https://github.com/ccy05327/Sleep-Data-Visualization/blob/main/SDV.png)
 
 ### What you need to use V2 package
 
