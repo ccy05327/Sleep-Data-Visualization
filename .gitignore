@@ -2,4 +2,4 @@
 sample.json
 *.bat
 *.xml
-/__pycache__
+*.pyc
