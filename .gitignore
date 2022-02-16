@@ -2,3 +2,4 @@
 sample.json
 *.bat
 *.xml
+/__pycache__
