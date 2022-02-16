@@ -14,7 +14,7 @@ P = '\033[35m'
 #       Y+'yellow ' + B+'blue ' + P+'purple')
 
 
-def write_json(_data, _file="SDV.json"):
+def write_json(_data, _file):
     with open(_file, 'r+') as f:
         file_data = json.load(f)
         file_data["sleep_record"].append(_data)
@@ -22,7 +22,7 @@ def write_json(_data, _file="SDV.json"):
         json.dump(file_data, f, indent=4)
 
 
-def read_json(_file="SDV.json"):
+def read_json(_file):
     with open(_file, 'r') as j:
         _records = json.loads(j.read())
     return _records
@@ -54,6 +54,8 @@ write_or_read = input("Do you want to "+B+"write" +
                       W+" or "+P+"read"+W+" file? ")
 if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
     file = input(B+"    File to write to: "+W)
+    if len(file) == 0:
+        file = 'SDV.json'
     print(W+"    Please enter the following: ")
     time.sleep(1)
 
@@ -141,6 +143,8 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
 
 if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
     file = input(P+"File to read: "+W)
+    if len(file) == 0:
+        file = 'SDV.json'
     time.sleep(1)
     records = read_json(file)
     df = []
