@@ -14,11 +14,11 @@ Having my data in a json file can solve my second issue in V1, but at that time 
 
 After more than a year since I started this project, I have learned so much more, and are definitely comfortable deadling with reading and writing files, so after having my SDV drawn using plotly, I then change it to be writing and reading from a file.
 
-### V1. Using p5.js
+## V1. Using p5.js 2020.12.15 ~ 2022.01
 
 [See here in the web](https://ccy05327.github.io/Sleep-Data-Visualization/)
 
-### V2. Using python plus plotly
+## V2. Using python plus plotly 2022.02 ~ now
 
 [See here for the most updated record as png](https://github.com/ccy05327/Sleep-Data-Visualization/blob/main/SDV.png)
 
@@ -36,3 +36,7 @@ After more than a year since I started this project, I have learned so much more
 - Terminal/Command Line Prompt/PowerShell to run the script
 
   All the steps and tutorials for using the tool is within the script
+
+## Vn. Goal for this project
+
+> Create an Android App and publish to Google Play Store before 2023
