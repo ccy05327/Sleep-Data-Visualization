@@ -53,7 +53,8 @@ def draw_show_save(_df, _file):
 write_or_read = input("Do you want to "+B+"write" +
                       W+" or "+P+"read"+W+" file? ")
 if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
-    file = input(B+"    File to write to: "+W)
+    file = input(B+"    File to write to "+W +
+                 "(default: SDV.json)" + B+": "+W)
     if len(file) == 0:
         file = 'SDV.json'
     print(W+"    Please enter the following: ")
@@ -142,7 +143,8 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
 
 
 if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
-    file = input(P+"File to read: "+W)
+    file = input(P+"File to read "+W +
+                 "(default: SDV.json)" + P+": "+W)
     if len(file) == 0:
         file = 'SDV.json'
     time.sleep(1)
@@ -174,11 +176,17 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
             print("Please wait...")
             draw_show(df)
         elif toSaveShow == 2:
-            file = input("Please enter output filename: ")
+            file = input(Y+"Please enter output filename" +
+                         W+"(default: SDV.png)" + Y+": "+W)
+            if len(file) == 0:
+                file = 'SDV.png'
             print("Please wait...")
             draw_save(df, file)
         elif toSaveShow == 3:
-            file = input("Please enter output filename: ")
+            file = input(Y+"Please enter output filename" +
+                         W+"(default: SDV.png)" + Y+": "+W)
+            if len(file) == 0:
+                file = 'SDV.png'
             print("Please wait...")
             draw_show_save(df, file)
         print(Y+"DONE"+W)
