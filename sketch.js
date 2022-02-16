@@ -7,41 +7,38 @@ function preload(){
 
 function setup() {
   sleep = new Sleep();
-  createCanvas(1040, 450 + 28*30);
+  createCanvas(1040, 450 + 28*28);
 
-  sleep.addRecord(2022, 2, 1, 5, 22, 9, 4, true);
-  sleep.addRecord(2022, 2, 2, 22, 45, 4, 4, false);
-  sleep.addRecord(2022, 2, 2, 11, 38, 13, 27, true);
-  sleep.addRecord(2022, 2, 2, 14, 30, 15, 48, true);
-  sleep.addRecord(2022, 2, 2, 16, 14, 19, 35, true);
-  sleep.addRecord(2022, 2, 3, 12, 53, 20, 3, false);
-  sleep.addRecord(2022, 2, 4, 17, 0, 1, 28, false);
-  sleep.addRecord(2022, 2, 5, 4, 21, 8, 13, false);
-  sleep.addRecord(2022, 2, 6, 19, 1, 1, 12, false);
-  sleep.addRecord(2022, 2, 7, 5, 29, 10, 30, true);
-  sleep.addRecord(2022, 2, 7, 22, 7, 4, 52, false);
-  sleep.addRecord(2022, 2, 8, 21, 14, 4, 29, false);
-  sleep.addRecord(2022, 2, 9, 19, 0, 5, 30, false);
-  sleep.addRecord(2022, 2, 10, 23, 18, 6, 34, false);
-  sleep.addRecord(2022, 2, 11, 23, 40, 9, 25, false);
-  sleep.addRecord(2022, 2, 12);
-  sleep.addRecord(2022, 2, 13, 1, 4, 9, 23, false);
-  sleep.addRecord(2022, 2, 14, 0, 10, 11, 44, false);
-  sleep.addRecord(2022, 2, 15, 4, 54, 15, 36, false);
-  sleep.addRecord(2022, 2, 16, 5, 7, 12, 59, false);
-  // sleep.addRecord(2022, 2, 17, 23, 26, 7, 59, true);
-  // sleep.addRecord(2022, 2, 18, 23, 8, 7, 42, true);
-  // sleep.addRecord(2022, 2, 19, 23, 32, 7, 35, true);
-  // sleep.addRecord(2022, 2, 20, 23, 52, 7, 46, true);
-  // sleep.addRecord(2022, 2, 21);
-  // sleep.addRecord(2022, 2, 22, 50, 7, 57, true);
-  // sleep.addRecord(2022, 2, 23);
-  // sleep.addRecord(2022, 2, 24, 0, 22, 7, 49, true);
-  // sleep.addRecord(2022, 2, 25, 2, 2, 8, 2, true);
-  // sleep.addRecord(2022, 2, 26, 2, 6, 22, 20, false);
-  // sleep.addRecord(2022, 2, 27, 7, 52, 22, 27, false);
-  // sleep.addRecord(2022, 2, 28, 20, 40, 27, 49, false);
-
+  sleep.addRecord(2021, 6, 1, 14, 25, 0, 33, false);
+  sleep.addRecord(2021, 6, 2, 14, 25, 22, 20, false);
+  sleep.addRecord(2021, 6, 3, 16, 5, 3, 22, false); 
+  sleep.addRecord(2021, 6, 4, 17, 50, 2, 50, false); 
+  sleep.addRecord(2021, 6, 5, 21, 7, 7, 34, false); 
+  sleep.addRecord(2021, 6, 6, 22, 52, 8, 42, false); 
+  sleep.addRecord(2021, 6, 7, false); 
+  sleep.addRecord(2021, 6, 8, 1, 52, 9, 8, false); 
+  sleep.addRecord(2021, 6, 9, 1, 58, 15, 29, false); 
+  sleep.addRecord(2021, 6, 10, 9, 4, 16, 22, false); 
+  sleep.addRecord(2021, 6, 11, 8, 56, 18, 53, false); 
+  sleep.addRecord(2021, 6, 12, 12, 34, 19, 30, false); 
+  sleep.addRecord(2021, 6, 13, 11, 50, 21, 55, false); 
+  sleep.addRecord(2021, 6, 14, 13, 42, 22, 33, false); 
+  sleep.addRecord(2021, 6, 15, 15, 15, 2, 2, false); 
+  sleep.addRecord(2021, 6, 16, 16, 17, 1, 44, false); 
+  sleep.addRecord(2021, 6, 17, 18, 40, 2, 48, false); 
+  sleep.addRecord(2021, 6, 18, 20, 41, 7, 24, false); 
+  sleep.addRecord(2021, 6, 19, 22, 30, 7, 52, false); 
+  sleep.addRecord(2021, 6, 20, 23, 51, 8, 30, false); 
+  sleep.addRecord(2021, 6, 21); 
+  sleep.addRecord(2021, 6, 22, 1, 51, 12, 5, false); 
+  sleep.addRecord(2021, 6, 23, 2, 9, 12, 59, false); 
+  sleep.addRecord(2021, 6, 24, 6, 1, 17, 4, false); 
+  sleep.addRecord(2021, 6, 25, 9, 0, 19, 8, false); 
+  sleep.addRecord(2021, 6, 26, 8, 47, 18, 12, false); 
+  sleep.addRecord(2021, 6, 27, 13, 0, 1, 40, false); 
+  sleep.addRecord(2021, 6, 28, 14, 25, 23, 8, false); 
+  sleep.addRecord(2021, 6, 29, 18, 52, 5, 31, false); 
+  sleep.addRecord(2021, 6, 30, 20, 47, 2, 58, false); 
   
   console.log(sleep);
 }
