@@ -139,7 +139,7 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
     write_json(j, file)
     print(W+"Please wait for file writing...")
     time.sleep(2)
-    print(W+"You can view the file at " + B+file+W)
+    input(W+"You can view the file at " + B+file+W)
 
 
 if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
@@ -189,6 +189,6 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
                 file = 'SDV.png'
             print("Please wait...")
             draw_show_save(df, file)
-        print(Y+"DONE"+W)
+        input(Y+"DONE"+W)
     else:
-        print(Y+"No figure produced"+W)
+        input(Y+"No figure produced"+W)
