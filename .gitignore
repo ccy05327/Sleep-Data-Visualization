@@ -3,3 +3,4 @@ sample.json
 *.bat
 *.xml
 *.pyc
+__init__.py
