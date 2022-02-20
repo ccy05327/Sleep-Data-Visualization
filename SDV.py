@@ -139,7 +139,8 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
     write_json(j, file)
     print(W+"Please wait for file writing...")
     time.sleep(2)
-    input(W+"You can view the file at " + B+file+W)
+    print(W+"You can view the file at " + B+file+W)
+    write_or_read = input("Close (enter) or read? ")
 
 
 if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
@@ -160,7 +161,9 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
         df.append(record)
     print(W+"Reading the file...")
     time.sleep(1)
-    toDraw = input(Y+"Do you want to draw the data? " + W+"(yes/[no]): ")
+    toDraw = input(Y+"Do you want to draw the data? " + W+"([yes]/no): ")
+    if len(toDraw) == 0 or len(toDraw) > 3:
+        toDraw = "y"
     if toDraw == "Yes" or toDraw == 'yes' or toDraw == 'Y' or toDraw == 'y':
         time.sleep(1)
         print("Choose one from the following ")
@@ -176,14 +179,14 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
             print("Please wait...")
             draw_show(df)
         elif toSaveShow == 2:
-            file = input(Y+"Please enter output filename" +
+            file = input(Y+"Please enter output filename " +
                          W+"(default: SDV.png)" + Y+": "+W)
             if len(file) == 0:
                 file = 'SDV.png'
             print("Please wait...")
             draw_save(df, file)
         elif toSaveShow == 3:
-            file = input(Y+"Please enter output filename" +
+            file = input(Y+"Please enter output filename " +
                          W+"(default: SDV.png)" + Y+": "+W)
             if len(file) == 0:
                 file = 'SDV.png'
