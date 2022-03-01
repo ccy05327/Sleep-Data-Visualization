@@ -176,7 +176,7 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
     # time.sleep(1)
     records = read_json(file)
     df = []
-    for i in records['sleep_record']:
+    for i in records['sleep_record'][-30:]:
         record = dict(
             Date='{}/{}'.format(i['date']['month'], i['date']['day']),
             Sleep='2022-02-01 {}:{}:00'.format(i['sleep']['hour'],
