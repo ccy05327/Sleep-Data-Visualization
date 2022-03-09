@@ -1,5 +1,6 @@
 import time
 import json
+from turtle import width
 import plotly.io as pio
 import plotly.express as px
 
@@ -28,13 +29,23 @@ def read_json(_file):
     return _records
 
 
+def record_length(_file):
+    with open(_file, 'r') as j:
+        _records = json.loads(j.read())
+    return len(_records['sleep_record'])
+
+
+length = record_length("SDV.json")
+single_width = 25
+
 def draw_show(_df):
     fig = px.timeline(_df,
                       color="Duration",
                       x_start="Sleep",
                       x_end="Wake",
                       y="Date",
-                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'])
+                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
+                      width=1000, height=single_width*length)
     fig.update_yaxes(autorange="reversed")
     fig.show()
 
@@ -45,7 +56,8 @@ def draw_save(_df, _file):
                       x_start="Sleep",
                       x_end="Wake",
                       y="Date",
-                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'])
+                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
+                      width=1000, height=single_width*length)
     fig.update_yaxes(autorange="reversed")
     pio.write_image(fig, _file)
 
@@ -56,7 +68,8 @@ def draw_show_save(_df, _file):
                       x_start="Sleep",
                       x_end="Wake",
                       y="Date",
-                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'])
+                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
+                      width=1000, height=single_width*length)
     fig.update_yaxes(autorange="reversed")
     pio.write_image(fig, _file)
     fig.show()
@@ -176,7 +189,7 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
     # time.sleep(1)
     records = read_json(file)
     df = []
-    for i in records['sleep_record'][-30:]:
+    for i in records['sleep_record'][:]:
         record = dict(
             Date='{}/{}'.format(i['date']['month'], i['date']['day']),
             Sleep='2022-02-01 {}:{}:00'.format(i['sleep']['hour'],
