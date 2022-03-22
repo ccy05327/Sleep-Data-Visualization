@@ -38,6 +38,7 @@ def record_length(_file):
 length = record_length("SDV.json")
 single_width = 25
 
+
 def draw_show(_df):
     fig = px.timeline(_df,
                       color="Duration",
@@ -189,7 +190,7 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
     # time.sleep(1)
     records = read_json(file)
     df = []
-    for i in records['sleep_record'][:]:
+    for i in records['sleep_record'][-60:]:
         record = dict(
             Date='{}/{}'.format(i['date']['month'], i['date']['day']),
             Sleep='2022-02-01 {}:{}:00'.format(i['sleep']['hour'],
