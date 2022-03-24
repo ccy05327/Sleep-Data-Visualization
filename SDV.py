@@ -35,7 +35,8 @@ def record_length(_file):
     return len(_records['sleep_record'])
 
 
-length = record_length("SDV.json")
+# length = record_length("SDV.json")
+length = 60
 single_width = 25
 
 
