@@ -1,0 +1,51 @@
+# #:kivy
+<Grid>:
+    # setting ids, name_to_reference: id_names
+    sleepH: sleepH
+    sleepM: sleepM
+    wakeH: wakeH
+    wakeM: wakeM
+
+
+
+    GridLayout:
+        cols: 1
+        size: root.width, root.height
+        # (0, 0) starts with bottom left
+        # pos: 100, 100
+
+        GridLayout:
+            cols: 1
+            size: root.width, root.height
+            Label:
+                text: "Sleep Data Visualization"
+
+        GridLayout:
+            cols: 2
+            Label:
+                text: "Sleep Hour"
+            TextInput:
+                id: sleepH
+                multiline: False
+            Label:
+                text: "Sleep Minute"
+            TextInput:
+                id: sleepM
+                multiline: False
+            Label:
+                text: "Wake Hour"
+            TextInput:
+                id: wakeH
+                multiline: False
+            Label:
+                text: "Wake Minute"
+            TextInput:
+                id: wakeM
+                multiline: False
+        GridLayout:
+            cols: 1
+            size: root.width, root.height
+            
+            Button: 
+                text: "Submit"
+                on_press: root.btn()

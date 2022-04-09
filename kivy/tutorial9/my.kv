@@ -1,0 +1,34 @@
+# #:kivy
+
+WindowManager:
+    MainWindow:
+
+    SecondWindow:
+
+<MainWindow>:
+    name: "main"
+    GridLayout:
+        cols: 1
+
+        GridLayout: 
+            cols: 2 # didn't show
+            Label:
+                text: "Password: "
+            TextInput:
+                id: pwd
+                multiline: False
+    Button:
+        text: "Submit"
+        on_release: 
+            app.root.current = "second" if pwd.text == "sleep" else "main"
+            root.manager.transition.direction = "left"
+
+
+<SecondWindow>:
+    name: "second"
+
+    Button:
+        text: "Go Back"
+        on_release: 
+            app.root.current = "main"
+            root.manager.transition.direction = "right"
