@@ -1,19 +1,6 @@
-import time
 import json
-from turtle import width
 import plotly.io as pio
 import plotly.express as px
-
-# https://www.geeksforgeeks.org/append-to-json-file-using-python/
-W = '\033[0m'
-R = '\033[31m'
-G = '\033[32m'
-Y = '\033[33m'
-B = '\033[34m'
-P = '\033[35m'
-# print(W+'default ' + R+'red ' + G+'green ' +
-#       Y+'yellow ' + B+'blue ' + P+'purple')
-
 
 def write_json(_data, _file):
     with open(_file, 'r+') as f:
@@ -35,7 +22,6 @@ def record_length(_file):
     return len(_records['sleep_record'])
 
 
-# length = record_length("SDV.json")
 length = 60
 single_width = 25
 
@@ -77,88 +63,81 @@ def draw_show_save(_df, _file):
     fig.show()
 
 
-write_or_read = input("Do you want to " + B + "write" + W + " or " + P +
-                      "read" + W + " file? ")
+write_or_read = input("Do you want to "  + "write" + " or "  +
+                      "read" + " file? ")
 if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
-    file = input(B + "    File to write to " + W + "(default: SDV.json)" + B +
-                 ": " + W)
+    file = input("    File to write to " + "(default: SDV.json)"  +
+                 ": " )
     if len(file) == 0:
         file = 'SDV.json'
-    print(W + "    Please enter the following: ")
-    # time.sleep(1)
+    print("    Please enter the following: ")
 
-    # get input
-    month = int(input(B + "\tMonth: " + W))
-    # check within range
+    month = int(input("\tMonth: " ))
     while month > 12 or month < 1 or len(str(month)) == 0:
-        # if not repeat til correct
-        print(R + "\tWrong value for month, please enter between 1 and 12")
-        month = int(input(B + "\tMonth: " + W))
-    # check input length before converting
+        print("\tWrong value for month, please enter between 1 and 12")
+        month = int(input("\tMonth: " ))
     if len(str(month)) == 1:
-        # add zero if len() == 1 and change to str
         month = '0' + str(month)
     else:
-        # change type to str
         month = str(month)
 
-    day = int(input(B + "\tDay: " + W))
+    day = int(input("\tDay: " ))
     while day > 31 or day < 1 or len(str(day)) == 0:
-        print(R + "\tWrong value for day, please enter between 1 and 31")
-        day = int(input(B + "\tDay: " + W))
+        print("\tWrong value for day, please enter between 1 and 31")
+        day = int(input("\tDay: " ))
     if len(str(day)) == 1:
         day = '0' + str(day)
     else:
         day = str(day)
 
-    sleep_h = int(input(B + "\tSleep Hour: " + W))
+    sleep_h = int(input("\tSleep Hour: " ))
     while sleep_h > 23 or sleep_h < 0 or len(str(sleep_h)) == 0:
-        print(R +
+        print(
               "\tWrong value for sleep hour, please enter between 0 and 23")
-        sleep_h = int(input(B + "\tSleep Hour: " + W))
+        sleep_h = int(input("\tSleep Hour: " ))
     if len(str(sleep_h)) == 1:
         sleep_h = '0' + str(sleep_h)
     else:
         sleep_h = str(sleep_h)
 
-    sleep_m = int(input(B + "\tSleep Minute: " + W))
+    sleep_m = int(input("\tSleep Minute: " ))
     while sleep_m >= 60 or sleep_m < 0 or len(str(sleep_m)) == 0:
-        print(R +
+        print(
               "\tWrong value for sleep minute, please enter between 0 and 59")
-        sleep_m = int(input(B + "\tSleep Minute: " + W))
+        sleep_m = int(input("\tSleep Minute: " ))
     if len(str(sleep_m)) == 1:
         sleep_m = '0' + str(sleep_m)
     else:
         sleep_m = str(sleep_m)
 
-    wake_h = int(input(B + "\tWake Hour: " + W))
+    wake_h = int(input("\tWake Hour: " ))
     while wake_h > 23 or wake_h < 0 or len(str(wake_h)) == 0:
-        print(R + "\tWrong value for wake hour, please enter between 0 and 23")
-        wake_h = int(input(B + "\tWake Hour: " + W))
+        print("\tWrong value for wake hour, please enter between 0 and 23")
+        wake_h = int(input("\tWake Hour: " ))
     while int(sleep_h) > wake_h:
-        print(R +
+        print(
               "\tWrong value for wake hour, please enter between {} and 23".
               format(sleep_h))
-        wake_h = int(input(B + "\tWake Hour: " + W))
+        wake_h = int(input("\tWake Hour: " ))
     if len(str(wake_h)) == 1:
         wake_h = '0' + str(wake_h)
     else:
         wake_h = str(wake_h)
 
-    wake_m = int(input(B + "\tWake Minute: " + W))
+    wake_m = int(input("\tWake Minute: " ))
     while wake_m >= 60 or wake_m < 0 or len(str(wake_m)) == 0:
-        print(R +
+        print(
               "\tWrong value for wake minute, please enter between 0 and 59")
-        wake_m = int(input(B + "\tWake Minute: " + W))
+        wake_m = int(input("\tWake Minute: " ))
     if len(str(wake_m)) == 1:
         wake_m = '0' + str(wake_m)
     else:
         wake_m = str(wake_m)
 
-    duration = float(input(B + "\tDuration: " + W))
+    duration = float(input("\tDuration: " ))
     while duration <= 0 or duration > 24 or len(str(duration)) == 0:
-        print(R + "\tWrong value for duration, please enter between 1 and 24")
-        duration = float(input(B + "\tDuration: " + W))
+        print("\tWrong value for duration, please enter between 1 and 24")
+        duration = float(input("\tDuration: " ))
 
     j = {
         "date": {
@@ -178,17 +157,14 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
     }
 
     write_json(j, file)
-    print(W + "Please wait for file writing...")
-    # time.sleep(2)
-    print(W + "You can view the file at " + B + file + W)
+    print("Please wait for file writing...")
+    print("You can view the file at "  + file )
     write_or_read = input("Close (enter) or read? ")
 
 if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
-    file = input(P + "File to read " + W + "(default: SDV.json)" + P + ": " +
-                 W)
+    file = input("File to read " + "(default: SDV.json)" + ": ")
     if len(file) == 0:
         file = 'SDV.json'
-    # time.sleep(1)
     records = read_json(file)
     df = []
     for i in records['sleep_record'][-60:]:
@@ -200,37 +176,33 @@ if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
                                               i['wake']['min']),
             Duration=i['duration'])
         df.append(record)
-    print(W + "Reading the file...")
-    # time.sleep(1)
-    toDraw = input(Y + "Do you want to draw the data? " + W + "([yes]/no): ")
+    print("Reading the file...")
+    toDraw = input("Do you want to draw the data? " + "([yes]/no): ")
     if len(toDraw) == 0 or len(toDraw) > 3:
         toDraw = "y"
     if toDraw == "Yes" or toDraw == 'yes' or toDraw == 'Y' or toDraw == 'y':
-        # time.sleep(1)
         print("Choose one from the following ")
-        # time.sleep(1)
         print("  1. Draw and show")
         print("  2. Draw and save")
         print("  3. Draw, show, and save")
-        # time.sleep(1)
-        toSaveShow = int(input(Y + "Answer: " + W))
+        toSaveShow = int(input("Answer: " ))
         if toSaveShow == 1:
             print("Please wait...")
             draw_show(df)
         elif toSaveShow == 2:
-            file = input(Y + "Please enter output filename " + W +
-                         "(default: SDV.png)" + Y + ": " + W)
+            file = input("Please enter output filename "  +
+                         "(default: SDV.png)" + ": " )
             if len(file) == 0:
                 file = 'SDV.png'
             print("Please wait...")
             draw_save(df, file)
         elif toSaveShow == 3:
-            file = input(Y + "Please enter output filename " + W +
-                         "(default: SDV.png)" + Y + ": " + W)
+            file = input("Please enter output filename "  +
+                         "(default: SDV.png)" + ": " )
             if len(file) == 0:
                 file = 'SDV.png'
             print("Please wait...")
             draw_show_save(df, file)
-        print(Y + "DONE" + W)
+        print("DONE" )
     else:
-        print(Y + "No figure produced" + W)
+        print("No figure produced" )

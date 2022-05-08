@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
     <meta charset="utf-8" />
-    <script src="sketch.js"></script>
-    <script src="Sleep.js"></script>
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="SDV.json"></script>
+    <script src="test.json"></script>
+    <script src="index.js"></script>
+    <script src="swal.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css"></link>
+    <!-- <py-env>
+      - plotly - pandas - paths: - http://localhost:5500/SDV.json
+    </py-env> -->
   </head>
   <body>
+    <div class="container">
+      <br />
+      <h1 class="text-center" style="font-size: 40px">
+        Sleep Data Visualization
+      </h1>
+      <br />
+      <div id="btn-p">
+        <button class="btn" onClick="write_or_read_button()">start</button>
+      </div>
+      <p id="write_read_output"></p>
+    </div>
+
   </body>
 </html>
