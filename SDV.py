@@ -1,8 +1,21 @@
+import PySimpleGUI as sg
 import json
 import plotly.io as pio
 import plotly.express as px
+import pandas as pd
+from subprocess import call
 
-def write_json(_data, _file):
+
+################ JSON processing ################
+
+def write_json(_data: dict, _file: str):
+    '''
+    Write (append) into a existing JSON file.
+
+    _data -- the piece of data to append.
+
+    _file -- the JSON file path to write to.
+    '''
     with open(_file, 'r+') as f:
         file_data = json.load(f)
         file_data["sleep_record"].append(_data)
@@ -10,138 +23,218 @@ def write_json(_data, _file):
         json.dump(file_data, f, indent=4)
 
 
-def read_json(_file):
+def read_json(_file: str):
+    '''
+    Read a JSON file and return the data.
+
+    _file -- the JSON file to read from.
+
+    return -- a list of records in the data.
+    '''
     with open(_file, 'r') as j:
-        _records = json.loads(j.read())
+        _records: list = json.loads(j.read())
     return _records
 
 
-def record_length(_file):
+def record_length(_file: str):
+    '''
+    Read a JSON file and return the length of the data inside.
+
+    _file -- JSON file to read from.
+
+    return -- integer
+    '''
     with open(_file, 'r') as j:
         _records = json.loads(j.read())
     return len(_records['sleep_record'])
 
 
-length = 60
-single_width = 25
+length: int = 30  # possible user input
+single_width: int = 20
+
+################# Plotly processing ################
 
 
-def draw_show(_df):
+def draw_save(_df: pd.DataFrame, _file: str):
+    '''
+    Read a file and a DataFrame, produce and save a timeline chart. 
+
+    _df -- DataFrame containing the data.
+
+    _file -- file name to save the image to.
+
+    return -- nothing.
+    '''
     fig = px.timeline(_df,
                       color="Duration",
                       x_start="Sleep",
                       x_end="Wake",
                       y="Date",
                       color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
-                      width=1000, height=single_width*length)
-    fig.update_yaxes(autorange="reversed")
-    fig.show()
-
-
-def draw_save(_df, _file):
-    fig = px.timeline(_df,
-                      color="Duration",
-                      x_start="Sleep",
-                      x_end="Wake",
-                      y="Date",
-                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
-                      width=1000, height=single_width*length)
-    fig.update_yaxes(autorange="reversed")
-    pio.write_image(fig, _file)
-
-
-def draw_show_save(_df, _file):
-    fig = px.timeline(_df,
-                      color="Duration",
-                      x_start="Sleep",
-                      x_end="Wake",
-                      y="Date",
-                      color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
-                      width=1000, height=single_width*length)
+                      width=600, height=single_width*length)
     fig.update_yaxes(autorange="reversed")
     pio.write_image(fig, _file)
-    fig.show()
 
 
-write_or_read = input("Do you want to "  + "write" + " or "  +
-                      "read" + " file? ")
-if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
-    file = input("    File to write to " + "(default: SDV.json)"  +
-                 ": " )
-    if len(file) == 0:
-        file = 'SDV.json'
-    print("    Please enter the following: ")
+################ Data processing ################
 
-    month = int(input("\tMonth: " ))
-    while month > 12 or month < 1 or len(str(month)) == 0:
-        print("\tWrong value for month, please enter between 1 and 12")
-        month = int(input("\tMonth: " ))
-    if len(str(month)) == 1:
-        month = '0' + str(month)
-    else:
-        month = str(month)
+def year_input_validation(values):
+    '''Validate input year.
 
-    day = int(input("\tDay: " ))
-    while day > 31 or day < 1 or len(str(day)) == 0:
-        print("\tWrong value for day, please enter between 1 and 31")
-        day = int(input("\tDay: " ))
-    if len(str(day)) == 1:
-        day = '0' + str(day)
-    else:
-        day = str(day)
+    values -- window value to extract the right input
 
-    sleep_h = int(input("\tSleep Hour: " ))
-    while sleep_h > 23 or sleep_h < 0 or len(str(sleep_h)) == 0:
-        print(
-              "\tWrong value for sleep hour, please enter between 0 and 23")
-        sleep_h = int(input("\tSleep Hour: " ))
-    if len(str(sleep_h)) == 1:
-        sleep_h = '0' + str(sleep_h)
-    else:
-        sleep_h = str(sleep_h)
+    return -- integer.
 
-    sleep_m = int(input("\tSleep Minute: " ))
-    while sleep_m >= 60 or sleep_m < 0 or len(str(sleep_m)) == 0:
-        print(
-              "\tWrong value for sleep minute, please enter between 0 and 59")
-        sleep_m = int(input("\tSleep Minute: " ))
-    if len(str(sleep_m)) == 1:
-        sleep_m = '0' + str(sleep_m)
-    else:
-        sleep_m = str(sleep_m)
+    Turn value into an integer; Check correct range 2022 to 2024; Return absolute value plus modulo otherwise.
+    '''
+    try:
+        _year = int(values['-YEAR-'])
+        _year = _year if _year < 2025 and _year > 2021 else abs(_year) % 2022
 
-    wake_h = int(input("\tWake Hour: " ))
-    while wake_h > 23 or wake_h < 0 or len(str(wake_h)) == 0:
-        print("\tWrong value for wake hour, please enter between 0 and 23")
-        wake_h = int(input("\tWake Hour: " ))
-    while int(sleep_h) > wake_h:
-        print(
-              "\tWrong value for wake hour, please enter between {} and 23".
-              format(sleep_h))
-        wake_h = int(input("\tWake Hour: " ))
-    if len(str(wake_h)) == 1:
-        wake_h = '0' + str(wake_h)
-    else:
-        wake_h = str(wake_h)
+    except ValueError:
+        pass
 
-    wake_m = int(input("\tWake Minute: " ))
-    while wake_m >= 60 or wake_m < 0 or len(str(wake_m)) == 0:
-        print(
-              "\tWrong value for wake minute, please enter between 0 and 59")
-        wake_m = int(input("\tWake Minute: " ))
-    if len(str(wake_m)) == 1:
-        wake_m = '0' + str(wake_m)
-    else:
-        wake_m = str(wake_m)
+    return _year
 
-    duration = float(input("\tDuration: " ))
-    while duration <= 0 or duration > 24 or len(str(duration)) == 0:
-        print("\tWrong value for duration, please enter between 1 and 24")
-        duration = float(input("\tDuration: " ))
 
-    j = {
+def month_input_validation(values):
+    '''Validate input month.
+
+    values -- window value to extract the right input.
+
+    return -- string.
+
+    Turn value into an integer; Check correct range 1 to 12; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type month.
+    '''
+    try:
+        _month = int(values['-MONTH-'])
+        _month = _month if _month < 13 and _month > 0 else abs(_month) % 12
+        _month = str(_month)
+        _month = _month if len(_month) != 1 else '0' + _month
+    except ValueError:
+        pass
+
+    return _month
+
+
+def day_input_validation(values):
+    '''Validate input date/day.
+
+    values -- window value to extract the right input.
+
+    return -- string.
+
+    Turn value into an integer; Check correct range 1 to 31; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type date/day.
+    '''
+    try:
+        _day = int(values['-DAY-'])
+        _day = _day if _day < 31 and _day > 0 else abs(_day) % 31
+        _day = str(_day)
+        _day = _day if len(_day) != 1 else '0' + _day
+    except ValueError:
+        pass
+
+    return _day
+
+
+def hour_input_validation(values):
+    '''Validate input hour.
+
+    values -- specified window value to extract the right input.
+
+    return -- string.
+
+    Turn value into an integer; Check correct range 0 to 23; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
+    '''
+    try:
+        _hour = int(values)
+        _hour = _hour if _hour < 31 and _hour > 0 else abs(_hour) % 31
+        _hour = str(_hour)
+        _hour = _hour if len(_hour) != 1 else '0' + _hour
+    except ValueError:
+        pass
+
+    return _hour
+
+
+def minute_input_validation(values):
+    '''Validate input minute.
+
+    values -- specified window value to extract the right input.
+
+    return -- string.
+
+    Turn value into an integer; Check correct range 0 to 59; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
+    '''
+    try:
+        _min = int(values)
+        _min = _min if _min < 60 and _min > -1 else abs(_min) % 60
+        _min = str(_min)
+        _min = _min if len(_min) != 1 else '0' + _min
+    except ValueError:
+        pass
+
+    return _min
+
+
+def second_input_validation(values):
+    '''Validate input second.
+
+    values -- specified window value to extract the right input.
+
+    return -- string.
+
+    Turn value into an integer; Check correct range 0 to 59; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
+    '''
+    try:
+        _sec = int(values)
+        _sec = _sec if _sec < 60 and _sec > -1 else abs(_sec) % 60
+        _sec = str(_sec)
+        _sec = _sec if len(_sec) != 1 else '0' + _sec
+    except ValueError:
+        pass
+
+    return _sec
+
+
+def duration_input_validation(values):
+    '''Validate input minute.
+
+    values -- window value to extract the right input.
+
+    return -- float.
+
+    Turn value into an integer; Check correct range 0.01 to 23.99; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
+    '''
+    try:
+        _dur = float(values['-DURATION-'])
+        _dur = _dur if _dur < 60 and _dur > 0 else abs(_dur) % 60
+    except ValueError:
+        pass
+
+    return _dur
+
+
+def read_and_validate():
+    '''
+    Read in the inputs from user, validate them, and put them into a dictionary.
+
+    return -- a dictionary of data
+
+    '''
+    year = year_input_validation(values)
+    month = month_input_validation(values)
+    day = day_input_validation(values)
+    sleep_h = hour_input_validation(values['-SLEEP HOUR-'])
+    sleep_m = minute_input_validation(values['-SLEEP MINUTE-'])
+    wake_h = hour_input_validation(values['-WAKE HOUR-'])
+    wake_m = minute_input_validation(values['-WAKE MINUTE-'])
+    duration = duration_input_validation(values)
+    # print('{}/{}/{} {}:{} to {}:{} length: {}'.format(year,month, day, sleep_h, sleep_m, wake_h, wake_h, duration))
+    # write into file
+    data: dict = {
         "date": {
-            "year": 2022,
+            "year": year,
             "month": month,
             "day": day
         },
@@ -156,53 +249,156 @@ if write_or_read == "Write" or write_or_read == "write" or write_or_read == "w":
         "duration": duration
     }
 
-    write_json(j, file)
-    print("Please wait for file writing...")
-    print("You can view the file at "  + file )
-    write_or_read = input("Close (enter) or read? ")
+    return [data, month, day]
 
-if write_or_read == "Read" or write_or_read == "read" or write_or_read == "r":
-    file = input("File to read " + "(default: SDV.json)" + ": ")
-    if len(file) == 0:
-        file = 'SDV.json'
-    records = read_json(file)
-    df = []
-    for i in records['sleep_record'][-60:]:
-        record = dict(
-            Date='{}/{}'.format(i['date']['month'], i['date']['day']),
-            Sleep='2022-02-01 {}:{}:00'.format(i['sleep']['hour'],
-                                               i['sleep']['min']),
-            Wake='2022-02-01 {}:{}:00'.format(i['wake']['hour'],
-                                              i['wake']['min']),
-            Duration=i['duration'])
-        df.append(record)
-    print("Reading the file...")
-    toDraw = input("Do you want to draw the data? " + "([yes]/no): ")
-    if len(toDraw) == 0 or len(toDraw) > 3:
-        toDraw = "y"
-    if toDraw == "Yes" or toDraw == 'yes' or toDraw == 'Y' or toDraw == 'y':
-        print("Choose one from the following ")
-        print("  1. Draw and show")
-        print("  2. Draw and save")
-        print("  3. Draw, show, and save")
-        toSaveShow = int(input("Answer: " ))
-        if toSaveShow == 1:
-            print("Please wait...")
-            draw_show(df)
-        elif toSaveShow == 2:
-            file = input("Please enter output filename "  +
-                         "(default: SDV.png)" + ": " )
-            if len(file) == 0:
-                file = 'SDV.png'
-            print("Please wait...")
-            draw_save(df, file)
-        elif toSaveShow == 3:
-            file = input("Please enter output filename "  +
-                         "(default: SDV.png)" + ": " )
-            if len(file) == 0:
-                file = 'SDV.png'
-            print("Please wait...")
-            draw_show_save(df, file)
-        print("DONE" )
-    else:
-        print("No figure produced" )
+
+def commit_to_github(month: str, day: str):
+    '''Commit with the date of the input and push to GitHub, JSON file and PNG file.'''
+    # Commit Message
+    commit_message: str = "{}/{} sleep".format(month, day)
+
+    # Stage the file
+    call("git add SDV.json SDV.png", shell=True)
+
+    # Add your commit
+    call('git commit -m "' + commit_message + '"', shell=True)
+
+    # Push the new or update files
+    call("git push origin main", shell=True)
+
+
+################ Main PySimpleGUI section ################
+sg.theme('DarkTeal6')
+
+menu_def = [
+    ['Help', 'Instruction']
+]
+
+INPUT_WIDTH: int = 15
+TEXT_WIDTH: int = 12
+
+layout = [[sg.Menu(menu_def)],
+          [sg.Text('Data Input', font='Default 18')],
+          [sg.T('Year:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-YEAR-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Ex. 2022', font='Default 10')],
+          [sg.T('Month:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-MONTH-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 1 to 12, Ex. 5', font='Default 10')],
+          [sg.T('Day:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-DAY-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 1 to 31, Ex. 23', font='Default 10')],
+          [sg.T('Sleep hour:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-SLEEP HOUR-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 0 to 23, Ex. 3', font='Default 10')],
+          [sg.T('Sleep minute:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-SLEEP MINUTE-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 0 to 59, Ex. 53', font='Default 10')],
+          [sg.T('Wake hour:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-WAKE HOUR-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 0 to 23 and greater than sleep hour, Ex. 11', font='Default 10')],
+          [sg.T('Wake minute:', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-WAKE MINUTE-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 0 to 59, Ex. 22', font='Default 10')],
+          [sg.T('Duration (hour):', size=(TEXT_WIDTH, 1)),
+           sg.Input(key='-DURATION-', size=(INPUT_WIDTH, 1)),
+           sg.Text('Please enter 0.01 to 23.99, Ex. 8.45', font='Default 10')],
+          [sg.Text(' '*28), sg.Button('write in',
+                                      size=(8, 1), font=("Any", 12), button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))],
+          [sg.T('Visualization', font='Default 18'),
+           sg.Text(' '*88), sg.Button('Generate',
+                                      size=(9, 1), font=("Any", 12), button_color=(sg.theme_background_color(), 'white'), pad=(0, (0, 10)))],
+          [sg.Image("./default.png", key='-IMAGE-', size=(600, 600))],
+          [sg.Text(' '*60), sg.Button('Commit',
+                                      size=(8, 1), font=("Any", 15), button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))]
+          ]
+
+
+def instruction_window():
+    '''
+    Display the instruction window when the Help -> Instruction menu is clicked
+    '''
+    instructionLayout = [
+        [sg.Text('Section 1: Data Input', font='Default 18')],
+        [sg.Text('Enter each line with the respective range of numbers.', font='Default 12')],
+        [sg.Text('Some input validation will be run, incorrect range will return the absolute value of it and modulo. ', font='Default 12')],
+        [sg.Text('* If the sleep data you want to input is across two days/dates, please enter them separately.', font='Default 12')],
+        [sg.Text(
+            "    * Enter the first day's wake hour 23 and wake minute 59.", font='Default 12')],
+        [sg.Text(
+            "    * Enter the second day's sleep hour 0 and sleep minute 0.", font='Default 12')],
+        [sg.Text('Press "write in" when you\'re done with the data.',
+                 font='Default 12')],
+        [sg.Text('Section 2: Visualization', font='Default 18')],
+        [sg.Text('Press "Generate" to produce image.', font='Default 12')],
+        [sg.Text(
+            'If there are existing data/records, this can be done without inputing data. ', font='Default 12')],
+        [sg.Text(
+            'The output image will be generated upon the last 30 records in the data.', font='Default 12')],
+        [sg.Text('Section 3: Commit to GitHub', font='Default 18')],
+        [sg.Text(
+            'This will commit and push the changed .json file and .png file to GitHub.', font='Default 12')],
+    ]
+
+    window = sg.Window('Instruction', instructionLayout)
+    window.read()
+    window.close()
+
+
+def clear_input():
+    '''
+    Clearing every input fields
+    '''
+    window['-YEAR-'].update('')
+    window['-MONTH-'].update('')
+    window['-DAY-'].update('')
+    window['-SLEEP HOUR-'].update('')
+    window['-SLEEP MINUTE-'].update('')
+    window['-WAKE HOUR-'].update('')
+    window['-WAKE MINUTE-'].update('')
+    window['-DURATION-'].update('')
+
+
+window = sg.Window('SDV', layout, finalize=True)
+
+file: str = 'SDV.json'
+
+
+################ Actual window running section ################
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED:
+        break
+
+    if event == 'Input Data':
+        # read in data & validate input
+        data = read_and_validate()[0]
+        write_json(data, file)
+        print("data input")
+        clear_input()
+    elif event == 'Generate':
+        # read file
+        records = read_json(file)
+        df = []
+        for i in records['sleep_record'][-30:]:
+            record = dict(
+                Date='{}/{}'.format(i['date']['month'], i['date']['day']),
+                Sleep='2022-06-01 {}:{}:00'.format(i['sleep']['hour'],
+                                                   i['sleep']['min']),
+                Wake='2022-06-01 {}:{}:00'.format(i['wake']['hour'],
+                                                  i['wake']['min']),
+                Duration=i['duration'])
+            df.append(record)
+        # draw plot and save image
+        draw_save(df, 'SDV.png')
+        # display image
+        image_path = r'D:\\GitHub\\Sleep_Data_Visualization\\SDV.png'
+
+        window['-IMAGE-'].update(image_path)
+        print("image output")
+    elif event == 'Commit':
+        commit_to_github(read_and_validate()[1], read_and_validate()[2])
+    elif event == 'Instruction':
+        instruction_window()
+
+window.close()
