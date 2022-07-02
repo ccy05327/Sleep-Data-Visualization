@@ -5,7 +5,7 @@ import plotly.express as px
 import pandas as pd
 from subprocess import call
 
-file: str = 'SDV.json'
+file: str = './output/SDV.json'
 
 
 ################ JSON processing ################
@@ -301,7 +301,7 @@ layout = [[sg.Menu(menu_def)],
           [sg.T('Display (days):', size=(TEXT_WIDTH, 1)),
            sg.Input(key='-DISPLAY DAYS-', size=(INPUT_WIDTH, 1)),
            sg.Text('Default and max is 30. ', font=FONT_SMALL)],
-          [sg.Image("./default.png", key='-IMAGE-', size=(IMAGE_WIDTH, IMAGE_HEIGHT))],
+          [sg.Image("./output/default.png", key='-IMAGE-', size=(IMAGE_WIDTH, IMAGE_HEIGHT))],
           [sg.Text(' '*60), sg.Button('Commit', size=(8, 1), font=("Any", 15), button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))]
           ]
 
@@ -383,9 +383,9 @@ while True:
                 Duration=i['duration'])
             df.append(record)
         # draw plot and save image
-        draw_save(df, 'SDV.png')
+        draw_save(df, './output/SDV.png')
         # display image
-        image_path = r'SDV.png'
+        image_path = './output/SDV.png'
 
         window['-IMAGE-'].update(image_path)
         print("image output")
