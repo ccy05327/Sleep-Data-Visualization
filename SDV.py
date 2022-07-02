@@ -23,6 +23,7 @@ def write_json(_data: dict, _file: str):
         f.seek(0)
         json.dump(file_data, f, indent=4)
 
+
 def read_json(_file: str):
     '''
     Read a JSON file and return the data.
@@ -34,6 +35,7 @@ def read_json(_file: str):
     with open(_file, 'r') as j:
         _records: list = json.loads(j.read())
     return _records
+
 
 def record_length(_file: str):
     '''
@@ -47,6 +49,7 @@ def record_length(_file: str):
         _records = json.loads(j.read())
     return len(_records['sleep_record'])
 
+
 display_days: int = 30  # possible user input
 single_width: int = 20
 
@@ -54,6 +57,8 @@ IMAGE_WIDTH = 600
 IMAGE_HEIGHT = 600
 
 ################# Plotly processing ################
+
+
 def draw_save(_df: pd.DataFrame, _file: str):
     '''
     Read a file and a DataFrame, produce and save a timeline chart. 
@@ -75,6 +80,8 @@ def draw_save(_df: pd.DataFrame, _file: str):
     pio.write_image(fig, _file)
 
 ################ Data processing ################
+
+
 def year_input_validation(values):
     '''Validate input year.
 
@@ -92,6 +99,7 @@ def year_input_validation(values):
         pass
 
     return _year
+
 
 def month_input_validation(values):
     '''Validate input month.
@@ -112,6 +120,7 @@ def month_input_validation(values):
 
     return _month
 
+
 def day_input_validation(values):
     '''Validate input date/day.
 
@@ -130,6 +139,7 @@ def day_input_validation(values):
         pass
 
     return _day
+
 
 def hour_input_validation(values):
     '''Validate input hour.
@@ -150,6 +160,7 @@ def hour_input_validation(values):
 
     return _hour
 
+
 def minute_input_validation(values):
     '''Validate input minute.
 
@@ -168,6 +179,7 @@ def minute_input_validation(values):
         pass
 
     return _min
+
 
 def second_input_validation(values):
     '''Validate input second.
@@ -188,6 +200,7 @@ def second_input_validation(values):
 
     return _sec
 
+
 def duration_input_validation(values):
     '''Validate input minute.
 
@@ -204,6 +217,7 @@ def duration_input_validation(values):
         pass
 
     return _dur
+
 
 def read_and_validate():
     '''
@@ -241,6 +255,18 @@ def read_and_validate():
 
     return [data, month, day]
 
+
+def fetch_and_pull_github():
+    '''
+    Fetch and Pull from GitHub. 
+    '''
+    # fetch
+    call("git fetch", shell=True)
+    print("git fetch")
+    # pull
+    call("git pull", shell=True)
+    print("git pull")
+
 def commit_to_github(month: str, day: str):
     '''Commit with the date of the input and push to GitHub, JSON file and PNG file.'''
     # Commit Message
@@ -248,12 +274,13 @@ def commit_to_github(month: str, day: str):
 
     # Stage the file
     call("git add SDV.json SDV.png", shell=True)
-
+    print("stage the files")
     # Add your commit
     call('git commit -m "' + commit_message + '"', shell=True)
 
     # Push the new or update files
     call("git push origin main", shell=True)
+    print("push the files")
 
 ################ Main PySimpleGUI section ################
 sg.theme('DarkTeal6')
@@ -294,15 +321,19 @@ layout = [[sg.Menu(menu_def)],
           [sg.T('Duration (hour):', size=(TEXT_WIDTH, 1)),
            sg.Input(key='-DURATION-', size=(INPUT_WIDTH, 1)),
            sg.Text('Please enter 0.01 to 23.99, Ex. 8.45', font=FONT_SMALL)],
-          [sg.Text(' '*28), sg.Button('write in', size=(8, 1), font=("Any", 12), button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))],
-          [sg.Text('There are currently ' + str(record_length(file)) + ' records in ' + file + '.', key='-RECORD LENGTH-')],
+          [sg.Text(' '*28), sg.Button('write in', size=(8, 1), font=("Any", 12),
+                                      button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))],
+          [sg.Text('There are currently ' + str(record_length(file)) +
+                   ' records in ' + file + '.', key='-RECORD LENGTH-')],
           [sg.T('Visualization', font=FONT_BIG),
            sg.Text(' '*88), sg.Button('Generate', size=(9, 1), font=("Any", 12), button_color=(sg.theme_background_color(), 'white'), pad=(0, (0, 10)))],
           [sg.T('Display (days):', size=(TEXT_WIDTH, 1)),
            sg.Input(key='-DISPLAY DAYS-', size=(INPUT_WIDTH, 1)),
            sg.Text('Default and max is 30. ', font=FONT_SMALL)],
-          [sg.Image("./output/default.png", key='-IMAGE-', size=(IMAGE_WIDTH, IMAGE_HEIGHT))],
-          [sg.Text(' '*60), sg.Button('Commit', size=(8, 1), font=("Any", 15), button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))]
+          [sg.Image("./output/default.png", key='-IMAGE-',
+                    size=(IMAGE_WIDTH, IMAGE_HEIGHT))],
+          [sg.Text(' '*60), sg.Button('Commit', size=(8, 1), font=("Any", 15),
+                                      button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))]
           ]
 
 
@@ -312,7 +343,8 @@ def instruction_window():
     '''
     instructionLayout = [
         [sg.Text('Section 1: Data Input', font=FONT_BIG)],
-        [sg.Text('Enter each line with the respective range of numbers.', font=FONT_MEDIUM)],
+        [sg.Text('Enter each line with the respective range of numbers.',
+                 font=FONT_MEDIUM)],
         [sg.Text('Some input validation will be run, incorrect range will return the absolute value of it and modulo. ', font=FONT_MEDIUM)],
         [sg.Text('* If the sleep data you want to input is across two days/dates, please enter them separately.', font=FONT_MEDIUM)],
         [sg.Text(
@@ -336,6 +368,7 @@ def instruction_window():
     window.read()
     window.close()
 
+
 def clear_input():
     '''
     Clearing every input fields
@@ -350,12 +383,14 @@ def clear_input():
     window['-DURATION-'].update('')
     window['-DISPLAY DAYS-'].update('')
 
+
 window = sg.Window('SDV', layout, finalize=True)
 
 
 ################ Actual window running section ################
 while True:
     event, values = window.read()
+    fetch_and_pull_github()
     if event == sg.WIN_CLOSED:
         break
 
@@ -363,7 +398,8 @@ while True:
         # read in data & validate input
         data = read_and_validate()[0]
         write_json(data, file)
-        window['-RECORD LENGTH-'].update('There are currently ' + str(record_length(file)) + ' records in ' + file + '.')
+        window['-RECORD LENGTH-'].update('There are currently ' + str(
+            record_length(file)) + ' records in ' + file + '.')
         # window['-RECORD LENGTH-'].update('')
         print("data input")
         clear_input()
