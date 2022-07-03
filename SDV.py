@@ -91,13 +91,11 @@ def year_input_validation(values):
 
     Turn value into an integer; Check correct range 2022 to 2024; Return absolute value plus modulo otherwise.
     '''
-    try:
-        _year = int(values['-YEAR-'])
-        _year = _year if _year < 2025 and _year > 2021 else abs(_year) % 2022
-
-    except ValueError:
-        pass
-
+    # try:
+    _year = int(values['-YEAR-'])
+    _year = _year if _year < 2025 and _year > 2021 else abs(_year) % 2022
+    # except ValueError:
+    # pass
     return _year
 
 
@@ -110,13 +108,13 @@ def month_input_validation(values):
 
     Turn value into an integer; Check correct range 1 to 12; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type month.
     '''
-    try:
-        _month = int(values['-MONTH-'])
-        _month = _month if _month < 13 and _month > 0 else abs(_month) % 12
-        _month = str(_month)
-        _month = _month if len(_month) != 1 else '0' + _month
-    except ValueError:
-        pass
+    # try:
+    _month = int(values['-MONTH-'])
+    _month = _month if _month < 13 and _month > 0 else abs(_month) % 12
+    _month = str(_month)
+    _month = _month if len(_month) != 1 else '0' + _month
+    # except ValueError:
+    #     pass
 
     return _month
 
@@ -130,13 +128,13 @@ def day_input_validation(values):
 
     Turn value into an integer; Check correct range 1 to 31; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type date/day.
     '''
-    try:
-        _day = int(values['-DAY-'])
-        _day = _day if _day < 31 and _day > 0 else abs(_day) % 31
-        _day = str(_day)
-        _day = _day if len(_day) != 1 else '0' + _day
-    except ValueError:
-        pass
+    # try:
+    _day = int(values['-DAY-'])
+    _day = _day if _day < 31 and _day > 0 else abs(_day) % 31
+    _day = str(_day)
+    _day = _day if len(_day) != 1 else '0' + _day
+    # except ValueError:
+    #     pass
 
     return _day
 
@@ -150,13 +148,13 @@ def hour_input_validation(values):
 
     Turn value into an integer; Check correct range 0 to 23; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
     '''
-    try:
-        _hour = int(values)
-        _hour = _hour if _hour < 31 and _hour > 0 else abs(_hour) % 31
-        _hour = str(_hour)
-        _hour = _hour if len(_hour) != 1 else '0' + _hour
-    except ValueError:
-        pass
+    # try:
+    _hour = int(values)
+    _hour = _hour if _hour < 31 and _hour > 0 else abs(_hour) % 31
+    _hour = str(_hour)
+    _hour = _hour if len(_hour) != 1 else '0' + _hour
+    # except ValueError:
+    #     pass
 
     return _hour
 
@@ -170,13 +168,13 @@ def minute_input_validation(values):
 
     Turn value into an integer; Check correct range 0 to 59; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
     '''
-    try:
-        _min = int(values)
-        _min = _min if _min < 60 and _min > -1 else abs(_min) % 60
-        _min = str(_min)
-        _min = _min if len(_min) != 1 else '0' + _min
-    except ValueError:
-        pass
+    # try:
+    _min = int(values)
+    _min = _min if _min < 60 and _min > -1 else abs(_min) % 60
+    _min = str(_min)
+    _min = _min if len(_min) != 1 else '0' + _min
+    # except ValueError:
+    #     pass
 
     return _min
 
@@ -190,13 +188,13 @@ def second_input_validation(values):
 
     Turn value into an integer; Check correct range 0 to 59; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
     '''
-    try:
-        _sec = int(values)
-        _sec = _sec if _sec < 60 and _sec > -1 else abs(_sec) % 60
-        _sec = str(_sec)
-        _sec = _sec if len(_sec) != 1 else '0' + _sec
-    except ValueError:
-        pass
+    # try:
+    _sec = int(values)
+    _sec = _sec if _sec < 60 and _sec > -1 else abs(_sec) % 60
+    _sec = str(_sec)
+    _sec = _sec if len(_sec) != 1 else '0' + _sec
+    # except ValueError:
+    #     pass
 
     return _sec
 
@@ -210,11 +208,11 @@ def duration_input_validation(values):
 
     Turn value into an integer; Check correct range 0.01 to 23.99; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
     '''
-    try:
-        _dur = float(values['-DURATION-'])
-        _dur = _dur if _dur < 60 and _dur > 0 else abs(_dur) % 60
-    except ValueError:
-        pass
+    # try:
+    _dur = float(values['-DURATION-'])
+    _dur = _dur if _dur < 60 and _dur > 0 else abs(_dur) % 60
+    # except ValueError:
+    #     pass
 
     return _dur
 
@@ -267,13 +265,14 @@ def fetch_and_pull_github():
     call("git pull", shell=True)
     print("git pull")
 
+
 def commit_to_github(month: str, day: str):
     '''Commit with the date of the input and push to GitHub, JSON file and PNG file.'''
     # Commit Message
     commit_message: str = "{}/{} sleep".format(month, day)
 
     # Stage the file
-    call("git add SDV.json SDV.png", shell=True)
+    call("git add ./output/SDV.json ./output/SDV.png", shell=True)
     print("stage the files")
     # Add your commit
     call('git commit -m "' + commit_message + '"', shell=True)
@@ -281,6 +280,9 @@ def commit_to_github(month: str, day: str):
     # Push the new or update files
     call("git push origin main", shell=True)
     print("push the files")
+    
+    return
+
 
 ################ Main PySimpleGUI section ################
 sg.theme('DarkTeal6')
@@ -426,7 +428,13 @@ while True:
         window['-IMAGE-'].update(image_path)
         print("image output")
     elif event == 'Commit':
-        commit_to_github(read_and_validate()[1], read_and_validate()[2])
+        if (values["-MONTH-"] == "" or values["-DAY-"] == ""):
+            month = read_json(file)["sleep_record"][-1]["date"]["month"]
+            day = read_json(file)["sleep_record"][-1]["date"]["day"]
+        else:
+            month = read_and_validate()[1]
+            day = read_and_validate()[2]
+        commit_to_github(month, day)
     elif event == 'Instruction':
         instruction_window()
 
