@@ -50,6 +50,12 @@ def record_length(_file: str):
     return len(_records['sleep_record'])
 
 
+def get_last_record(_file: str):
+    date = read_json(_file)['sleep_record'][-1]['date']
+    record_date = str(date['year']) + '/' + date['month'] + '/' + date['day']
+    return record_date
+
+
 display_days: int = 30  # possible user input
 single_width: int = 20
 
@@ -280,7 +286,7 @@ def commit_to_github(month: str, day: str):
     # Push the new or update files
     call("git push origin main", shell=True)
     print("push the files")
-    
+
     return
 
 
@@ -326,12 +332,15 @@ layout = [[sg.Menu(menu_def)],
           [sg.Text(' '*28), sg.Button('write in', size=(8, 1), font=("Any", 12),
                                       button_color=(sg.theme_background_color(), 'white'), pad=(0, 10))],
           [sg.Text('There are currently ' + str(record_length(file)) +
-                   ' records in ' + file + '.', key='-RECORD LENGTH-')],
+                   ' records in ' + (file.split('/')[-1]) + '.', key='-RECORD LENGTH-')],
+          [sg.Text('The last record date is ' +
+                   get_last_record(file) + '.', key='-LAST RECORD DATE-')],
           [sg.T('Visualization', font=FONT_BIG),
-           sg.Text(' '*88), sg.Button('Generate', size=(9, 1), font=("Any", 12), button_color=(sg.theme_background_color(), 'white'), pad=(0, (0, 10)))],
-          [sg.T('Display (days):', size=(TEXT_WIDTH, 1)),
+           sg.Text(' '*88), sg.Button('Generate', size=(9, 1), font=("Any", 12),
+                                      button_color=(sg.theme_background_color(), 'white'), pad=(0, (0, 10)))],
+          [sg.T('Display (records):', size=(TEXT_WIDTH, 1)),
            sg.Input(key='-DISPLAY DAYS-', size=(INPUT_WIDTH, 1)),
-           sg.Text('Default and max is 30. ', font=FONT_SMALL)],
+           sg.Text('Default and recommendation max is 30. ', font=FONT_SMALL)],
           [sg.Image("./output/default.png", key='-IMAGE-',
                     size=(IMAGE_WIDTH, IMAGE_HEIGHT))],
           [sg.Text(' '*60), sg.Button('Commit', size=(8, 1), font=("Any", 15),
@@ -400,9 +409,12 @@ while True:
         # read in data & validate input
         data = read_and_validate()[0]
         write_json(data, file)
+        # update file length after each write in
         window['-RECORD LENGTH-'].update('There are currently ' + str(
             record_length(file)) + ' records in ' + file + '.')
-        # window['-RECORD LENGTH-'].update('')
+        # update last record date after each write in
+        window['-LAST RECORD DATE-'].update('The last record date is ' +
+                                            get_last_record(file) + '.')
         print("data input")
         clear_input()
     elif event == 'Generate':
