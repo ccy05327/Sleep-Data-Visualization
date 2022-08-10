@@ -57,9 +57,9 @@ def get_last_record(_file: str):
 
 
 display_days: int = 30  # possible user input
-single_width: int = 20
+single_width: int = 20  # width for each bar
 
-IMAGE_WIDTH = 600
+IMAGE_WIDTH = 900
 IMAGE_HEIGHT = 600
 
 ################# Plotly processing ################
