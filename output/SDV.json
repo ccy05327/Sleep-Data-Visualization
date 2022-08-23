@@ -3892,7 +3892,7 @@
             "date": {
                 "year": 2022,
                 "month": "07",
-                "day": "00"
+                "day": "31"
             },
             "sleep": {
                 "hour": "16",
@@ -4383,6 +4383,38 @@
                 "min": "28"
             },
             "duration": 8.3
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "08",
+                "day": "22"
+            },
+            "sleep": {
+                "hour": "15",
+                "min": "12"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 10.96
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "08",
+                "day": "23"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "02",
+                "min": "10"
+            },
+            "duration": 10.96
         }
     ]
 }
