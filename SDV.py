@@ -136,7 +136,7 @@ def day_input_validation(values):
     '''
     # try:
     _day = int(values['-DAY-'])
-    _day = _day if _day < 31 and _day > 0 else abs(_day) % 31
+    _day = _day if _day <= 31 and _day > 0 else abs(_day) % 32
     _day = str(_day)
     _day = _day if len(_day) != 1 else '0' + _day
     # except ValueError:
