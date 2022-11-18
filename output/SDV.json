@@ -6431,6 +6431,38 @@
                 "min": "38"
             },
             "duration": 8.45
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "11",
+                "day": "17"
+            },
+            "sleep": {
+                "hour": "01",
+                "min": "41"
+            },
+            "wake": {
+                "hour": "08",
+                "min": "18"
+            },
+            "duration": 6.56
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "11",
+                "day": "18"
+            },
+            "sleep": {
+                "hour": "01",
+                "min": "12"
+            },
+            "wake": {
+                "hour": "09",
+                "min": "02"
+            },
+            "duration": 7.83
         }
     ]
 }
