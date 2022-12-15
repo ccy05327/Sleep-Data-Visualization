@@ -6639,6 +6639,422 @@
                 "min": "30"
             },
             "duration": 6.36
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "11",
+                "day": "28"
+            },
+            "sleep": {
+                "hour": "23",
+                "min": "41"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 8.86
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "11",
+                "day": "29"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "08",
+                "min": "52"
+            },
+            "duration": 8.86
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "11",
+                "day": "29"
+            },
+            "sleep": {
+                "hour": "23",
+                "min": "29"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 9.73
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "01"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "09",
+                "min": "23"
+            },
+            "duration": 9.73
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "02"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "57"
+            },
+            "wake": {
+                "hour": "08",
+                "min": "10"
+            },
+            "duration": 7.18
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "03"
+            },
+            "sleep": {
+                "hour": "01",
+                "min": "01"
+            },
+            "wake": {
+                "hour": "07",
+                "min": "30"
+            },
+            "duration": 6.36
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "04"
+            },
+            "sleep": {
+                "hour": "01",
+                "min": "58"
+            },
+            "wake": {
+                "hour": "08",
+                "min": "13"
+            },
+            "duration": 6.25
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "05"
+            },
+            "sleep": {
+                "hour": "01",
+                "min": "18"
+            },
+            "wake": {
+                "hour": "09",
+                "min": "17"
+            },
+            "duration": 7.98
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "06"
+            },
+            "sleep": {
+                "hour": "01",
+                "min": "50"
+            },
+            "wake": {
+                "hour": "05",
+                "min": "12"
+            },
+            "duration": 3.36
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "07"
+            },
+            "sleep": {
+                "hour": "04",
+                "min": "12"
+            },
+            "wake": {
+                "hour": "16",
+                "min": "27"
+            },
+            "duration": 12.25
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "07"
+            },
+            "sleep": {
+                "hour": "23",
+                "min": "13"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 2.3
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "08"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "01",
+                "min": "31"
+            },
+            "duration": 2.3
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "08"
+            },
+            "sleep": {
+                "hour": "10",
+                "min": "02"
+            },
+            "wake": {
+                "hour": "19",
+                "min": "22"
+            },
+            "duration": 9.13
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "09"
+            },
+            "sleep": {
+                "hour": "12",
+                "min": "32"
+            },
+            "wake": {
+                "hour": "19",
+                "min": "49"
+            },
+            "duration": 7.3
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "10"
+            },
+            "sleep": {
+                "hour": "03",
+                "min": "09"
+            },
+            "wake": {
+                "hour": "05",
+                "min": "32"
+            },
+            "duration": 2.38
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "10"
+            },
+            "sleep": {
+                "hour": "13",
+                "min": "16"
+            },
+            "wake": {
+                "hour": "18",
+                "min": "54"
+            },
+            "duration": 5.65
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "10"
+            },
+            "sleep": {
+                "hour": "21",
+                "min": "05"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "19"
+            },
+            "duration": 2.25
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "11"
+            },
+            "sleep": {
+                "hour": "12",
+                "min": "39"
+            },
+            "wake": {
+                "hour": "17",
+                "min": "59"
+            },
+            "duration": 5.35
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "12"
+            },
+            "sleep": {
+                "hour": "16",
+                "min": "16"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 8.21
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "13"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "00",
+                "min": "39"
+            },
+            "duration": 8.21
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "13"
+            },
+            "sleep": {
+                "hour": "16",
+                "min": "06"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 7.5
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "14"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "00",
+                "min": "11"
+            },
+            "duration": 7.5
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "14"
+            },
+            "sleep": {
+                "hour": "11",
+                "min": "32"
+            },
+            "wake": {
+                "hour": "21",
+                "min": "52"
+            },
+            "duration": 9.66
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "15"
+            },
+            "sleep": {
+                "hour": "02",
+                "min": "50"
+            },
+            "wake": {
+                "hour": "05",
+                "min": "59"
+            },
+            "duration": 3.15
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "15"
+            },
+            "sleep": {
+                "hour": "18",
+                "min": "58"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 6.96
+        },
+        {
+            "date": {
+                "year": 2022,
+                "month": "12",
+                "day": "16"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "02",
+                "min": "04"
+            },
+            "duration": 6.96
         }
     ]
 }
