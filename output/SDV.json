@@ -7407,6 +7407,54 @@
                 "min": "30"
             },
             "duration": 11.68
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "02"
+            },
+            "sleep": {
+                "hour": "12",
+                "min": "59"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 11.2
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "03"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "00",
+                "min": "11"
+            },
+            "duration": 11.2
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "03"
+            },
+            "sleep": {
+                "hour": "14",
+                "min": "32"
+            },
+            "wake": {
+                "hour": "19",
+                "min": "03"
+            },
+            "duration": 4.53
         }
     ]
 }
