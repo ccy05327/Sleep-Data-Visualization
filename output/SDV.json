@@ -7503,6 +7503,38 @@
                 "min": "20"
             },
             "duration": 8.46
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "06"
+            },
+            "sleep": {
+                "hour": "17",
+                "min": "29"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 10.15
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "07"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "03",
+                "min": "38"
+            },
+            "duration": 10.15
         }
     ]
 }
