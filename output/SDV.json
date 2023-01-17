@@ -7684,6 +7684,38 @@
             "date": {
                 "year": 2023,
                 "month": "01",
+                "day": "12"
+            },
+            "sleep": {
+                "hour": "23",
+                "min": "23"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 10.45
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "13"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "10",
+                "min": "34"
+            },
+            "duration": 10.45
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
                 "day": "14"
             },
             "sleep": {
@@ -7695,6 +7727,54 @@
                 "min": "43"
             },
             "duration": 7.35
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "15"
+            },
+            "sleep": {
+                "hour": "03",
+                "min": "10"
+            },
+            "wake": {
+                "hour": "10",
+                "min": "45"
+            },
+            "duration": 7.38
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "16"
+            },
+            "sleep": {
+                "hour": "03",
+                "min": "46"
+            },
+            "wake": {
+                "hour": "12",
+                "min": "54"
+            },
+            "duration": 9.13
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "01",
+                "day": "17"
+            },
+            "sleep": {
+                "hour": "07",
+                "min": "17"
+            },
+            "wake": {
+                "hour": "13",
+                "min": "33"
+            },
+            "duration": 6.26
         }
     ]
 }
