@@ -8223,6 +8223,54 @@
                 "min": "47"
             },
             "duration": 5.78
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "02",
+                "day": "04"
+            },
+            "sleep": {
+                "hour": "22",
+                "min": "35"
+            },
+            "wake": {
+                "hour": "23",
+                "min": "59"
+            },
+            "duration": 9.9
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "02",
+                "day": "05"
+            },
+            "sleep": {
+                "hour": "00",
+                "min": "00"
+            },
+            "wake": {
+                "hour": "04",
+                "min": "30"
+            },
+            "duration": 9.9
+        },
+        {
+            "date": {
+                "year": 2023,
+                "month": "02",
+                "day": "05"
+            },
+            "sleep": {
+                "hour": "05",
+                "min": "08"
+            },
+            "wake": {
+                "hour": "09",
+                "min": "21"
+            },
+            "duration": 9.9
         }
     ]
 }
