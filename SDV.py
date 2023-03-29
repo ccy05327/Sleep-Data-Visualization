@@ -514,7 +514,7 @@ while True:
         query = "SELECT sleep_time, wake_time, duration FROM sleep_data"
         origin_df = pd.read_sql(query, db)
         df = []
-        for x in origin_df.index:
+        for x in origin_df.index[-display_days-5:]:
             a = origin_df['sleep_time'].dt.date[x]
             i = origin_df['sleep_time'].dt.time[x]
             j = origin_df['wake_time'].dt.time[x]
