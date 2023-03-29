@@ -4,9 +4,35 @@ import plotly.io as pio
 import plotly.express as px
 import pandas as pd
 from subprocess import call
+import mysql.connector
+from mysql.connector import errorcode
+from dotenv import load_dotenv
+import os
+import datetime
 
 file: str = './output/SDV.json'
+load_dotenv()
 
+# Establish a connection to the database
+db = mysql.connector.connect(
+  host=os.getenv("DB_HOST"),
+  user=os.getenv("DB_USER"),
+  password=os.getenv("DB_PASSWORD"),
+  database=os.getenv("DB_NAME"),
+  port=os.getenv("DB_PORT")
+)
+
+try:
+    # Create a cursor object to execute SQL queries
+    mycursor = db.cursor()
+    print("MySQL database connected successfully")
+except mysql.connector.Error as err:
+    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+        print("Something is wrong with your user name or password")
+    elif err.errno == errorcode.ER_BAD_DB_ERROR:
+        print("Database does not exist")
+    else:
+        print(err)
 
 ################ JSON processing ################
 def write_json(_data: dict, _file: str):
@@ -22,6 +48,40 @@ def write_json(_data: dict, _file: str):
         file_data["sleep_record"].append(_data)
         f.seek(0)
         json.dump(file_data, f, indent=4)
+        
+        
+def write_sql(_data: dict):
+    '''
+    Write (insert into) to existing database table
+    '''
+    # Extract the data from the input dictionary
+    year = int(_data["date"]["year"])
+    month = int(_data["date"]["month"])
+    day = int(_data["date"]["day"])
+    sleep_h = int(_data["sleep"]["hour"])
+    sleep_m = int(_data["sleep"]["min"])
+    wake_h = int(_data["wake"]["hour"])
+    wake_m = int(_data["wake"]["min"])
+    dur = float(_data['duration'])
+
+    try:
+        add_sleep_data = ("INSERT INTO sleep_data "
+                          "(sleep_time, wake_time, duration) "
+                          "VALUES (%s, %s, %s)")
+
+        # Construct the sleep_time and wake_time datetime objects
+        sleep_time = datetime.datetime(year, month, day, sleep_h, sleep_m)
+        wake_time = datetime.datetime(year, month, day, wake_h, wake_m)
+
+        mycursor.execute(add_sleep_data, (sleep_time, wake_time, dur))
+        db.commit()
+        print("Data inserted successfully!")
+        
+        _data['duration'] = dur
+        write_json(_data, file)
+        print("Add to JSON")
+    except mysql.connector.Error as err:
+        print(f"Error inserting data into MySQL table: {err}")
 
 
 def read_json(_file: str):
@@ -75,13 +135,15 @@ def draw_save(_df: pd.DataFrame, _file: str):
 
     return -- nothing.
     '''
+    
     fig = px.timeline(_df,
                       color="Duration",
                       x_start="Sleep",
                       x_end="Wake",
                       y="Date",
                       color_continuous_scale=['#ffff3f', '#52b69a', '#0077b6'],
-                      width=IMAGE_WIDTH, height=single_width*display_days)
+                      width=IMAGE_WIDTH, height=single_width*display_days
+                      )
     fig.update_yaxes(autorange="reversed")
     pio.write_image(fig, _file)
 
@@ -215,8 +277,11 @@ def duration_input_validation(values):
     Turn value into an integer; Check correct range 0.01 to 23.99; Return absolute value plus modulo otherwise; Turn value into a string; Add an additional '0' in front if string length is one; Return the final correct format & data type hour.
     '''
     # try:
-    _dur = float(values['-DURATION-'])
-    _dur = _dur if _dur < 60 and _dur > 0 else abs(_dur) % 60
+    if (values['-DURATION-'] == ""):
+        _dur = 0
+    else:
+        _dur = float(values['-DURATION-'])
+        _dur = _dur if _dur < 60 and _dur > 0 else abs(_dur) % 60
     # except ValueError:
     #     pass
 
@@ -237,8 +302,17 @@ def read_and_validate():
     sleep_m = minute_input_validation(values['-SLEEP MINUTE-'])
     wake_h = hour_input_validation(values['-WAKE HOUR-'])
     wake_m = minute_input_validation(values['-WAKE MINUTE-'])
-    duration = duration_input_validation(values)
-    # print('{}/{}/{} {}:{} to {}:{} length: {}'.format(year,month, day, sleep_h, sleep_m, wake_h, wake_h, duration))
+    dur = duration_input_validation(values)
+
+    if (dur == 0):
+        # if dur is empty, validation will result in zero
+        sleep_time = datetime.datetime(int(year), int(month), int(day), int(sleep_h), int(sleep_m))
+        wake_time = datetime.datetime(int(year), int(month), int(day), int(wake_h), int(wake_m))
+        duration = wake_time - sleep_time
+        hour = str(duration).split(":")[0]
+        miniute = str(duration).split(':')[1]
+        dur = int(hour) + round(float(miniute)/60, 2)
+
     # write into file
     data: dict = {
         "date": {
@@ -254,7 +328,7 @@ def read_and_validate():
             "hour": wake_h,
             "min": wake_m
         },
-        "duration": duration
+        "duration": dur
     }
 
     return [data, month, day]
@@ -408,7 +482,7 @@ while True:
     if event == 'write in':
         # read in data & validate input
         data = read_and_validate()[0]
-        write_json(data, file)
+        write_sql(data)
         # update file length after each write in
         window['-RECORD LENGTH-'].update('There are currently ' + str(
             record_length(file)) + ' records in ' + file + '.')
@@ -422,21 +496,47 @@ while True:
             display_days = int(values['-DISPLAY DAYS-'])
         # read file
         records = read_json(file)
+        ###### READ FROM JSON #######
+        # df = []
+        # for i in records['sleep_record'][-display_days-5:]:
+            # record = dict(
+            #     Date='{}/{}'.format(i['date']['month'], i['date']['day']),
+            #     Sleep='2022-06-01 {}:{}:00'.format(i['sleep']['hour'],
+            #                                        i['sleep']['min']),
+            #     Wake='2022-06-01 {}:{}:00'.format(i['wake']['hour'],
+            #                                       i['wake']['min']),
+            #     Duration=i['duration'])
+            # df.append(record)
+        
+        ##### READ FROM MYSQL DATABASE #####
+
+        # Define the SQL query to retrieve the data
+        query = "SELECT sleep_time, wake_time, duration FROM sleep_data"
+        origin_df = pd.read_sql(query, db)
         df = []
-        for i in records['sleep_record'][-display_days-5:]:
+        for x in origin_df.index:
+            a = origin_df['sleep_time'].dt.date[x]
+            i = origin_df['sleep_time'].dt.time[x]
+            j = origin_df['wake_time'].dt.time[x]
+            duration = origin_df['duration'][x]
+            month = str(int(str(a).split("-")[1]))
+            day = str(a).split("-")[2]
+            sleep_hour = str(i).split(":")[0]
+            sleep_minute = str(i).split(":")[1]
+            wake_hour = str(j).split(":")[0]
+            wake_minute = str(j).split(":")[1]
+            
             record = dict(
-                Date='{}/{}'.format(i['date']['month'], i['date']['day']),
-                Sleep='2022-06-01 {}:{}:00'.format(i['sleep']['hour'],
-                                                   i['sleep']['min']),
-                Wake='2022-06-01 {}:{}:00'.format(i['wake']['hour'],
-                                                  i['wake']['min']),
-                Duration=i['duration'])
+                Date='{}/{}'.format(month, day),
+                Sleep='2023-01-01 {}:{}:00'.format(sleep_hour, sleep_minute),
+                Wake='2023-01-01 {}:{}:00'.format(wake_hour, wake_minute),
+                Duration=duration)
+            
             df.append(record)
         # draw plot and save image
         draw_save(df, './output/SDV.png')
         # display image
         image_path = './output/SDV.png'
-
         window['-IMAGE-'].update(image_path)
         print("image output")
     elif event == 'Commit':
