@@ -340,10 +340,8 @@ def fetch_and_pull_github():
     '''
     # fetch
     call("git fetch", shell=True)
-    print("git fetch")
     # pull
     call("git pull", shell=True)
-    print("git pull")
 
 
 def commit_to_github(month: str, day: str):
@@ -353,7 +351,6 @@ def commit_to_github(month: str, day: str):
 
     # Stage the file
     call("git add ./output/SDV.json ./output/SDV.png", shell=True)
-    print("stage the files")
     # Add your commit
     call('git commit -m "' + commit_message + '"', shell=True)
 
