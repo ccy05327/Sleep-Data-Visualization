@@ -494,42 +494,42 @@ while True:
         # read file
         records = read_json(file)
         ###### READ FROM JSON #######
-        # df = []
-        # for i in records['sleep_record'][-display_days-5:]:
-            # record = dict(
-            #     Date='{}/{}'.format(i['date']['month'], i['date']['day']),
-            #     Sleep='2022-06-01 {}:{}:00'.format(i['sleep']['hour'],
-            #                                        i['sleep']['min']),
-            #     Wake='2022-06-01 {}:{}:00'.format(i['wake']['hour'],
-            #                                       i['wake']['min']),
-            #     Duration=i['duration'])
-            # df.append(record)
+        df = []
+        for i in records['sleep_record'][-display_days-5:]:
+            record = dict(
+                Date='{}/{}'.format(i['date']['month'], i['date']['day']),
+                Sleep='2022-06-01 {}:{}:00'.format(i['sleep']['hour'],
+                                                   i['sleep']['min']),
+                Wake='2022-06-01 {}:{}:00'.format(i['wake']['hour'],
+                                                  i['wake']['min']),
+                Duration=i['duration'])
+            df.append(record)
         
         ##### READ FROM MYSQL DATABASE #####
 
         # Define the SQL query to retrieve the data
-        query = "SELECT sleep_time, wake_time, duration FROM sleep_data"
-        origin_df = pd.read_sql(query, db)
-        df = []
-        for x in origin_df.index[-display_days-5:]:
-            a = origin_df['sleep_time'].dt.date[x]
-            i = origin_df['sleep_time'].dt.time[x]
-            j = origin_df['wake_time'].dt.time[x]
-            duration = origin_df['duration'][x]
-            month = str(int(str(a).split("-")[1]))
-            day = str(a).split("-")[2]
-            sleep_hour = str(i).split(":")[0]
-            sleep_minute = str(i).split(":")[1]
-            wake_hour = str(j).split(":")[0]
-            wake_minute = str(j).split(":")[1]
+        # query = "SELECT sleep_time, wake_time, duration FROM sleep_data"
+        # origin_df = pd.read_sql(query, db)
+        # df = []
+        # for x in origin_df.index[-display_days-5:]:
+        #     a = origin_df['sleep_time'].dt.date[x]
+        #     i = origin_df['sleep_time'].dt.time[x]
+        #     j = origin_df['wake_time'].dt.time[x]
+        #     duration = origin_df['duration'][x]
+        #     month = str(int(str(a).split("-")[1]))
+        #     day = str(a).split("-")[2]
+        #     sleep_hour = str(i).split(":")[0]
+        #     sleep_minute = str(i).split(":")[1]
+        #     wake_hour = str(j).split(":")[0]
+        #     wake_minute = str(j).split(":")[1]
             
-            record = dict(
-                Date='{}/{}'.format(month, day),
-                Sleep='2023-01-01 {}:{}:00'.format(sleep_hour, sleep_minute),
-                Wake='2023-01-01 {}:{}:00'.format(wake_hour, wake_minute),
-                Duration=duration)
+        #     record = dict(
+        #         Date='{}/{}'.format(month, day),
+        #         Sleep='2023-01-01 {}:{}:00'.format(sleep_hour, sleep_minute),
+        #         Wake='2023-01-01 {}:{}:00'.format(wake_hour, wake_minute),
+        #         Duration=duration)
             
-            df.append(record)
+        #     df.append(record)
         # draw plot and save image
         draw_save(df, './output/SDV.png')
         # display image
