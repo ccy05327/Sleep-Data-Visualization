@@ -7,7 +7,7 @@ console.log("🧠 MAIN process is running");
 ipcMain.handle("gen-chart", (_, rows, display = 30) => {
   console.log("📩 gen-chart received from renderer");
 
-  const exePath = path.join(app.getAppPath(), "python", "sdv_cli.py");
+  const exePath = path.join(__dirname, "..", "python", "sdv_cli.py");
   const py = spawn("python", [exePath], { stdio: ["pipe", "pipe", "inherit"] });
 
   py.stdin.write(JSON.stringify({ rows, display }));
@@ -29,6 +29,7 @@ ipcMain.handle("gen-chart", (_, rows, display = 30) => {
       }
     });
   });
+
 });
 
 function createWindow() {
