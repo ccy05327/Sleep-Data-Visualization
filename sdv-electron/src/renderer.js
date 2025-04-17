@@ -1,4 +1,5 @@
 console.log("🚀 Renderer loaded");
+import "./index.css";
 
 const app = document.getElementById("app");
 
@@ -7,12 +8,12 @@ app.innerHTML = `
   <form id="sleep-form">
     <label>Date: <input type="date" id="date" required /></label><br/>
     <label>Sleep Time: 
-      <input type="number" id="sleep-hour" min="0" max="23" placeholder="HH" required /> :
-      <input type="number" id="sleep-minute" min="0" max="59" placeholder="MM" required />
+      <input type="number" id="sleep-hour" min="0" max="23" placeholder="hh" required /> :
+      <input type="number" id="sleep-minute" min="0" max="59" placeholder="mm" required />
     </label><br/>
     <label>Wake Time: 
-      <input type="number" id="wake-hour" min="0" max="23" placeholder="HH" required /> :
-      <input type="number" id="wake-minute" min="0" max="59" placeholder="MM" required />
+      <input type="number" id="wake-hour" min="0" max="23" placeholder="hh" required /> :
+      <input type="number" id="wake-minute" min="0" max="59" placeholder="mm" required />
     </label><br/>
     <button type="submit" id="enter">Enter</button>
     <button type="button" id="generate">Generate Chart</button>

@@ -17,7 +17,6 @@ ipcMain.handle("gen-chart", (_, rows, display = 30) => {
       if (code === 0) {
         try {
           const parsed = JSON.parse(out);
-          console.log("🧪 RAW Python output:", out);
           resolve(parsed.png);
         } catch (err) {
           reject("Failed to parse sdv_cli.py output");

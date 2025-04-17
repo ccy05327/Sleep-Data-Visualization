@@ -45,20 +45,20 @@ def draw_save(_df: pd.DataFrame, _file: str, display_days: int):
         if end <= start:
             # Cross-midnight: split into two bars
             rows.append({
-                "Label": format_date(sleep.date()),
+                "Date": format_date(sleep.date()),
                 "Sleep": start,
                 "Wake": base_day.replace(hour=23, minute=59, second=59),
                 "Duration": duration
             })
             rows.append({
-                "Label": format_date(wake.date()),  # assign next day's label
+                "Date": format_date(wake.date()),  # assign next day's label
                 "Sleep": base_day.replace(hour=0, minute=0),
                 "Wake": end,
                 "Duration": duration
             })
         else:
             rows.append({
-                "Label": format_date(sleep.date()),
+                "Date": format_date(sleep.date()),
                 "Sleep": start,
                 "Wake": end,
                 "Duration": duration
@@ -70,10 +70,10 @@ def draw_save(_df: pd.DataFrame, _file: str, display_days: int):
         chart_df,
         x_start="Sleep",
         x_end="Wake",
-        y="Label",
+        y="Date",
         color="Duration",
         color_continuous_scale="YlGnBu",
-        title="Sleep Time Comparison (Fixed 24h Axis)",
+        title="Sleep Time Visualisation",
         hover_data={"Duration": True}
     )
 
@@ -90,7 +90,7 @@ def draw_save(_df: pd.DataFrame, _file: str, display_days: int):
             tickformat="%H:%M",
             title="Time of Day"
         ),
-        coloraxis_colorbar=dict(title="Sleep (hrs)")
+        coloraxis_colorbar=dict(title="hours")
     )
 
     img_bytes = pio.to_image(fig, format="png")
