@@ -1,13 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
+const fs = require("fs");
 
 console.log("🧠 MAIN process is running");
 
 ipcMain.handle("gen-chart", (_, rows, display = 30) => {
   console.log("📩 gen-chart received from renderer");
 
-  const exePath = path.join(__dirname, "..", "python", "sdv_cli.py");
+  const exePath = path.join(app.getAppPath(), "python", "sdv_cli.py");
   const py = spawn("python", [exePath], { stdio: ["pipe", "pipe", "inherit"] });
 
   py.stdin.write(JSON.stringify({ rows, display }));
@@ -29,7 +30,31 @@ ipcMain.handle("gen-chart", (_, rows, display = 30) => {
       }
     });
   });
+});
 
+const dataPath = path.join(app.getAppPath(), "data", "sleep.json");
+
+ipcMain.handle("save-row", async (_, row) => {
+  try {
+    const json = fs.readFileSync(dataPath, "utf-8");
+    const rows = JSON.parse(json);
+    rows.push(row);
+    fs.writeFileSync(dataPath, JSON.stringify(rows, null, 2));
+    return { ok: true, count: rows.length };
+  } catch (err) {
+    console.error("❌ Failed to save row:", err);
+    return { ok: false, error: err.message };
+  }
+});
+
+ipcMain.handle("get-all-rows", async () => {
+  try {
+    const json = fs.readFileSync(dataPath, "utf-8");
+    return JSON.parse(json);
+  } catch (err) {
+    console.error("❌ Failed to read saved data:", err);
+    return [];
+  }
 });
 
 function createWindow() {

@@ -128,12 +128,40 @@ document.getElementById("sleep-form").onsubmit = async (e) => {
   }
 };
 
-// 🆕 Temporary Enter button
-enterBtn.onclick = () => {
-  const row = validateForm();
-  if (!row) return;
-  console.log("🆕 ENTER row:", row);
-  clearForm();
+enterBtn.onclick = async () => {
+  const newRow = validateForm();
+  if (!newRow) return;
+
+  const existing = await window.sdv.getAllRows();
+
+  const hasSameDate = existing.some((row) => row.Date === newRow.Date);
+  const hasSameTime = existing.some(
+    (row) => row.Sleep === newRow.Sleep && row.Wake === newRow.Wake
+  );
+
+  if (hasSameDate) {
+    alert("❌ An entry with the same date already exists.");
+    return;
+  }
+
+  if (hasSameTime) {
+    alert("❌ This exact sleep time is already recorded.");
+    return;
+  }
+
+  console.log("🆕 ENTER row:", newRow);
+
+  try {
+    const result = await window.sdv.saveRow(newRow);
+    if (result.ok) {
+      console.log(`✅ Saved entry. Total entries: ${result.count}`);
+      clearForm();
+    } else {
+      alert("❌ Failed to save row: " + result.error);
+    }
+  } catch (err) {
+    console.error("💥 Save error:", err);
+  }
 };
 
 function clearForm() {
