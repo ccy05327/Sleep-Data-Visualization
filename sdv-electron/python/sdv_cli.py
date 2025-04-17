@@ -7,12 +7,6 @@ import plotly.express as px
 import plotly.io as pio
 import plotly.graph_objects as go
 
-single_width: int = 20  # width for each bar
-
-IMAGE_WIDTH = 900
-
-# pio.kaleido.scope.default_format = "png"  # Set default format to PNG
-
 
 def draw_save(_df: pd.DataFrame, _file: str, display_days: int) -> None:
     '''
@@ -27,10 +21,13 @@ def draw_save(_df: pd.DataFrame, _file: str, display_days: int) -> None:
 
     _df["Sleep"] = pd.to_datetime(_df["Sleep"])
     _df["Wake"] = pd.to_datetime(_df["Wake"])
+
+    _df = _df.sort_values("Sleep")
+
     _df["Label"] = _df["Date"] + " " + _df.index.astype(str)
     _df["DurationStr"] = _df["Duration"].astype(str)
 
-    height = max(single_width * display_days, 100)
+    height = max(20 * display_days, 100)
 
     # fig = px.timeline(_df,
     #   color = "Duration",
@@ -57,7 +54,7 @@ def draw_save(_df: pd.DataFrame, _file: str, display_days: int) -> None:
         ))
 
     fig.update_layout(
-        width=IMAGE_WIDTH,
+        width=900,
         height=height,
         title="Sleep Timeline",
         xaxis_title="Hours",

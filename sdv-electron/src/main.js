@@ -34,11 +34,16 @@ ipcMain.handle("gen-chart", (_, rows, display = 30) => {
 
 const dataPath = path.join(app.getAppPath(), "data", "sleep.json");
 
-ipcMain.handle("save-row", async (_, row) => {
+ipcMain.handle("save-row", async (_, newRow) => {
   try {
     const json = fs.readFileSync(dataPath, "utf-8");
     const rows = JSON.parse(json);
-    rows.push(row);
+
+    rows.push(newRow);
+
+    // ✅ Sort by ISO sleep datetime
+    rows.sort((a, b) => new Date(a.Sleep) - new Date(b.Sleep));
+
     fs.writeFileSync(dataPath, JSON.stringify(rows, null, 2));
     return { ok: true, count: rows.length };
   } catch (err) {
