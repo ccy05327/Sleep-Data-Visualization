@@ -1,102 +1,115 @@
-import sys
-import json
-import tempfile
-import base64
-import pandas as pd
 import plotly.express as px
 import plotly.io as pio
-import plotly.graph_objects as go
+import pandas as pd
+from datetime import datetime, timedelta
+import json
+import sys
+import base64
 
 
-def draw_save(_df: pd.DataFrame, _file: str, display_days: int) -> None:
-    '''
-    Read a file and a DataFrame, produce and save a timeline chart.
+def normalize_virtual_range(sleep_dt, wake_dt):
+    base = datetime(2025, 4, 1)
 
-    _df -- DataFrame containing the data.
+    virtual_sleep = sleep_dt.apply(lambda d: base.replace(
+        hour=d.hour, minute=d.minute, second=0))
+    virtual_wake = wake_dt.apply(lambda d: base.replace(
+        hour=d.hour, minute=d.minute, second=0))
 
-    _file -- file name to save the image to.
+    # ✅ If wake is earlier than sleep (cross-midnight), shift wake by 1 day
+    virtual_wake = virtual_wake.where(
+        virtual_wake > virtual_sleep, virtual_wake + timedelta(days=1))
 
-    return -- nothing.
-    '''
+    return virtual_sleep, virtual_wake
 
+
+def draw_save(_df: pd.DataFrame, _file: str, display_days: int):
     _df["Sleep"] = pd.to_datetime(_df["Sleep"])
     _df["Wake"] = pd.to_datetime(_df["Wake"])
+    _df = _df.sort_values("Sleep").reset_index(drop=True)
 
-    _df = _df.sort_values("Sleep")
+    def format_date(d):
+        return d.strftime("%#d %b") if sys.platform == "win32" else d.strftime("%-d %b")
 
-    _df["Label"] = _df["Date"] + " " + _df.index.astype(str)
-    _df["DurationStr"] = _df["Duration"].astype(str)
+    rows = []
 
-    height = max(20 * display_days, 100)
+    for _, row in _df.iterrows():
+        sleep = row["Sleep"]
+        wake = row["Wake"]
+        duration = row["Duration"]
 
-    # fig = px.timeline(_df,
-    #   color = "Duration",
-    #   x_start = "Sleep",
-    #   x_end = "Wake",
-    #   y = "Date",
-    #   color_continuous_scale = [
-    #       '#ffff3f', '#52b69a', '#0077b6'],
-    #   width = IMAGE_WIDTH, height = max(
-    #       single_width * display_days, 100)
-    #   )
+        base_day = datetime(2025, 4, 1)
+        start = base_day.replace(
+            hour=sleep.hour, minute=sleep.minute, second=0)
+        end = base_day.replace(hour=wake.hour, minute=wake.minute, second=0)
 
-    fig = go.Figure()
+        if end <= start:
+            # Cross-midnight: split into two bars
+            rows.append({
+                "Label": format_date(sleep.date()),
+                "Sleep": start,
+                "Wake": base_day.replace(hour=23, minute=59, second=59),
+                "Duration": duration
+            })
+            rows.append({
+                "Label": format_date(wake.date()),  # assign next day's label
+                "Sleep": base_day.replace(hour=0, minute=0),
+                "Wake": end,
+                "Duration": duration
+            })
+        else:
+            rows.append({
+                "Label": format_date(sleep.date()),
+                "Sleep": start,
+                "Wake": end,
+                "Duration": duration
+            })
 
-    for idx, row in _df.iterrows():
-        fig.add_trace(go.Bar(
-            x=[(row["Wake"] - row["Sleep"]).total_seconds() / 3600],
-            y=[row["Label"]],
-            orientation='h',
-            name=row["DurationStr"] + " hrs",
-            hovertext=f'{row["Sleep"]} → {row["Wake"]}',
-            marker=dict(color=row["Duration"],
-                        colorscale='Viridis', showscale=False)
-        ))
+    chart_df = pd.DataFrame(rows)
 
-    fig.update_layout(
-        width=900,
-        height=height,
-        title="Sleep Timeline",
-        xaxis_title="Hours",
-        yaxis_title="Date",
-        barmode='stack',
-        margin=dict(l=100, r=30, t=30, b=30),
+    fig = px.timeline(
+        chart_df,
+        x_start="Sleep",
+        x_end="Wake",
+        y="Label",
+        color="Duration",
+        color_continuous_scale="YlGnBu",
+        title="Sleep Time Comparison (Fixed 24h Axis)",
+        hover_data={"Duration": True}
     )
 
-    print(_df.dtypes, file=sys.stderr)
-    print(_df.head(), file=sys.stderr)
-
     fig.update_yaxes(autorange="reversed")
+    fig.update_layout(
+        width=900,
+        height=max(20 * len(chart_df), 100),
+        margin=dict(l=100, r=30, t=40, b=30),
+        xaxis=dict(
+            range=[
+                datetime(2025, 4, 1, 0, 0),
+                datetime(2025, 4, 2, 0, 0)
+            ],
+            tickformat="%H:%M",
+            title="Time of Day"
+        ),
+        coloraxis_colorbar=dict(title="Sleep (hrs)")
+    )
 
-    # pio.write_image(fig, _file)
     img_bytes = pio.to_image(fig, format="png")
     with open(_file, "wb") as f:
         f.write(img_bytes)
 
 
 if __name__ == "__main__":
-    payload = json.load(sys.stdin)  # blocking read
+    payload = json.load(sys.stdin)
     rows = payload["rows"]
     display = payload.get("display", 30)
 
-    # Create a DataFrame from the rows
-    # Assume fields: Date, Sleep, Wake, Duration
     df = pd.DataFrame(rows[-display:])
 
-    # Create temporary PNG file
-    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-        temp_path = temp_file.name
-    draw_save(df, temp_path, display)
-
-    # Read the PNG file and encode it as base64
-    with open(temp_path, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-
-    # Send JSON response to the caller
-    json.dump({"ok": True, "png": encoded_string}, sys.stdout)
-
-    # with open("out.json") as f:
-    #     encoded = json.load(f)["png"]
-
-    # with open("preview.png", "wb") as f:
-    #     f.write(base64.b64decode(encoded))
+    try:
+        draw_save(df, "out.png", display)
+        # ✅ Output clean JSON
+        json.dump({"ok": True, "png": base64.b64encode(
+            open("out.png", "rb").read()).decode()}, sys.stdout)
+    except Exception as e:
+        # ✅ Output error as JSON
+        json.dump({"ok": False, "error": str(e)}, sys.stdout)

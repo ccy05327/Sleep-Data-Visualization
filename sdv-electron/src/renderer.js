@@ -25,7 +25,6 @@ app.innerHTML = `
 const errorMsg = document.getElementById("error-msg");
 const generateBtn = document.getElementById("generate");
 const enterBtn = document.getElementById("enter");
-enterBtn.disabled = true;
 
 function validateForm() {
   const date = document.getElementById("date").value;
@@ -34,7 +33,7 @@ function validateForm() {
   const wh = document.getElementById("wake-hour").value;
   const wm = document.getElementById("wake-minute").value;
 
-  enterBtn.disabled = true; // 🚨 Start by disabling the button
+  enterBtn.disabled = true;
 
   if (!date || sh === "" || sm === "" || wh === "" || wm === "") {
     errorMsg.textContent = "Please fill in all fields.";
@@ -125,10 +124,20 @@ generateBtn.onclick = async () => {
     }
 
     const b64 = await window.sdv.genChart(allRows, allRows.length);
+
+    if (!b64 || typeof b64 !== "string") {
+      alert(
+        "Failed to generate chart. Please check your data or Python script."
+      );
+      console.error("⚠️ genChart returned invalid data:", b64);
+      return;
+    }
+
     document.getElementById("preview").src = "data:image/png;base64," + b64;
     console.log("📈 Full timeline rendered!");
   } catch (err) {
     console.error("💥 Failed to generate full chart:", err);
+    alert("Error generating chart. Check console for details.");
   }
 };
 
@@ -137,19 +146,75 @@ document.getElementById("sleep-form").onsubmit = async (e) => {
   const row = validateForm();
   if (!row) return;
 
-  console.log("🆕 ENTER row:", row);
+  const existing = await window.sdv.getAllRows();
 
-  try {
-    const result = await window.sdv.saveRow(row);
-    if (result.ok) {
-      console.log(`✅ Saved entry. Total entries: ${result.count}`);
-      clearForm();
-    } else {
-      alert("❌ Failed to save row: " + result.error);
-    }
-  } catch (err) {
-    console.error("💥 Save error:", err);
+  const hasSameDate = existing.some((r) => r.Date === row.Date);
+  const hasSameTime = existing.some(
+    (r) => r.Sleep === row.Sleep && r.Wake === row.Wake
+  );
+
+  if (hasSameDate) {
+    alert("❌ An entry with the same date already exists.");
+    return;
   }
+
+  if (hasSameTime) {
+    alert("❌ This exact sleep time is already recorded.");
+    return;
+  }
+
+  let rowsToSave = [];
+
+  const sleepTime = new Date(row.Sleep);
+  const wakeTime = new Date(row.Wake);
+
+  if (wakeTime <= sleepTime) {
+    // ⛔ cross-midnight → split into two entries
+
+    const midnight = new Date(sleepTime);
+    midnight.setHours(23, 59, 59, 0);
+
+    const nextDay = new Date(sleepTime);
+    nextDay.setDate(sleepTime.getDate() + 1);
+
+    const part1 = {
+      Date: sleepTime.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+      }),
+      Sleep: formatLocalISO(sleepTime),
+      Wake: formatLocalISO(midnight),
+      Duration: parseFloat(((midnight - sleepTime) / 3600000).toFixed(2)),
+    };
+
+    const part2 = {
+      Date: nextDay.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+      }),
+      Sleep: formatLocalISO(new Date(nextDay.setHours(0, 0, 0, 0))),
+      Wake: formatLocalISO(wakeTime),
+      Duration: parseFloat(
+        ((wakeTime - new Date(nextDay.setHours(0, 0, 0, 0))) / 3600000).toFixed(
+          2
+        )
+      ),
+    };
+
+    rowsToSave.push(part1, part2);
+  } else {
+    rowsToSave.push(row);
+  }
+
+  for (const r of rowsToSave) {
+    const result = await window.sdv.saveRow(r);
+    if (!result.ok) {
+      alert("❌ Failed to save part of the sleep entry.");
+      return;
+    }
+  }
+  console.log(`✅ Saved ${rowsToSave.length} entries.`);
+  clearForm();
 };
 
 function clearForm() {
@@ -159,5 +224,5 @@ function clearForm() {
   document.getElementById("wake-hour").value = "";
   document.getElementById("wake-minute").value = "";
   errorMsg.textContent = "";
-  generateBtn.disabled = true;
+  enterBtn.disabled = true;
 }

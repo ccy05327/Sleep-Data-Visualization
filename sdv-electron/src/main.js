@@ -3,11 +3,7 @@ const path = require("path");
 const { spawn } = require("child_process");
 const fs = require("fs");
 
-console.log("🧠 MAIN process is running");
-
 ipcMain.handle("gen-chart", (_, rows, display = 30) => {
-  console.log("📩 gen-chart received from renderer");
-
   const exePath = path.join(app.getAppPath(), "python", "sdv_cli.py");
   const py = spawn("python", [exePath], { stdio: ["pipe", "pipe", "inherit"] });
 
@@ -21,6 +17,7 @@ ipcMain.handle("gen-chart", (_, rows, display = 30) => {
       if (code === 0) {
         try {
           const parsed = JSON.parse(out);
+          console.log("🧪 RAW Python output:", out);
           resolve(parsed.png);
         } catch (err) {
           reject("Failed to parse sdv_cli.py output");
