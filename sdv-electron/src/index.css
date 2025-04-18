@@ -31,8 +31,10 @@ body {
 }
 
 h2,
-h3 {
+h3,
+h4 {
   color: var(--text);
+  margin-bottom: 1rem;
 }
 
 /* 📋 FORM */
@@ -239,4 +241,92 @@ img#preview.loaded {
 
 .tab-panel.active {
   display: block;
+}
+
+.data-info {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.stat-list {
+  list-style: none;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+.stat-list li {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.subtab-bar {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0 1rem 0.5rem;
+}
+
+.subtab {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.subtab.active {
+  background-color: var(--highlight);
+  color: white;
+}
+
+.subtle-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-grid {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-grid > div {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Use nth-child for targeting instead of last-child */
+.summary-grid > div:nth-child(1) {
+  flex-basis: 40%;
+}
+
+.summary-grid > div:nth-child(2) {
+  flex-basis: 60%;
+}
+
+#monthly-summary {
+  min-width: 300px;
+}
+
+#month-select {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--text);
+  margin-left: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+#summary-stats > div:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }

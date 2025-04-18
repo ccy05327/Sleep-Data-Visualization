@@ -11,9 +11,15 @@
         <button class="tab" data-tab="chart">📈 Chart</button>
         <button class="tab" data-tab="summary">📊 Summary</button>
       </div>
+
       <div id="input" class="tab-panel active">
         <h2>Sleep Data Input</h2>
         <form id="sleep-form">
+          <div id="data-info" class="data-info">
+            <span>📅 Latest Entry: <strong id="latest-date">-</strong></span> |
+            <span>#️⃣ Total Records: <strong id="row-count">0</strong></span>
+          </div>
+          <br />
           <label
             >Sleep Date:
             <input type="date" id="date" />
@@ -36,6 +42,7 @@
           </button>
         </form>
       </div>
+
       <div id="chart" class="tab-panel">
         <div id="output-area">
           <div class="chart-header">
@@ -61,11 +68,38 @@
           </div>
         </div>
       </div>
+
       <div id="summary" class="tab-panel">
-        <h2>Summary</h2>
-        <div id="summary-content">
-          <p id="summary-text">No data available.</p>
+        <div id="summary-stats">
+          <div class="summary-grid">
+            <div style="max-width: 300px">
+              <h4>📊 Recent Sleep Stats</h4>
+              <div class="subtab-bar">
+                <button class="subtab active" data-span="7">7-Day</button>
+                <button class="subtab" data-span="30">30-Day</button>
+              </div>
+              <ul id="recent-summary" class="stat-list subtle-card"></ul>
+            </div>
+            <div style="max-width: 350px">
+              <h4>📆 Total Sleep</h4>
+              <br /><br />
+              <ul id="total-summary" class="stat-list subtle-card"></ul>
+            </div>
+          </div>
+          <div>
+            <h4>📅 Monthly Summary</h4>
+            <div
+              class="subtle-card"
+              id="monthly-card"
+              style="min-width: 300px; max-width: 650px"
+            >
+              <label for="month-select">Select Month:</label>
+              <select id="month-select"></select>
+              <ul id="monthly-summary" class="stat-list"></ul>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
   </body>
 </html>

@@ -243,6 +243,7 @@ sleepForm.onsubmit = async (e) => {
     }
   }
   clearForm();
+  updateRowStats();
 };
 
 // 🚀 PUSH TO GITHUB
@@ -293,5 +294,135 @@ document.querySelectorAll(".tab").forEach((tab) => {
 
     tab.classList.add("active");
     document.getElementById(target).classList.add("active");
+
+    if (target === "summary") loadSleepSummary();
   });
 });
+
+async function updateRowStats() {
+  const data = await window.sdv.getAllRows();
+  const count = data.length;
+  const latest = count > 0 ? data[data.length - 1].Date : "-";
+
+  document.getElementById("row-count").textContent = count;
+  document.getElementById("latest-date").textContent = latest;
+}
+
+async function loadSleepSummary() {
+  const data = await window.sdv.getAllRows();
+  if (!data || data.length === 0) return;
+
+  const recentContainer = document.getElementById("recent-summary");
+  const totalContainer = document.getElementById("total-summary");
+  const monthContainer = document.getElementById("monthly-summary");
+  const monthSelect = document.getElementById("month-select");
+
+  const now = new Date();
+  const getDaysAgo = (n) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - n);
+    return d;
+  };
+
+  const last7 = data.filter((r) => new Date(r.Sleep) >= getDaysAgo(7));
+  const last30 = data.filter((r) => new Date(r.Sleep) >= getDaysAgo(30));
+
+  const avg = (arr) =>
+    parseFloat(
+      (arr.reduce((a, b) => a + b.Duration, 0) / arr.length || 0).toFixed(2)
+    );
+  const total = (arr) =>
+    parseFloat(arr.reduce((a, b) => a + b.Duration, 0).toFixed(2));
+  const min = (arr) =>
+    arr.length
+      ? parseFloat(Math.min(...arr.map((r) => r.Duration)).toFixed(2))
+      : "-";
+  const max = (arr) =>
+    arr.length
+      ? parseFloat(Math.max(...arr.map((r) => r.Duration)).toFixed(2))
+      : "-";
+
+  function formatDateRange(start, end) {
+    const opts = { month: "2-digit", day: "2-digit" };
+    return `${start.toLocaleDateString("en-US", opts)}–${end.toLocaleDateString(
+      "en-US",
+      opts
+    )}`;
+  }
+
+  const dateRange7 = formatDateRange(getDaysAgo(6), now);
+  const dateRange30 = formatDateRange(getDaysAgo(29), now);
+
+  function renderRecentStats(span = 7) {
+    const list = span === 7 ? last7 : last30;
+    if (span === 30 && list.length < 21) {
+      recentContainer.innerHTML = `<li>Not enough data for 30-day summary</li>`;
+    } else {
+      recentContainer.innerHTML = `
+        <li>Average: ${avg(list)} hrs</li>
+        <li>Longest Night: ${max(list)} hrs</li>
+        <li>Shortest Night: ${min(list)} hrs</li>
+      `;
+    }
+  }
+
+  // Always show both total summaries
+  totalContainer.innerHTML = `
+    <li>Total This Week – ${dateRange7}: ${total(last7)} hrs</li>
+    <li>Total This Month: ${
+      last30.length < 21 ? "Not enough data" : total(last30) + " hrs"
+    }</li>
+  `;
+
+  // Setup subtabs for 7d/30d
+  document.querySelectorAll(".subtab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document
+        .querySelectorAll(".subtab")
+        .forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      renderRecentStats(parseInt(tab.dataset.span));
+    });
+  });
+
+  renderRecentStats(7); // default
+
+  // Monthly dropdown
+  function groupByMonth(data) {
+    const map = new Map();
+    data.forEach((row) => {
+      const [day, month] = row.Date.split(" ");
+      const key = `${month} ${new Date(row.Sleep).getFullYear()}`;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(row);
+    });
+    return map;
+  }
+
+  const monthMap = groupByMonth(data);
+  const months = Array.from(monthMap.keys());
+
+  monthSelect.innerHTML = months
+    .map(
+      (m, i) =>
+        `<option value="${m}" ${
+          i === months.length - 1 ? "selected" : ""
+        }>${m}</option>`
+    )
+    .join("");
+
+  function renderMonth(monthKey) {
+    const rows = monthMap.get(monthKey) || [];
+    const nights = new Set(rows.map((r) => r.Date));
+    monthContainer.innerHTML = `
+      <li>Total Sleep: ${total(rows)} hrs</li>
+      <li>Average Sleep/Night: ${avg(rows)} hrs</li>
+      <li>Unique Nights Recorded: ${nights.size}</li>
+    `;
+  }
+
+  renderMonth(monthSelect.value);
+  monthSelect.onchange = () => renderMonth(monthSelect.value);
+}
+
+updateRowStats();
