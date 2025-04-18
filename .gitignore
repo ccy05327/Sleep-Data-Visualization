@@ -5,7 +5,5 @@ sample.json
 *.pyc
 __init__.py
 node_modules
-package.json
-package-lock.json
 *.exe
 *.venv
