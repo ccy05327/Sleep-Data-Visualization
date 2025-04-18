@@ -20,12 +20,14 @@ app.innerHTML = `
   </form>
   <p id="error-msg" style="color: red; min-height: 1.5em;"></p>
   <br/>
-  <img id="preview" width="800" />
+  <button type="button" id="push">Push to GitHub</button>
+  <img id="preview" width="1000" />
 `;
 
 const errorMsg = document.getElementById("error-msg");
 const generateBtn = document.getElementById("generate");
 const enterBtn = document.getElementById("enter");
+const pushBtn = document.getElementById("push");
 
 function validateForm() {
   const date = document.getElementById("date").value;
@@ -216,6 +218,22 @@ document.getElementById("sleep-form").onsubmit = async (e) => {
   }
   console.log(`✅ Saved ${rowsToSave.length} entries.`);
   clearForm();
+};
+
+pushBtn.onclick = async () => {
+  pushBtn.disabled = true;
+  pushBtn.textContent = "Pushing...";
+
+  const result = await window.sdv.commitAndPush();
+
+  if (result.ok) {
+    alert("✅ Pushed to GitHub!");
+  } else {
+    alert("❌ Failed to push to GitHub: " + result.error);
+  }
+
+  pushBtn.disabled = false;
+  pushBtn.textContent = "Push to GitHub";
 };
 
 function clearForm() {

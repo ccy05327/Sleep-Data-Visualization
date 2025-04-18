@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const { spawn } = require("child_process");
+const { spawn, exec } = require("child_process");
 const fs = require("fs");
 
 ipcMain.handle("gen-chart", (_, rows, display = 30) => {
@@ -55,6 +55,44 @@ ipcMain.handle("get-all-rows", async () => {
   } catch (err) {
     console.error("❌ Failed to read saved data:", err);
     return [];
+  }
+});
+
+ipcMain.handle("commit-and-push", async () => {
+  try {
+    const jsonPath = path.join(app.getAppPath(), "data", "sleep.json");
+    const json = fs.readFileSync(jsonPath, "utf-8");
+    const data = JSON.parse(json);
+
+    if (!data || data.length === 0) {
+      return { ok: false, error: "No data found in sleep.json" };
+    }
+
+    const last = data[data.length - 1];
+    const dateForCommit = last?.Date || new Date().toLocaleDateString("en-GB");
+    const message = `TEST | Update sleep.json — latest entry: ${dateForCommit}`;
+
+    const gitCmd = `
+      git pull &&
+      git add data/sleep.json python/out.png &&
+      git diff --cached --quiet || git commit -m "${message}" &&
+      git push
+    `;
+
+    return new Promise((resolve) => {
+      exec(gitCmd, { cwd: app.getAppPath() }, (error, stdout, stderr) => {
+        if (error) {
+          console.error("❌ Git error:", stderr);
+          resolve({ ok: false, error: stderr });
+        } else {
+          console.log("✅ Git output:", stdout);
+          console.log("Git stderr:", stderr);
+          resolve({ ok: true, output: stdout });
+        }
+      });
+    });
+  } catch (err) {
+    return { ok: false, error: err.message };
   }
 });
 
