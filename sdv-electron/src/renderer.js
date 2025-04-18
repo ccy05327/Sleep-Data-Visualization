@@ -13,9 +13,11 @@ const errorWake = document.getElementById("error-wake");
 
 const touched = { date: false, sleep: false, wake: false };
 
-document.getElementById("open-github").onclick = () => window.openTools.github();
+document.getElementById("open-github").onclick = () =>
+  window.openTools.github();
 document.getElementById("open-image").onclick = () => window.openTools.image();
-document.getElementById("open-vscode").onclick = () => window.openTools.vscode();
+document.getElementById("open-vscode").onclick = () =>
+  window.openTools.vscode();
 
 // 🛠️ VALIDATION FUNCTION
 function validateForm() {
@@ -277,3 +279,19 @@ function formatLocalISO(dateObj) {
     dateObj.getDate()
   )}T${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:00`;
 }
+
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const target = tab.dataset.tab;
+
+    document
+      .querySelectorAll(".tab")
+      .forEach((t) => t.classList.remove("active"));
+    document
+      .querySelectorAll(".tab-panel")
+      .forEach((p) => p.classList.remove("active"));
+
+    tab.classList.add("active");
+    document.getElementById(target).classList.add("active");
+  });
+});

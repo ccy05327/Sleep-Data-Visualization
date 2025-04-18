@@ -209,3 +209,34 @@ img#preview.loaded {
   align-items: center;
   margin-top: 1rem;
 }
+
+.tab-bar {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.tab.active {
+  background-color: var(--highlight);
+  color: white;
+  border-bottom: none;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
