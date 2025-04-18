@@ -59,41 +59,48 @@ ipcMain.handle("get-all-rows", async () => {
 });
 
 ipcMain.handle("commit-and-push", async () => {
+  const appPath = app.getAppPath();
+  const dataFilePath = path.join(appPath, "data", "sleep.json");
+
+  // 🗓 Get latest entry's date for commit message
+  let dateForCommit = new Date().toLocaleDateString("en-GB");
   try {
-    const jsonPath = path.join(app.getAppPath(), "data", "sleep.json");
-    const json = fs.readFileSync(jsonPath, "utf-8");
-    const data = JSON.parse(json);
-
-    if (!data || data.length === 0) {
-      return { ok: false, error: "No data found in sleep.json" };
+    const data = JSON.parse(fs.readFileSync(dataFilePath, "utf-8"));
+    if (Array.isArray(data) && data.length > 0) {
+      dateForCommit = data[data.length - 1]?.Date || dateForCommit;
     }
+  } catch (err) {
+    console.warn("⚠️ Could not read sleep.json:", err.message);
+  }
 
-    const last = data[data.length - 1];
-    const dateForCommit = last?.Date || new Date().toLocaleDateString("en-GB");
-    const message = `TEST | Update sleep.json — latest entry: ${dateForCommit}`;
+  const steps = [
+    "git pull",
+    "git add -u", // add modified tracked files
+    `git commit -m "Update sleep data — latest entry: ${dateForCommit}"`,
+    "git push",
+  ];
 
-    const gitCmd = `
-      git pull &&
-      git add data/sleep.json python/out.png &&
-      git diff --cached --quiet || git commit -m "${message}" &&
-      git push
-    `;
-
-    return new Promise((resolve) => {
-      exec(gitCmd, { cwd: app.getAppPath() }, (error, stdout, stderr) => {
+  // 🔁 Run Git steps one by one
+  for (const cmd of steps) {
+    const result = await new Promise((resolve) => {
+      exec(cmd, { cwd: appPath }, (error, stdout, stderr) => {
+        console.log(`🧪 Running: ${cmd}`);
         if (error) {
-          console.error("❌ Git error:", stderr);
-          resolve({ ok: false, error: stderr });
+          console.error(`❌ ${cmd} failed:\n`, stderr || error.message);
+          resolve({ ok: false, step: cmd, error: stderr || error.message });
         } else {
-          console.log("✅ Git output:", stdout);
-          console.log("Git stderr:", stderr);
-          resolve({ ok: true, output: stdout });
+          console.log(`✅ ${cmd} succeeded:\n`, stdout || "(no output)");
+          resolve({ ok: true });
         }
       });
     });
-  } catch (err) {
-    return { ok: false, error: err.message };
+
+    if (!result.ok) {
+      return result; // 🛑 Exit on first error
+    }
   }
+
+  return { ok: true };
 });
 
 function createWindow() {
