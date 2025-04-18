@@ -1,20 +1,46 @@
+/* 🌒 DARK MODE & COLOR SCHEME */
+:root {
+  color-scheme: light dark;
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --card: #ffffff;
+  --border: #cbd5e1;
+  --highlight: #0ea5e9;
+  --disabled: #94a3b8;
+  --github: #0f172a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e293b;
+    --text: #f8fafc;
+    --card: #334155;
+    --border: #475569;
+    --highlight: #38bdf8;
+    --disabled: #64748b;
+    --github: #f8fafc;
+  }
+}
+
+/* 🧱 GENERAL LAYOUT */
 body {
   font-family: "Segoe UI", sans-serif;
-  background: #f8fafc;
+  background: var(--bg);
+  color: var(--text);
   padding: 2rem;
-  color: #333;
 }
 
-h2 {
-  margin-bottom: 1rem;
-  color: #0f172a;
+h2,
+h3 {
+  color: var(--text);
 }
 
+/* 📋 FORM */
 form {
-  background: #fff;
-  padding: 1rem;
+  background: var(--card);
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   max-width: 500px;
   margin-bottom: 2rem;
 }
@@ -25,50 +51,151 @@ form label {
   font-weight: 500;
 }
 
-form #date {
+input[type="date"] {
   padding: 0.5rem;
   font-size: 1rem;
   margin: 0.3rem 0;
-  width: 120px;
-  border: 1px solid #cbd5e1;
+  width: 160px;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: transparent;
+  color: inherit;
 }
 
-form input[type="number"] {
+input[type="number"] {
   padding: 0.5rem;
   font-size: 1rem;
   margin: 0.3rem 0;
-  width: 2.5rem;
-  border: 1px solid #cbd5e1;
+  width: 70px;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: transparent;
+  color: inherit;
 }
 
-form button {
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  border: none;
-  background-color: #0ea5e9;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-right: 0.5rem;
+input.invalid {
+  border: 1px solid crimson;
+  background-color: rgba(220, 20, 60, 0.1);
 }
 
-form button:disabled {
-  background-color: #94a3b8;
-  cursor: not-allowed;
+.field-error {
+  display: block;
+  font-size: 0.85rem;
+  color: crimson;
+  margin-top: 0.2rem;
 }
 
 #error-msg {
   color: crimson;
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+}
+
+/* 🧩 CHART AREA */
+#output-area {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  max-width: 950px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+#chart-container {
+  background: transparent;
+  border: 1px dashed var(--border);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  min-height: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  flex-direction: column;
+}
+
+#placeholder {
+  font-size: 1rem;
+  color: var(--disabled);
   margin-top: 0.5rem;
-  font-size: 0.9rem;
 }
 
 img#preview {
   max-width: 100%;
-  border: 2px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+img#preview.loaded {
+  display: block;
+}
+
+#loader {
+  border: 4px solid var(--border);
+  border-top: 4px solid var(--highlight);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  display: none;
+  margin-top: 0.5rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🎨 BUTTONS */
+.btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--highlight);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0284c7;
+}
+
+.btn-secondary {
+  background-color: var(--github);
+  color: var(--bg);
+}
+
+.btn-secondary:hover {
+  background-color: #1e293b;
+}
+
+.btn:disabled {
+  background-color: var(--disabled);
+  cursor: not-allowed;
+}
+
+.push-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
 }

@@ -5,6 +5,53 @@
     <title>Sleep Data Visualisation</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <h2>Sleep Data Input</h2>
+      <form id="sleep-form">
+        <label
+          >Sleep Date:
+          <input type="date" id="date" />
+          <span class="field-error" id="error-date"></span>
+        </label>
+        <label
+          >Sleep Time:
+          <input type="number" id="sleep-hour" placeholder="HH" />
+          <input type="number" id="sleep-minute" placeholder="MM" />
+          <span class="field-error" id="error-sleep"></span>
+        </label>
+        <label
+          >Wake Time:
+          <input type="number" id="wake-hour" placeholder="HH" />
+          <input type="number" id="wake-minute" placeholder="MM" />
+          <span class="field-error" id="error-wake"></span>
+        </label>
+        <button type="submit" id="enter" class="btn btn-primary">Enter</button>
+      </form>
+      <div id="output-area">
+        <div class="chart-header">
+          <h3>📊 Sleep Chart</h3>
+          <button id="generate" class="btn btn-primary">Generate Chart</button>
+        </div>
+        <div id="chart-container">
+          <span id="placeholder"
+            >Press "Generate Chart" to view your sleep data</span
+          >
+          <div id="loader"></div>
+          <img id="preview" />
+        </div>
+        <div class="push-container">
+          <button id="push" class="btn btn-secondary">🚀 Push to GitHub</button>
+          <button id="open-folder" class="btn btn-secondary">
+            Open 📂
+          </button>
+          <button id="open-image" class="btn btn-secondary">
+            Open 🖼️
+          </button>
+          <button id="open-vsc" class="btn btn-secondary">
+            Open Code
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

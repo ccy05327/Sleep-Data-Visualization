@@ -1,34 +1,19 @@
+// 📦 IMPORTS
 console.log("🚀 Renderer loaded");
 import "./index.css";
 
-const app = document.getElementById("app");
-
-app.innerHTML = `
-  <h2>Sleep Data Input</h2>
-  <form id="sleep-form">
-    <label>Date: <input type="date" id="date" required /></label><br/>
-    <label>Sleep Time: 
-      <input type="number" id="sleep-hour" min="0" max="23" placeholder="hh" required /> :
-      <input type="number" id="sleep-minute" min="0" max="59" placeholder="mm" required />
-    </label><br/>
-    <label>Wake Time: 
-      <input type="number" id="wake-hour" min="0" max="23" placeholder="hh" required /> :
-      <input type="number" id="wake-minute" min="0" max="59" placeholder="mm" required />
-    </label><br/>
-    <button type="submit" id="enter">Enter</button>
-    <button type="button" id="generate">Generate Chart</button>
-  </form>
-  <p id="error-msg" style="color: red; min-height: 1.5em;"></p>
-  <br/>
-  <button type="button" id="push">Push to GitHub</button>
-  <img id="preview" width="1000" />
-`;
-
-const errorMsg = document.getElementById("error-msg");
+// 🌱 INITIAL SETUP
 const generateBtn = document.getElementById("generate");
 const enterBtn = document.getElementById("enter");
 const pushBtn = document.getElementById("push");
+const errorMsg = document.getElementById("error-msg");
+const errorDate = document.getElementById("error-date");
+const errorSleep = document.getElementById("error-sleep");
+const errorWake = document.getElementById("error-wake");
 
+const touched = { date: false, sleep: false, wake: false };
+
+// 🛠️ VALIDATION FUNCTION
 function validateForm() {
   const date = document.getElementById("date").value;
   const sh = document.getElementById("sleep-hour").value;
@@ -36,35 +21,58 @@ function validateForm() {
   const wh = document.getElementById("wake-hour").value;
   const wm = document.getElementById("wake-minute").value;
 
-  enterBtn.disabled = true;
+  const sleepHourInput = document.getElementById("sleep-hour");
+  const sleepMinInput = document.getElementById("sleep-minute");
+  const wakeHourInput = document.getElementById("wake-hour");
+  const wakeMinInput = document.getElementById("wake-minute");
 
-  if (!date || sh === "" || sm === "" || wh === "" || wm === "") {
-    errorMsg.textContent = "Please fill in all fields.";
-    return false;
+  if (errorMsg) errorMsg.textContent = "";
+  if (errorDate) errorDate.textContent = "";
+  if (errorSleep) errorSleep.textContent = "";
+  if (errorWake) errorWake.textContent = "";
+
+  [sleepHourInput, sleepMinInput, wakeHourInput, wakeMinInput].forEach(
+    (input) => input.classList.remove("invalid")
+  );
+
+  const sleepHour = parseInt(sh, 10);
+  const sleepMin = parseInt(sm, 10);
+  const wakeHour = parseInt(wh, 10);
+  const wakeMin = parseInt(wm, 10);
+
+  let hasError = false;
+
+  if (touched.sleep && (isNaN(sleepHour) || sleepHour < 0 || sleepHour > 23)) {
+    sleepHourInput.classList.add("invalid");
+    if (errorSleep) errorSleep.textContent = "Hour must be 0–23.";
+    hasError = true;
   }
 
-  const sleepHour = parseInt(sh);
-  const sleepMin = parseInt(sm);
-  const wakeHour = parseInt(wh);
-  const wakeMin = parseInt(wm);
-
-  if (
-    isNaN(sleepHour) ||
-    sleepHour < 0 ||
-    sleepHour > 23 ||
-    isNaN(sleepMin) ||
-    sleepMin < 0 ||
-    sleepMin > 59 ||
-    isNaN(wakeHour) ||
-    wakeHour < 0 ||
-    wakeHour > 23 ||
-    isNaN(wakeMin) ||
-    wakeMin < 0 ||
-    wakeMin > 59
-  ) {
-    errorMsg.textContent = "Hours must be 0–23 and minutes 0–59.";
-    return false;
+  if (touched.sleep && (isNaN(sleepMin) || sleepMin < 0 || sleepMin > 59)) {
+    sleepMinInput.classList.add("invalid");
+    if (errorSleep) errorSleep.textContent += " Minute must be 0–59.";
+    hasError = true;
   }
+
+  if (touched.wake && (isNaN(wakeHour) || wakeHour < 0 || wakeHour > 23)) {
+    wakeHourInput.classList.add("invalid");
+    if (errorWake) errorWake.textContent = "Hour must be 0–23.";
+    hasError = true;
+  }
+
+  if (touched.wake && (isNaN(wakeMin) || wakeMin < 0 || wakeMin > 59)) {
+    wakeMinInput.classList.add("invalid");
+    if (errorWake) errorWake.textContent += " Minute must be 0–59.";
+    hasError = true;
+  }
+
+  if (touched.date && !date) {
+    if (errorDate) errorDate.textContent = "Please select a date.";
+    hasError = true;
+  }
+
+  enterBtn.disabled = hasError;
+  if (hasError) return false;
 
   const sleep = new Date(
     `${date}T${sh.padStart(2, "0")}:${sm.padStart(2, "0")}:00`
@@ -73,25 +81,20 @@ function validateForm() {
     `${date}T${wh.padStart(2, "0")}:${wm.padStart(2, "0")}:00`
   );
 
-  if (wake <= sleep) {
-    wake.setDate(wake.getDate() + 1);
-  }
+  if (wake <= sleep) wake.setDate(wake.getDate() + 1);
 
   const duration = (wake - sleep) / 1000 / 60 / 60;
   if (duration <= 0 || duration > 24) {
-    errorMsg.textContent = "Duration is invalid.";
+    if (errorMsg) errorMsg.textContent = "Duration is invalid.";
     return false;
   }
 
   if (wake <= sleep && duration > 14) {
-    errorMsg.textContent =
-      "Wake time is over 14 hours after sleep. Please confirm.";
+    if (errorMsg)
+      errorMsg.textContent =
+        "Wake time is over 14 hours after sleep. Please confirm.";
     return false;
   }
-
-  // ✅ All checks passed
-  errorMsg.textContent = "";
-  enterBtn.disabled = false;
 
   function formatLocalISO(dateObj) {
     const pad = (n) => n.toString().padStart(2, "0");
@@ -113,44 +116,68 @@ function validateForm() {
 
 ["date", "sleep-hour", "sleep-minute", "wake-hour", "wake-minute"].forEach(
   (id) => {
-    document.getElementById(id).addEventListener("input", () => validateForm());
+    document.getElementById(id).addEventListener("input", () => {
+      if (id === "date") touched.date = true;
+      if (id.startsWith("sleep")) touched.sleep = true;
+      if (id.startsWith("wake")) touched.wake = true;
+      validateForm();
+    });
   }
 );
 
+// 🧼 Unify generate button styling
+if (generateBtn) generateBtn.classList.add("btn-primary");
+if (pushBtn) pushBtn.classList.add("btn-secondary");
+
+// 🎯 GENERATE CHART
 generateBtn.onclick = async () => {
+  const preview = document.getElementById("preview");
+  const loader = document.getElementById("loader");
+  const placeholder = document.getElementById("placeholder");
+
+  preview.classList.remove("loaded");
+  preview.style.display = "none";
+  placeholder.style.display = "none";
+  loader.style.display = "block";
+
   try {
     const allRows = await window.sdv.getAllRows();
-
     if (!allRows || allRows.length === 0) {
       alert("No saved data to plot.");
+      loader.style.display = "none";
+      placeholder.style.display = "block";
       return;
     }
 
     const b64 = await window.sdv.genChart(allRows, allRows.length);
-
     if (!b64 || typeof b64 !== "string") {
-      alert(
-        "Failed to generate chart. Please check your data or Python script."
-      );
-      console.error("⚠️ genChart returned invalid data:", b64);
+      alert("Failed to generate chart. Please check your data.");
+      loader.style.display = "none";
+      placeholder.style.display = "block";
       return;
     }
 
-    document.getElementById("preview").src = "data:image/png;base64," + b64;
-    console.log("📈 Full timeline rendered!");
+    preview.src = "data:image/png;base64," + b64;
+    preview.onload = () => {
+      loader.style.display = "none";
+      preview.classList.add("loaded");
+      preview.style.display = "block";
+    };
   } catch (err) {
-    console.error("💥 Failed to generate full chart:", err);
-    alert("Error generating chart. Check console for details.");
+    loader.style.display = "none";
+    placeholder.style.display = "block";
+    console.error("💥 Chart generation failed:", err);
   }
 };
 
-document.getElementById("sleep-form").onsubmit = async (e) => {
+// 💾 SUBMIT SLEEP DATA
+const sleepForm = document.getElementById("sleep-form");
+sleepForm.onsubmit = async (e) => {
   e.preventDefault();
   const row = validateForm();
   if (!row) return;
 
   const existing = await window.sdv.getAllRows();
-
   const hasSameDate = existing.some((r) => r.Date === row.Date);
   const hasSameTime = existing.some(
     (r) => r.Sleep === row.Sleep && r.Wake === row.Wake
@@ -166,48 +193,41 @@ document.getElementById("sleep-form").onsubmit = async (e) => {
     return;
   }
 
-  let rowsToSave = [];
-
   const sleepTime = new Date(row.Sleep);
   const wakeTime = new Date(row.Wake);
+  const midnight = new Date(sleepTime);
+  midnight.setHours(23, 59, 59, 0);
+  const nextDay = new Date(sleepTime);
+  nextDay.setDate(sleepTime.getDate() + 1);
 
-  if (wakeTime <= sleepTime) {
-    // ⛔ cross-midnight → split into two entries
-
-    const midnight = new Date(sleepTime);
-    midnight.setHours(23, 59, 59, 0);
-
-    const nextDay = new Date(sleepTime);
-    nextDay.setDate(sleepTime.getDate() + 1);
-
-    const part1 = {
-      Date: sleepTime.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-      }),
-      Sleep: formatLocalISO(sleepTime),
-      Wake: formatLocalISO(midnight),
-      Duration: parseFloat(((midnight - sleepTime) / 3600000).toFixed(2)),
-    };
-
-    const part2 = {
-      Date: nextDay.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-      }),
-      Sleep: formatLocalISO(new Date(nextDay.setHours(0, 0, 0, 0))),
-      Wake: formatLocalISO(wakeTime),
-      Duration: parseFloat(
-        ((wakeTime - new Date(nextDay.setHours(0, 0, 0, 0))) / 3600000).toFixed(
-          2
-        )
-      ),
-    };
-
-    rowsToSave.push(part1, part2);
-  } else {
-    rowsToSave.push(row);
-  }
+  const rowsToSave =
+    wakeTime <= sleepTime
+      ? [
+          {
+            Date: sleepTime.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+            }),
+            Sleep: row.Sleep,
+            Wake: formatLocalISO(midnight),
+            Duration: parseFloat(((midnight - sleepTime) / 3600000).toFixed(2)),
+          },
+          {
+            Date: nextDay.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+            }),
+            Sleep: formatLocalISO(new Date(nextDay.setHours(0, 0, 0, 0))),
+            Wake: row.Wake,
+            Duration: parseFloat(
+              (
+                (wakeTime - new Date(nextDay.setHours(0, 0, 0, 0))) /
+                3600000
+              ).toFixed(2)
+            ),
+          },
+        ]
+      : [row];
 
   for (const r of rowsToSave) {
     const result = await window.sdv.saveRow(r);
@@ -216,16 +236,15 @@ document.getElementById("sleep-form").onsubmit = async (e) => {
       return;
     }
   }
-  console.log(`✅ Saved ${rowsToSave.length} entries.`);
   clearForm();
 };
 
+// 🚀 PUSH TO GITHUB
 pushBtn.onclick = async () => {
   pushBtn.disabled = true;
   pushBtn.textContent = "Pushing...";
 
   const result = await window.sdv.commitAndPush();
-
   if (result.ok) {
     alert("✅ Pushed to GitHub!");
   } else {
@@ -236,12 +255,21 @@ pushBtn.onclick = async () => {
   pushBtn.textContent = "Push to GitHub";
 };
 
+// ♻️ RESET FORM
 function clearForm() {
   document.getElementById("date").value = "";
   document.getElementById("sleep-hour").value = "";
   document.getElementById("sleep-minute").value = "";
   document.getElementById("wake-hour").value = "";
   document.getElementById("wake-minute").value = "";
-  errorMsg.textContent = "";
+  if (errorMsg) errorMsg.textContent = "";
   enterBtn.disabled = true;
+}
+
+// 🧩 Helper
+function formatLocalISO(dateObj) {
+  const pad = (n) => n.toString().padStart(2, "0");
+  return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(
+    dateObj.getDate()
+  )}T${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:00`;
 }

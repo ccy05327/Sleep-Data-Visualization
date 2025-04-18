@@ -75,21 +75,18 @@ ipcMain.handle("commit-and-push", async () => {
 
   const steps = [
     "git pull",
-    "git add -u", // add modified tracked files
+    "git add -u",
     `git commit -m "Update sleep data — latest entry: ${dateForCommit}"`,
     "git push",
   ];
 
-  // 🔁 Run Git steps one by one
   for (const cmd of steps) {
     const result = await new Promise((resolve) => {
       exec(cmd, { cwd: appPath }, (error, stdout, stderr) => {
-        console.log(`🧪 Running: ${cmd}`);
         if (error) {
           console.error(`❌ ${cmd} failed:\n`, stderr || error.message);
           resolve({ ok: false, step: cmd, error: stderr || error.message });
         } else {
-          console.log(`✅ ${cmd} succeeded:\n`, stdout || "(no output)");
           resolve({ ok: true });
         }
       });
