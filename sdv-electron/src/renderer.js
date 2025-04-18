@@ -13,6 +13,10 @@ const errorWake = document.getElementById("error-wake");
 
 const touched = { date: false, sleep: false, wake: false };
 
+document.getElementById("open-github").onclick = () => window.openTools.github();
+document.getElementById("open-image").onclick = () => window.openTools.image();
+document.getElementById("open-vscode").onclick = () => window.openTools.vscode();
+
 // 🛠️ VALIDATION FUNCTION
 function validateForm() {
   const date = document.getElementById("date").value;

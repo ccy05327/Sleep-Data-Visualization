@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const { spawn, exec } = require("child_process");
 const fs = require("fs");
@@ -114,4 +114,18 @@ function createWindow() {
   win.webContents.openDevTools();
 }
 
+ipcMain.handle("open-github", async () => {
+  const url = "https://github.com/ccy05327/Sleep-Data-Visualization";
+  await shell.openExternal(url);
+});
+
+ipcMain.handle("open-image", async () => {
+  const fullPath = path.join(app.getAppPath(), "", "out.png");
+  await shell.openPath(fullPath);
+});
+
+ipcMain.handle("open-vscode", async () => {
+  const projectPath = app.getAppPath();
+  exec(`code "${projectPath}"`);
+});
 app.whenReady().then(createWindow);
