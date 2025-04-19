@@ -124,7 +124,7 @@ ipcMain.handle("open-github", async () => {
 });
 
 ipcMain.handle("open-image", async () => {
-  const fullPath = path.join(app.getAppPath(), "", "out.png");
+  const fullPath = path.join(app.getAppPath(), "", "data/out.png");
   await shell.openPath(fullPath);
 });
 
@@ -133,5 +133,3 @@ ipcMain.handle("open-vscode", async () => {
   exec(`code "${projectPath}"`);
 });
 app.whenReady().then(createWindow);
-
-console.log("🧱 ICON PATH:", path.join(__dirname, "../../src/assets/icon.png"));

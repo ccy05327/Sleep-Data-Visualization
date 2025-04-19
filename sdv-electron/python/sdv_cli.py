@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import json
 import sys
+import os
 import base64
 
 
@@ -106,10 +107,10 @@ if __name__ == "__main__":
     df = pd.DataFrame(rows[-display:])
 
     try:
-        draw_save(df, "out.png", display)
+        draw_save(df, "data/out.png", display)
         # ✅ Output clean JSON
         json.dump({"ok": True, "png": base64.b64encode(
-            open("out.png", "rb").read()).decode()}, sys.stdout)
+            open("data/out.png", "rb").read()).decode()}, sys.stdout)
     except Exception as e:
         # ✅ Output error as JSON
         json.dump({"ok": False, "error": str(e)}, sys.stdout)
