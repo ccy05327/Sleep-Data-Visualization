@@ -361,19 +361,21 @@ async function loadSleepSummary() {
       recentContainer.innerHTML = `<li>Not enough data for 30-day summary</li>`;
     } else {
       recentContainer.innerHTML = `
-        <li>Average: ${avg(list)} hrs</li>
-        <li>Longest Night: ${max(list)} hrs</li>
-        <li>Shortest Night: ${min(list)} hrs</li>
+        <li>Average: <strong>${avg(list)} hrs</strong></li>
+        <li>Longest Night: <strong>${max(list)} hrs</strong></li>
+        <li>Shortest Night: <strong>${min(list)} hrs</strong></li>
       `;
     }
   }
 
   // Always show both total summaries
   totalContainer.innerHTML = `
-    <li>Total This Week – ${dateRange7}: ${total(last7)} hrs</li>
-    <li>Total This Month: ${
+    <li>Total This Week – ${dateRange7}: <strong>${total(
+    last7
+  )} hrs</strong></li>
+    <li>Total This Month: <strong>${
       last30.length < 21 ? "Not enough data" : total(last30) + " hrs"
-    }</li>
+    }</strong></li>
   `;
 
   // Setup subtabs for 7d/30d
@@ -417,9 +419,9 @@ async function loadSleepSummary() {
     const rows = monthMap.get(monthKey) || [];
     const nights = new Set(rows.map((r) => r.Date));
     monthContainer.innerHTML = `
-      <li>Total Sleep: ${total(rows)} hrs</li>
-      <li>Average Sleep/Night: ${avg(rows)} hrs</li>
-      <li>Unique Nights Recorded: ${nights.size}</li>
+      <li>Total Sleep: <strong>${total(rows)} hrs</strong></li>
+      <li>Average Sleep/Night: <strong>${avg(rows)} hrs</strong></li>
+      <li>Unique Nights Recorded: <strong>${nights.size}</strong></li>
     `;
   }
 

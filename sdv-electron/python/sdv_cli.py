@@ -94,6 +94,13 @@ def draw_save(_df: pd.DataFrame, _file: str, display_days: int):
         coloraxis_colorbar=dict(title="hours")
     )
 
+    # Use path from command-line argument if provided, else default to ./out.png
+    if len(sys.argv) > 1:
+        _file = os.path.abspath(sys.argv[-1])
+    else:
+        _file = os.path.abspath(os.path.join(
+            os.path.dirname(__file__), '..', 'data', 'out.png'))
+
     img_bytes = pio.to_image(fig, format="png")
     with open(_file, "wb") as f:
         f.write(img_bytes)

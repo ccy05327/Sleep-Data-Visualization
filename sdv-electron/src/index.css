@@ -22,75 +22,171 @@
   }
 }
 
+/* 🎨 FONTS */
+@font-face {
+  font-family: "Caveat Brush";
+  src: url("./fonts/CaveatBrush-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Sriracha";
+  src: url("./fonts/Sriracha-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lexend";
+  src: url("./fonts/Lexend-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
 /* 🧱 GENERAL LAYOUT */
 body {
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.3rem;
   background: var(--bg);
   color: var(--text);
   padding: 2rem;
 }
 
-h2,
-h3,
+h2 {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 2.5rem;
+}
+
+h3 {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 2rem;
+}
+
 h4 {
-  color: var(--text);
-  margin-bottom: 1rem;
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.8rem;
+}
+
+.caveat-brush-regular {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.sriracha-regular {
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.road-rage-regular {
+  font-family: "Road Rage", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* 🎨 BUTTONS */
+.btn {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.4rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 /* 📋 FORM */
 form {
   background: var(--card);
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  max-width: 500px;
+  max-width: 800px;
   margin-bottom: 2rem;
 }
 
 form label {
   display: block;
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
+  width: 100%;
+}
+
+form label > span {
+  display: block;
   margin-bottom: 0.5rem;
+}
+
+input[type="date"],
+input[type="number"] {
+  font-family: "Lexend", sans-serif;
   font-weight: 500;
+  font-style: normal;
+  font-size: 1.4rem;
+  padding: 0.8rem;
+  margin: 0.4rem 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
 }
 
 input[type="date"] {
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin: 0.3rem 0;
-  width: 160px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: transparent;
-  color: inherit;
+  width: 200px;
 }
 
 input[type="number"] {
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin: 0.3rem 0;
-  width: 70px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: transparent;
-  color: inherit;
-}
-
-input.invalid {
-  border: 1px solid crimson;
-  background-color: rgba(220, 20, 60, 0.1);
+  width: 80px;
+  margin-right: 0.5rem;
 }
 
 .field-error {
   display: block;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   color: crimson;
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 }
 
 #error-msg {
   color: crimson;
-  margin-top: 0.8rem;
-  font-size: 0.95rem;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+}
+
+#data-info {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+#data-info span {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+#data-info strong {
+  font-family: "Lexend", sans-serif;
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin-left: 0.3rem;
+  color: var(--highlight);
+}
+
+#enter {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
 }
 
 /* 🧩 CHART AREA */
@@ -126,9 +222,7 @@ input.invalid {
 }
 
 #placeholder {
-  font-size: 1rem;
-  color: var(--disabled);
-  margin-top: 0.5rem;
+  font-size: 1.4rem;
 }
 
 img#preview {
@@ -163,16 +257,6 @@ img#preview.loaded {
 }
 
 /* 🎨 BUTTONS */
-.btn {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
 .btn-primary {
   background-color: var(--highlight);
   color: white;
@@ -188,7 +272,7 @@ img#preview.loaded {
 }
 
 .btn-secondary:hover {
-  background-color: #1e293b;
+  background-color: #40b0e7;
 }
 
 .btn:disabled {
@@ -219,11 +303,14 @@ img#preview.loaded {
 }
 
 .tab {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.4rem;
+  padding: 0.8rem 1.5rem;
   background: var(--card);
   border: 1px solid var(--border);
-  padding: 0.6rem 1.2rem;
   border-radius: 8px 8px 0 0;
-  font-weight: 600;
   cursor: pointer;
   color: var(--text);
 }
@@ -243,89 +330,117 @@ img#preview.loaded {
 }
 
 .data-info {
-  font-size: 0.95rem;
-  color: var(--text);
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
 }
 
-.stat-list {
-  list-style: none;
-  padding-left: 1rem;
-  margin-top: 0.5rem;
-}
-
-.stat-list li {
-  margin-bottom: 0.4rem;
-  font-size: 0.95rem;
-  color: var(--text);
-}
-
-.subtab-bar {
-  display: flex;
-  gap: 1rem;
-  margin: 1rem 0 1rem 0.5rem;
-}
-
-.subtab {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+.data-info strong {
+  font-family: "Lexend", sans-serif;
   font-weight: 500;
-  cursor: pointer;
-  color: var(--text);
-}
-
-.subtab.active {
-  background-color: var(--highlight);
-  color: white;
-}
-
-.subtle-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
 }
 
 .summary-grid {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
 .summary-grid > div {
   flex: 1;
   min-width: 300px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Use nth-child for targeting instead of last-child */
-.summary-grid > div:nth-child(1) {
-  flex-basis: 40%;
-}
-
-.summary-grid > div:nth-child(2) {
-  flex-basis: 60%;
-}
-
-#monthly-summary {
-  min-width: 300px;
+#monthly-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 #month-select {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  font-family: "Caveat Brush", cursive;
+  font-size: 1.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background-color: var(--card);
   color: var(--text);
   margin-left: 0.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#month-select:hover {
+  border-color: var(--highlight);
 }
 
 #summary-stats > div:not(:last-child) {
   border-bottom: 1px solid var(--border);
   padding-bottom: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.stat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stat-list li {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-list li strong {
+  font-family: "Lexend", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 1.4rem;
+  color: var(--highlight);
+}
+
+.stat-list li:last-child {
+  margin-bottom: 0;
+}
+
+.subtab-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem 0;
+}
+
+.subtab {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.3rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.subtab:hover {
+  border-color: var(--highlight);
+  color: var(--highlight);
+}
+
+.subtab.active {
+  background-color: var(--highlight);
+  color: white;
+  border-color: var(--highlight);
 }

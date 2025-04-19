@@ -20,7 +20,6 @@
             <span>📅 Latest Entry: <strong id="latest-date">-</strong></span> |
             <span>#️⃣ Total Records: <strong id="row-count">0</strong></span>
           </div>
-          <br />
           <label
             >Sleep Date:
             <input type="date" id="date" />
@@ -44,7 +43,7 @@
         </form>
       </div>
 
-      <div id="chart" class="tab-panel" style="min-width: 700px;">
+      <div id="chart" class="tab-panel" style="min-width: 700px">
         <div id="output-area">
           <div class="chart-header">
             <h3>📊 Sleep Chart</h3>
@@ -63,9 +62,7 @@
             <button id="push" class="btn btn-secondary">🚀 to GitHub</button>
             <button id="open-github" class="btn btn-secondary">Open 🌐</button>
             <button id="open-image" class="btn btn-secondary">Open 🖼️</button>
-            <button id="open-vscode" class="btn btn-secondary">
-              Open Code
-            </button>
+            <button id="open-vscode" class="btn btn-secondary">Open ©️</button>
           </div>
         </div>
       </div>
@@ -73,30 +70,40 @@
       <div id="summary" class="tab-panel">
         <div id="summary-stats">
           <div class="summary-grid">
-            <div style="max-width: 300px; min-width: 250px">
+            <div style="min-width: 250px; max-width: 350px">
               <h4>📊 Recent Sleep Stats</h4>
               <div class="subtab-bar">
                 <button class="subtab active" data-span="7">7-Day</button>
                 <button class="subtab" data-span="30">30-Day</button>
               </div>
-              <ul id="recent-summary" class="stat-list subtle-card"></ul>
+              <ul id="recent-summary" class="stat-list">
+                <li>Average: <strong>8.15</strong> hrs</li>
+                <li>Total: <strong>57.05</strong> hrs</li>
+                <li>Longest: <strong>9.25</strong> hrs</li>
+                <li>Shortest: <strong>7.00</strong> hrs</li>
+              </ul>
             </div>
-            <div style="min-width: 350px; max-width: 400px">
+            <div style="min-width: 350px; max-width: 450px">
               <h4>📆 Total Sleep</h4>
-              <br /><br />
-              <ul id="total-summary" class="stat-list subtle-card"></ul>
+              <ul id="total-summary" class="stat-list">
+                <li>Total: <strong>876.50</strong> hrs</li>
+                <li>Average: <strong>8.25</strong> hrs</li>
+                <li>Days: <strong>106</strong></li>
+                <li>Rate: <strong>95</strong>%</li>
+              </ul>
             </div>
           </div>
-          <div>
+          <div style="min-width: 600px; max-width: 900px">
             <h4>📅 Monthly Summary</h4>
-            <div
-              class="subtle-card"
-              id="monthly-card"
-              style="min-width: 600px; max-width: 700px"
-            >
+            <div id="monthly-card">
               <label for="month-select">Select Month:</label>
               <select id="month-select"></select>
-              <ul id="monthly-summary" class="stat-list"></ul>
+              <ul id="monthly-summary" class="stat-list">
+                <li>Total: <strong>248.75</strong> hrs</li>
+                <li>Average: <strong>8.25</strong> hrs</li>
+                <li>Days: <strong>30</strong></li>
+                <li>Rate: <strong>97</strong>%</li>
+              </ul>
             </div>
           </div>
         </div>

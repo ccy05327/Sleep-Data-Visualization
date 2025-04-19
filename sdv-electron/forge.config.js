@@ -11,6 +11,23 @@ module.exports = {
         to: "data/",
         filter: ["**/*"],
       },
+      {
+        from: "python/",
+        to: "python/",
+        filter: ["**/*"],
+      },
+      {
+        from: "src/",
+        to: "src/",
+        filter: ["**/*"],
+      },
+    ],
+    extraResource: [
+      {
+        from: "data/",
+        to: "data/",
+        filter: ["**/*"],
+      },
     ],
   },
   rebuildConfig: {},
