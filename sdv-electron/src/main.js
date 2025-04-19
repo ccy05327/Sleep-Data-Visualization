@@ -28,7 +28,10 @@ ipcMain.handle("gen-chart", (_, rows, display = 30) => {
   });
 });
 
-const dataPath = path.join(app.getAppPath(), "data", "sleep.json");
+const isDev = !app.isPackaged;
+const dataPath = isDev
+  ? path.join(process.cwd(), "data", "sleep.json")
+  : path.join(process.resourcesPath, "data", "sleep.json");
 
 ipcMain.handle("save-row", async (_, newRow) => {
   try {
@@ -102,8 +105,9 @@ ipcMain.handle("commit-and-push", async () => {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
+    width: 1200,
     height: 800,
+    icon: path.join(__dirname, "../../src/assets/icon.png"),
     webPreferences: {
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -111,7 +115,7 @@ function createWindow() {
   });
 
   win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 }
 
 ipcMain.handle("open-github", async () => {
@@ -129,3 +133,5 @@ ipcMain.handle("open-vscode", async () => {
   exec(`code "${projectPath}"`);
 });
 app.whenReady().then(createWindow);
+
+console.log("🧱 ICON PATH:", path.join(__dirname, "../../src/assets/icon.png"));

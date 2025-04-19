@@ -302,9 +302,11 @@ document.querySelectorAll(".tab").forEach((tab) => {
 async function updateRowStats() {
   const data = await window.sdv.getAllRows();
   const count = data.length;
+  const earliest = count > 0 ? data[0].Date : "-";
   const latest = count > 0 ? data[data.length - 1].Date : "-";
 
   document.getElementById("row-count").textContent = count;
+  document.getElementById("first-date").textContent = earliest;
   document.getElementById("latest-date").textContent = latest;
 }
 

@@ -171,7 +171,6 @@ img#preview.loaded {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s ease;
-  margin-left: 0.5rem;
 }
 
 .btn-primary {
@@ -180,7 +179,7 @@ img#preview.loaded {
 }
 
 .btn-primary:hover {
-  background-color: #0284c7;
+  background-color: #046ea3;
 }
 
 .btn-secondary {
