@@ -1,7 +1,6 @@
 // In /pages/api/predict.ts
 
 import { createClient } from "@supabase/supabase-js";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 // --- Type Definitions ---
 interface RequestBody {
@@ -43,19 +42,25 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // --- API Handler ---
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
-) {
+export const POST = async (req: Request) => {
   if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+    return new Response(`Method ${req.method} Not Allowed`, {
+      status: 405,
+      headers: { Allow: "POST" },
+    });
   }
 
   try {
-    const { date, timezone }: RequestBody = req.body;
+    const body = await req.json();
+    const { date, timezone }: RequestBody = body;
     if (!date || !timezone) {
-      return res.status(400).json({ error: "Date and timezone are required." });
+      return new Response(
+        JSON.stringify({ error: "Date and timezone are required." }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const { data: sleepRecords, error: fetchError } = await supabase
@@ -69,9 +74,16 @@ export default async function handler(
     const LOOKBACK_PERIOD = 7;
 
     if (sleepRecords.length < LOOKBACK_PERIOD) {
-      return res
-        .status(200)
-        .json({ message: `Not enough historical data.`, predictions: [] });
+      return new Response(
+        JSON.stringify({
+          message: `Not enough historical data.`,
+          predictions: [],
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const recentSleeps = sleepRecords.slice(0, LOOKBACK_PERIOD);
@@ -89,10 +101,16 @@ export default async function handler(
     }
 
     if (awakeIntervalsMs.length === 0) {
-      return res.status(200).json({
-        message: "Could not calculate awake intervals.",
-        predictions: [],
-      });
+      return new Response(
+        JSON.stringify({
+          message: "Could not calculate awake intervals.",
+          predictions: [],
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const durationValuesMs: number[] = [];
@@ -108,9 +126,13 @@ export default async function handler(
     }
 
     if (durationValuesMs.length === 0) {
-      return res
-        .status(500)
-        .json({ error: "Could not determine sleep duration." });
+      return new Response(
+        JSON.stringify({ error: "Could not determine sleep duration." }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const avgAwakeMs =
@@ -140,14 +162,21 @@ export default async function handler(
       .insert(generatedPredictions);
     if (insertError) throw insertError;
 
-    res.status(200).json({ predictions: generatedPredictions });
+    return new Response(JSON.stringify({ predictions: generatedPredictions }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error: unknown) {
     console.error("Error in /api/predict:", error);
-    return res
-      .status(500)
-      .json({
+    return new Response(
+      JSON.stringify({
         error: "Internal Server Error",
         details: (error as Error).message,
-      });
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
-}
+};

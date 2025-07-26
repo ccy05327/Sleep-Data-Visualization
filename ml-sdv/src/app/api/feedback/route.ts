@@ -50,10 +50,10 @@ export async function POST(request: Request) {
       success: true,
       message: "Feedback updated successfully.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in /api/feedback:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: (error as Error).message },
       { status: 500 }
     );
   }
