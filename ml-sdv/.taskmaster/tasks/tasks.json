@@ -181,14 +181,14 @@
                         "parentTaskId": 5,
                         "title": "Configure Vercel Environment Variables",
                         "description": "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to the Vercel project settings.",
-                        "status": "pending"
+                        "status": "in-progress"
                     },
                     {
                         "id": 502,
                         "parentTaskId": 5,
                         "title": "Deploy to Vercel",
                         "description": "Connect the GitHub repository to Vercel and trigger the first production deployment.",
-                        "status": "pending"
+                        "status": "in-progress"
                     },
                     {
                         "id": 503,

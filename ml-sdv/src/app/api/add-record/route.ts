@@ -1,77 +1,113 @@
-// In /app/api/add-record/route.ts
+// In /src/app/api/predict/route.ts
 
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
+// --- Type Definitions ---
+// Note: The 'SleepRecord' interface was removed as it was unused in this file.
+
 // --- Supabase Client Initialization ---
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Supabase URL or anonymous key is not set in environment variables."
-  );
-}
-
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// --- API Handler for POST requests ---
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { startTime, endTime, timezone } = body; // Expects local time strings and a timezone
-
-    if (!startTime || !endTime || !timezone) {
+    const { date, timezone } = await request.json();
+    if (!date || !timezone) {
       return NextResponse.json(
-        { error: "startTime, endTime, and timezone are required." },
+        { error: "Date and timezone are required." },
         { status: 400 }
       );
     }
 
-    // Convert the local time strings into Date objects.
-    // The trick is to treat them as UTC and then adjust for the offset.
-    const start = new Date(startTime + "Z");
-    const end = new Date(endTime + "Z");
-
-    // Get the timezone offset for the given date in that timezone
-    const dateForOffset = new Date(start);
-    const utcTime = dateForOffset.toLocaleString("en-US", {
-      timeZone: "UTC",
-      hour12: false,
-    });
-    const tzTime = dateForOffset.toLocaleString("en-US", {
-      timeZone: timezone,
-      hour12: false,
-    });
-    const offsetMs = new Date(utcTime).getTime() - new Date(tzTime).getTime();
-
-    // Apply the offset to get the true UTC time
-    const correctStartTime = new Date(start.getTime() + offsetMs);
-    const correctEndTime = new Date(end.getTime() + offsetMs);
-
-    const newRecord = {
-      start_time: correctStartTime.toISOString(),
-      end_time: correctEndTime.toISOString(),
-      time_offset: timezone, // Store the IANA timezone name
-    };
-
-    const { data, error } = await supabase
+    const { data: sleepRecords, error: fetchError } = await supabase
       .from("sleep_records")
-      .insert(newRecord)
-      .select();
+      .select("start_time, end_time, sleep_duration") // Only select needed columns
+      .order("start_time", { ascending: false });
 
-    if (error) {
-      console.error("Error inserting sleep record:", error);
+    if (fetchError) throw fetchError;
+
+    const LOOKBACK_PERIOD = 7;
+    if (sleepRecords.length < LOOKBACK_PERIOD) {
+      return NextResponse.json({
+        message: `Not enough historical data.`,
+        predictions: [],
+      });
+    }
+
+    const recentSleeps = sleepRecords.slice(0, LOOKBACK_PERIOD);
+
+    const awakeIntervalsMs: number[] = [];
+    for (let i = 0; i < recentSleeps.length - 1; i++) {
+      const newerSleepStartTime = new Date(
+        recentSleeps[i].start_time
+      ).getTime();
+      const olderSleepEndTime = new Date(
+        recentSleeps[i + 1].end_time
+      ).getTime();
+      const awakeTimeMs = newerSleepStartTime - olderSleepEndTime;
+      if (awakeTimeMs > 0) awakeIntervalsMs.push(awakeTimeMs);
+    }
+
+    if (awakeIntervalsMs.length === 0) {
+      return NextResponse.json({
+        message: "Could not calculate awake intervals.",
+        predictions: [],
+      });
+    }
+
+    const durationValuesMs: number[] = [];
+    for (const sleep of recentSleeps) {
+      if (typeof sleep.sleep_duration === "number") {
+        durationValuesMs.push(sleep.sleep_duration * 60 * 1000);
+      } else {
+        const startTime = new Date(sleep.start_time).getTime();
+        const endTime = new Date(sleep.end_time).getTime();
+        const calculatedDuration = endTime - startTime;
+        if (calculatedDuration > 0) durationValuesMs.push(calculatedDuration);
+      }
+    }
+
+    if (durationValuesMs.length === 0) {
       return NextResponse.json(
-        { error: "Failed to save sleep record." },
+        { error: "Could not determine sleep duration." },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, record: data[0] });
-  } catch (error: any) {
-    console.error("Error in /api/add-record:", error);
+    const avgAwakeMs =
+      awakeIntervalsMs.reduce((sum, val) => sum + val, 0) /
+      awakeIntervalsMs.length;
+    const avgDurationMs =
+      durationValuesMs.reduce((sum, val) => sum + val, 0) /
+      durationValuesMs.length;
+
+    const lastSleepEndTime = new Date(sleepRecords[0].end_time).getTime();
+    const predictedStartTime = new Date(lastSleepEndTime + avgAwakeMs);
+    const predictedEndTime = new Date(
+      predictedStartTime.getTime() + avgDurationMs
+    );
+
+    const predictionToInsert = {
+      predicted_for_date: date,
+      predicted_start_time: predictedStartTime.toISOString(),
+      predicted_end_time: predictedEndTime.toISOString(),
+      timezone: timezone,
+    };
+
+    const { error: insertError } = await supabase
+      .from("predictions")
+      .insert(predictionToInsert);
+
+    if (insertError) throw insertError;
+
+    return NextResponse.json({ predictions: [predictionToInsert] });
+  } catch (error: unknown) {
+    console.error("Error in /api/predict:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: (error as Error).message },
       { status: 500 }
     );
   }

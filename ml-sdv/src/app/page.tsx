@@ -13,12 +13,12 @@ interface SleepRecord {
 }
 
 interface Prediction {
-  id?: number;
+  id: number; // ID is now required for feedback
   predicted_for_date: string;
   predicted_start_time: string;
   predicted_end_time: string;
   timezone: string;
-  feedback?: "accurate" | "inaccurate" | null;
+  feedback: "accurate" | "inaccurate" | null;
 }
 
 // --- Supabase Client Initialization ---
@@ -74,6 +74,13 @@ export default function HomePage() {
         .select("*")
         .order("start_time", { ascending: true });
       setSleepRecords(sleepData || []);
+
+      // Fetch existing predictions to show history
+      const { data: predictionData } = await supabase
+        .from("predictions")
+        .select("*");
+      setPredictions(predictionData || []);
+
       setIsLoading(false);
     };
 
@@ -95,22 +102,25 @@ export default function HomePage() {
         }),
       });
 
-      console.log("Raw Response:", response);
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to fetch prediction.");
       }
 
-      const text = await response.text();
-      console.log("Raw Response Text:", text);
+      const data = await response.json();
 
-      try {
-        const data = JSON.parse(text);
-        setPredictions(data.predictions || []);
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
-        throw new Error("Invalid JSON response from server.");
+      // To get the ID for the feedback buttons, we need to fetch the prediction we just created.
+      const { data: newPrediction, error } = await supabase
+        .from("predictions")
+        .select("*")
+        .eq("predicted_start_time", data.predictions[0].predicted_start_time)
+        .single();
+
+      if (error)
+        throw new Error("Could not retrieve new prediction from database.");
+
+      if (newPrediction) {
+        setPredictions([newPrediction]);
       }
     } catch (error) {
       console.error("Prediction error:", error);
@@ -120,23 +130,41 @@ export default function HomePage() {
     }
   };
 
+  const handleFeedback = async (
+    predictionId: number,
+    feedback: "accurate" | "inaccurate"
+  ) => {
+    // Optimistic UI update: show the change immediately
+    setPredictions((currentPredictions) =>
+      currentPredictions.map((p) =>
+        p.id === predictionId ? { ...p, feedback: feedback } : p
+      )
+    );
+
+    // Call the API to save the change to the database
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        predictionId: predictionId,
+        feedback: feedback,
+      }),
+    });
+  };
+
   return (
     <div className="bg-[#1b263b] text-[#e0e1dd] min-h-screen font-sans">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-        {/* Header Section */}
         <header className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[#e0e1dd]">
             Sleep Pattern Predictor
           </h1>
           <p className="text-[#e0e1dd] mt-2">
-            Upload your sleep data to visualize patterns and predict future
-            sleep.
+            Visualize your sleep patterns and predict your future sleep.
           </p>
         </header>
 
-        {/* Main content area using a single column layout for simplicity */}
         <main className="max-w-4xl mx-auto space-y-8">
-          {/* Controls Card */}
           <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
             <h2 className="text-2xl font-semibold mb-6 text-[#e0e1dd]">
               Controls
@@ -144,75 +172,86 @@ export default function HomePage() {
             <div className="space-y-6">
               <div>
                 <label
-                  htmlFor="timezone-select"
-                  className="block text-sm font-medium text-[#e0e1dd] mb-1"
-                >
-                  1. Select Your Timezone
-                </label>
-                <select
-                  id="timezone-select"
-                  value={userTimezone}
-                  onChange={(e) => setUserTimezone(e.target.value)}
-                  className="w-full p-2 border border-[#e0e1dd] rounded-md shadow-sm bg-[#1b263b] text-[#e0e1dd]"
-                >
-                  {/* Simple timezone list, can be expanded */}
-                  <option value={userTimezone}>{userTimezone}</option>
-                  <option value="America/New_York">America/New_York</option>
-                  <option value="Europe/London">Europe/London</option>
-                  <option value="UTC">UTC</option>
-                </select>
-              </div>
-              <div>
-                <label
                   htmlFor="prediction-date"
                   className="block text-sm font-medium text-[#e0e1dd] mb-1"
                 >
-                  2. Select Date for Prediction
+                  Select Date for Prediction
                 </label>
                 <input
                   type="date"
                   id="prediction-date"
                   value={predictionDate}
                   onChange={(e) => setPredictionDate(e.target.value)}
-                  className="w-full p-2 border border-[#e0e1dd] rounded-md shadow-sm bg-[#1b263b] text-[#e0e1dd]"
+                  className="w-full p-2 border border-[#e0e1dd] rounded-md shadow-sm bg-[#1b263b] text-[#e0e1dd] focus:ring-[#778da9] focus:border-[#778da9]"
                 />
               </div>
               <button
                 onClick={handlePrediction}
                 disabled={isPredicting}
-                className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-400"
+                className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600"
               >
                 {isPredicting ? "Predicting..." : "Predict Sleep"}
               </button>
             </div>
           </section>
 
-          {/* Prediction Card */}
           <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
             <h2 className="text-2xl font-semibold mb-4 text-[#e0e1dd]">
               Prediction
             </h2>
-            <div className="bg-[#1b263b] p-6 rounded-lg min-h-[120px] flex items-center justify-center border border-[#e0e1dd]">
+            <div className="bg-[#0d1b2a] p-6 rounded-lg min-h-[120px] flex items-center justify-center border border-[#e0e1dd]">
               {isPredicting ? (
                 <div className="text-[#e0e1dd]">Generating prediction...</div>
               ) : predictions.length > 0 ? (
-                <ul className="space-y-3 w-full">
-                  {predictions.map((pred, i) => (
+                <ul className="space-y-4 w-full">
+                  {predictions.map((pred) => (
                     <li
-                      key={i}
-                      className="p-4 bg-[#1b263b] rounded-lg shadow-sm border border-[#e0e1dd]"
+                      key={pred.id}
+                      className="p-4 bg-[#1b263b] rounded-lg shadow-sm border border-[#415a77]"
                     >
-                      <p className="font-semibold text-[#e0e1dd] text-lg">
-                        {formatTime(pred.predicted_start_time, userTimezone)} -{" "}
-                        {formatTime(pred.predicted_end_time, userTimezone)}
-                      </p>
-                      <p className="text-sm text-[#e0e1dd]">
-                        Predicted Duration:{" "}
-                        {formatDuration(
-                          pred.predicted_start_time,
-                          pred.predicted_end_time
-                        )}
-                      </p>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold text-[#e0e1dd] text-lg">
+                            {formatTime(
+                              pred.predicted_start_time,
+                              userTimezone
+                            )}{" "}
+                            -{" "}
+                            {formatTime(pred.predicted_end_time, userTimezone)}
+                          </p>
+                          <p className="text-sm text-[#adb5bd]">
+                            Predicted Duration:{" "}
+                            {formatDuration(
+                              pred.predicted_start_time,
+                              pred.predicted_end_time
+                            )}
+                          </p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleFeedback(pred.id, "accurate")}
+                            className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
+                              pred.feedback === "accurate"
+                                ? "bg-green-500 text-white border-green-500"
+                                : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
+                            }`}
+                          >
+                            Accurate
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleFeedback(pred.id, "inaccurate")
+                            }
+                            className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
+                              pred.feedback === "inaccurate"
+                                ? "bg-red-500 text-white border-red-500"
+                                : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
+                            }`}
+                          >
+                            Inaccurate
+                          </button>
+                        </div>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -222,7 +261,6 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Historical Data Card */}
           <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
             <h2 className="text-2xl font-semibold mb-4 text-[#e0e1dd]">
               Historical Sleep Data
@@ -287,26 +325,20 @@ const CalendarView = ({
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
-      const currentDate = new Date(year, month, i);
-      const daySleeps = sleepData.map((record) => ({
-        ...record,
-        start_time: new Date(record.start_time).toLocaleString("en-US", {
-          timeZone: timezone,
-        }),
-        end_time: new Date(record.end_time).toLocaleString("en-US", {
-          timeZone: timezone,
-        }),
-      }));
+      const currentDateStr = new Date(year, month, i).toLocaleDateString(
+        "en-US",
+        { timeZone: timezone }
+      );
 
-      const filteredSleeps = daySleeps.filter((d) => {
+      const daySleeps = sleepData.filter((d) => {
         const sleepStartDate = new Date(d.start_time);
         return (
           sleepStartDate.toLocaleDateString("en-US", { timeZone: timezone }) ===
-          currentDate.toLocaleDateString("en-US", { timeZone: timezone })
+          currentDateStr
         );
       });
 
-      days.push({ type: "day", number: i, sleeps: filteredSleeps });
+      days.push({ type: "day", number: i, sleeps: daySleeps });
     }
     return days;
   }, [date, sleepData, timezone]);
@@ -322,7 +354,7 @@ const CalendarView = ({
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => changeMonth(-1)}
-          className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+          className="p-2 rounded-full hover:bg-[#415a77] transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -342,7 +374,7 @@ const CalendarView = ({
         <h3 className="text-xl font-semibold">{monthYear}</h3>
         <button
           onClick={() => changeMonth(1)}
-          className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+          className="p-2 rounded-full hover:bg-[#415a77] transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -364,7 +396,7 @@ const CalendarView = ({
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div
             key={day}
-            className="font-semibold text-center text-sm text-gray-500 py-2"
+            className="font-semibold text-center text-sm text-[#778da9] py-2"
           >
             {day}
           </div>
@@ -373,12 +405,12 @@ const CalendarView = ({
           <div
             key={i}
             className={`rounded-lg p-1 min-h-[90px] ${
-              day.type === "day" ? "bg-gray-50" : ""
+              day.type === "day" ? "bg-[#0d1b2a]" : ""
             }`}
           >
             {day.type === "day" && (
               <>
-                <div className="text-xs text-center text-gray-400 font-medium">
+                <div className="text-xs text-center text-[#778da9] font-medium">
                   {day.number}
                 </div>
                 <div className="space-y-1 mt-1">
