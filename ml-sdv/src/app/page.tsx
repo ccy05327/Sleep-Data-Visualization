@@ -13,7 +13,7 @@ interface SleepRecord {
 }
 
 interface Prediction {
-  id: number; // ID is now required for feedback
+  id: number;
   predicted_for_date: string;
   predicted_start_time: string;
   predicted_end_time: string;
@@ -62,6 +62,9 @@ export default function HomePage() {
     new Date().toISOString().split("T")[0]
   );
 
+  // --- NEW --- State for accuracy score
+  const [accuracy, setAccuracy] = useState({ score: 0, total: 0 });
+
   // --- Effects ---
   useEffect(() => {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -75,7 +78,6 @@ export default function HomePage() {
         .order("start_time", { ascending: true });
       setSleepRecords(sleepData || []);
 
-      // Fetch existing predictions to show history
       const { data: predictionData } = await supabase
         .from("predictions")
         .select("*");
@@ -87,10 +89,29 @@ export default function HomePage() {
     fetchData();
   }, []);
 
+  // --- NEW --- Effect to calculate accuracy whenever predictions change
+  useEffect(() => {
+    const feedbackPredictions = predictions.filter((p) => p.feedback !== null);
+    if (feedbackPredictions.length > 0) {
+      const accurateCount = feedbackPredictions.filter(
+        (p) => p.feedback === "accurate"
+      ).length;
+      const score = Math.round(
+        (accurateCount / feedbackPredictions.length) * 100
+      );
+      setAccuracy({ score: score, total: feedbackPredictions.length });
+    } else {
+      setAccuracy({ score: 0, total: 0 });
+    }
+  }, [predictions]);
+
   // --- Handlers ---
   const handlePrediction = async () => {
     setIsPredicting(true);
-    setPredictions([]);
+    // Do not clear all predictions, just the one for the target date if it exists
+    setPredictions((preds) =>
+      preds.filter((p) => p.predicted_for_date !== predictionDate)
+    );
 
     try {
       const response = await fetch("/api/predict", {
@@ -109,7 +130,6 @@ export default function HomePage() {
 
       const data = await response.json();
 
-      // To get the ID for the feedback buttons, we need to fetch the prediction we just created.
       const { data: newPrediction, error } = await supabase
         .from("predictions")
         .select("*")
@@ -120,7 +140,8 @@ export default function HomePage() {
         throw new Error("Could not retrieve new prediction from database.");
 
       if (newPrediction) {
-        setPredictions([newPrediction]);
+        // Add new prediction to the existing list
+        setPredictions((preds) => [...preds, newPrediction]);
       }
     } catch (error) {
       console.error("Prediction error:", error);
@@ -134,14 +155,12 @@ export default function HomePage() {
     predictionId: number,
     feedback: "accurate" | "inaccurate"
   ) => {
-    // Optimistic UI update: show the change immediately
     setPredictions((currentPredictions) =>
       currentPredictions.map((p) =>
         p.id === predictionId ? { ...p, feedback: feedback } : p
       )
     );
 
-    // Call the API to save the change to the database
     await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -202,61 +221,93 @@ export default function HomePage() {
             <div className="bg-[#0d1b2a] p-6 rounded-lg min-h-[120px] flex items-center justify-center border border-[#e0e1dd]">
               {isPredicting ? (
                 <div className="text-[#e0e1dd]">Generating prediction...</div>
-              ) : predictions.length > 0 ? (
+              ) : predictions.filter(
+                  (p) => p.predicted_for_date === predictionDate
+                ).length > 0 ? (
                 <ul className="space-y-4 w-full">
-                  {predictions.map((pred) => (
-                    <li
-                      key={pred.id}
-                      className="p-4 bg-[#1b263b] rounded-lg shadow-sm border border-[#415a77]"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="font-semibold text-[#e0e1dd] text-lg">
-                            {formatTime(
-                              pred.predicted_start_time,
-                              userTimezone
-                            )}{" "}
-                            -{" "}
-                            {formatTime(pred.predicted_end_time, userTimezone)}
-                          </p>
-                          <p className="text-sm text-[#adb5bd]">
-                            Predicted Duration:{" "}
-                            {formatDuration(
-                              pred.predicted_start_time,
-                              pred.predicted_end_time
-                            )}
-                          </p>
+                  {predictions
+                    .filter((p) => p.predicted_for_date === predictionDate)
+                    .map((pred) => (
+                      <li
+                        key={pred.id}
+                        className="p-4 bg-[#1b263b] rounded-lg shadow-sm border border-[#415a77]"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-semibold text-[#e0e1dd] text-lg">
+                              {formatTime(
+                                pred.predicted_start_time,
+                                userTimezone
+                              )}{" "}
+                              -{" "}
+                              {formatTime(
+                                pred.predicted_end_time,
+                                userTimezone
+                              )}
+                            </p>
+                            <p className="text-sm text-[#adb5bd]">
+                              Predicted Duration:{" "}
+                              {formatDuration(
+                                pred.predicted_start_time,
+                                pred.predicted_end_time
+                              )}
+                            </p>
+                          </div>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() =>
+                                handleFeedback(pred.id, "accurate")
+                              }
+                              className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
+                                pred.feedback === "accurate"
+                                  ? "bg-green-500 text-white border-green-500"
+                                  : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
+                              }`}
+                            >
+                              Accurate
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleFeedback(pred.id, "inaccurate")
+                              }
+                              className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
+                                pred.feedback === "inaccurate"
+                                  ? "bg-red-500 text-white border-red-500"
+                                  : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
+                              }`}
+                            >
+                              Inaccurate
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => handleFeedback(pred.id, "accurate")}
-                            className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
-                              pred.feedback === "accurate"
-                                ? "bg-green-500 text-white border-green-500"
-                                : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
-                            }`}
-                          >
-                            Accurate
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleFeedback(pred.id, "inaccurate")
-                            }
-                            className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
-                              pred.feedback === "inaccurate"
-                                ? "bg-red-500 text-white border-red-500"
-                                : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
-                            }`}
-                          >
-                            Inaccurate
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    ))}
                 </ul>
               ) : (
-                <p className="text-[#e0e1dd]">Predictions will appear here.</p>
+                <p className="text-[#e0e1dd]">
+                  No prediction for this date. Generate one above.
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* --- NEW --- Accuracy Score Card */}
+          <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
+            <h2 className="text-2xl font-semibold mb-4 text-[#e0e1dd]">
+              Prediction Accuracy
+            </h2>
+            <div className="text-center">
+              {accuracy.total > 0 ? (
+                <>
+                  <p className="text-5xl font-bold text-white">
+                    {accuracy.score}%
+                  </p>
+                  <p className="text-sm text-[#adb5bd] mt-1">
+                    Based on {accuracy.total} feedback entries.
+                  </p>
+                </>
+              ) : (
+                <p className="text-[#adb5bd]">No feedback provided yet.</p>
               )}
             </div>
           </section>
