@@ -57,7 +57,7 @@
                 "id": 2,
                 "title": "Phase 1: Core Frontend Implementation",
                 "description": "Build the primary user interface for displaying data and interacting with the prediction engine. This corresponds to Prompt 4.",
-                "status": "in-progress",
+                "status": "done",
                 "priority": "high",
                 "dependencies": [
                     1
@@ -68,28 +68,28 @@
                         "parentTaskId": 2,
                         "title": "Build Main UI Layout",
                         "description": "Create the main page at `/pages/index.tsx` with a two-column layout using Tailwind CSS.",
-                        "status": "pending"
+                        "status": "done"
                     },
                     {
                         "id": 202,
                         "parentTaskId": 2,
                         "title": "Create Reusable Calendar Component",
                         "description": "Build a `<Calendar />` component that can display a month grid.",
-                        "status": "pending"
+                        "status": "done"
                     },
                     {
                         "id": 203,
                         "parentTaskId": 2,
                         "title": "Fetch and Display Historical Data",
                         "description": "On page load, call the Supabase client to fetch all `sleep_records` and pass them to the Calendar component to be rendered as sleep bars.",
-                        "status": "pending"
+                        "status": "done"
                     },
                     {
                         "id": 204,
                         "parentTaskId": 2,
                         "title": "Implement Prediction Controls & Display",
                         "description": "Add a date picker and 'Predict' button. Wire the button to call the `/api/predict` endpoint and display the returned predictions in a list.",
-                        "status": "pending"
+                        "status": "done"
                     }
                 ]
             },
@@ -97,7 +97,7 @@
                 "id": 3,
                 "title": "Phase 2: User Interaction & Feedback Loop",
                 "description": "Add features that allow the user to provide feedback on predictions and see the system's accuracy. This corresponds to Prompt 5.",
-                "status": "pending",
+                "status": "in-progress",
                 "priority": "medium",
                 "dependencies": [
                     2

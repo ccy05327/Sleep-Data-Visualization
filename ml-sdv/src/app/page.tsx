@@ -288,14 +288,25 @@ const CalendarView = ({
 
     for (let i = 1; i <= daysInMonth; i++) {
       const currentDate = new Date(year, month, i);
-      const daySleeps = sleepData.filter((d) => {
+      const daySleeps = sleepData.map((record) => ({
+        ...record,
+        start_time: new Date(record.start_time).toLocaleString("en-US", {
+          timeZone: timezone,
+        }),
+        end_time: new Date(record.end_time).toLocaleString("en-US", {
+          timeZone: timezone,
+        }),
+      }));
+
+      const filteredSleeps = daySleeps.filter((d) => {
         const sleepStartDate = new Date(d.start_time);
         return (
           sleepStartDate.toLocaleDateString("en-US", { timeZone: timezone }) ===
           currentDate.toLocaleDateString("en-US", { timeZone: timezone })
         );
       });
-      days.push({ type: "day", number: i, sleeps: daySleeps });
+
+      days.push({ type: "day", number: i, sleeps: filteredSleeps });
     }
     return days;
   }, [date, sleepData, timezone]);
