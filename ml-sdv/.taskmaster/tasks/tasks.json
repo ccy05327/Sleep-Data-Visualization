@@ -1,0 +1,209 @@
+{
+    "master": {
+        "tasks": [
+            {
+                "id": 1,
+                "title": "Phase 0: Backend Foundation & Data Migration",
+                "description": "Set up the core project infrastructure, database, and backend logic. This phase focuses on getting data into the system and ensuring the prediction engine works reliably.",
+                "status": "done",
+                "priority": "critical",
+                "dependencies": [],
+                "subtasks": [
+                    {
+                        "id": 101,
+                        "parentTaskId": 1,
+                        "title": "Initialize Next.js Project",
+                        "description": "Create a new Next.js project with TypeScript and Tailwind CSS.",
+                        "status": "done"
+                    },
+                    {
+                        "id": 102,
+                        "parentTaskId": 1,
+                        "title": "Set Up Supabase Database",
+                        "description": "Create a new Supabase project and define the SQL schema for `sleep_records` and `predictions` tables.",
+                        "status": "done"
+                    },
+                    {
+                        "id": 103,
+                        "parentTaskId": 1,
+                        "title": "Implement Data Migration API",
+                        "description": "Create the `/api/migrate` endpoint to read the source CSV and populate the `sleep_records` table.",
+                        "status": "done"
+                    },
+                    {
+                        "id": 104,
+                        "parentTaskId": 1,
+                        "title": "Implement Prediction API",
+                        "description": "Create the `/api/predict` endpoint with the core trend-based prediction logic.",
+                        "status": "done"
+                    },
+                    {
+                        "id": 105,
+                        "parentTaskId": 1,
+                        "title": "Debug and Refine Prediction API",
+                        "description": "Iteratively debug all issues including 405 errors, NaN calculations, timezone bugs, and data validation until the API returns a consistently correct prediction.",
+                        "status": "done"
+                    },
+                    {
+                        "id": 106,
+                        "parentTaskId": 1,
+                        "title": "Implement Dynamic Timezone Handling",
+                        "description": "Update the backend API to accept a timezone string from the client, making it robust for travel.",
+                        "status": "done"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Phase 1: Core Frontend Implementation",
+                "description": "Build the primary user interface for displaying data and interacting with the prediction engine. This corresponds to Prompt 4.",
+                "status": "in-progress",
+                "priority": "high",
+                "dependencies": [
+                    1
+                ],
+                "subtasks": [
+                    {
+                        "id": 201,
+                        "parentTaskId": 2,
+                        "title": "Build Main UI Layout",
+                        "description": "Create the main page at `/pages/index.tsx` with a two-column layout using Tailwind CSS.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 202,
+                        "parentTaskId": 2,
+                        "title": "Create Reusable Calendar Component",
+                        "description": "Build a `<Calendar />` component that can display a month grid.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 203,
+                        "parentTaskId": 2,
+                        "title": "Fetch and Display Historical Data",
+                        "description": "On page load, call the Supabase client to fetch all `sleep_records` and pass them to the Calendar component to be rendered as sleep bars.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 204,
+                        "parentTaskId": 2,
+                        "title": "Implement Prediction Controls & Display",
+                        "description": "Add a date picker and 'Predict' button. Wire the button to call the `/api/predict` endpoint and display the returned predictions in a list.",
+                        "status": "pending"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "title": "Phase 2: User Interaction & Feedback Loop",
+                "description": "Add features that allow the user to provide feedback on predictions and see the system's accuracy. This corresponds to Prompt 5.",
+                "status": "pending",
+                "priority": "medium",
+                "dependencies": [
+                    2
+                ],
+                "subtasks": [
+                    {
+                        "id": 301,
+                        "parentTaskId": 3,
+                        "title": "Create Feedback API Endpoint",
+                        "description": "Build a new API route, `/api/feedback`, that accepts a prediction ID and a feedback type ('accurate' or 'inaccurate') to update the record in Supabase.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 302,
+                        "parentTaskId": 3,
+                        "title": "Implement Frontend Feedback UI",
+                        "description": "Add 'Accurate' and 'Inaccurate' buttons to each prediction. On click, call the `/api/feedback` endpoint.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 303,
+                        "parentTaskId": 3,
+                        "title": "Display Prediction Accuracy Score",
+                        "description": "On the main page, fetch all predictions, calculate the accuracy percentage based on feedback, and display it to the user.",
+                        "status": "pending"
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Phase 3: Data Management & Final Touches",
+                "description": "Finalize the application by adding manual data entry and refining the overall user experience. This corresponds to Prompt 6.",
+                "status": "pending",
+                "priority": "low",
+                "dependencies": [
+                    3
+                ],
+                "subtasks": [
+                    {
+                        "id": 401,
+                        "parentTaskId": 4,
+                        "title": "Create Manual Entry API Endpoint",
+                        "description": "Build the `/api/add-record` endpoint that accepts start time, end time, and timezone to create a new sleep record.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 402,
+                        "parentTaskId": 4,
+                        "title": "Build Manual Entry Form",
+                        "description": "Create a form in the UI for manual data entry and connect it to the `/api/add-record` endpoint.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 403,
+                        "parentTaskId": 4,
+                        "title": "Implement UI Loading & Error States",
+                        "description": "Add loading spinners for API calls and display user-friendly error messages for failed operations.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 404,
+                        "parentTaskId": 4,
+                        "title": "Code Cleanup and Refactoring",
+                        "description": "Review the entire codebase, add comments, and refactor any repetitive code for maintainability.",
+                        "status": "pending"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Phase 4: Deployment",
+                "description": "Deploy the final application to a public URL using Vercel.",
+                "status": "pending",
+                "priority": "critical",
+                "dependencies": [
+                    4
+                ],
+                "subtasks": [
+                    {
+                        "id": 501,
+                        "parentTaskId": 5,
+                        "title": "Configure Vercel Environment Variables",
+                        "description": "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to the Vercel project settings.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 502,
+                        "parentTaskId": 5,
+                        "title": "Deploy to Vercel",
+                        "description": "Connect the GitHub repository to Vercel and trigger the first production deployment.",
+                        "status": "pending"
+                    },
+                    {
+                        "id": 503,
+                        "parentTaskId": 5,
+                        "title": "Conduct Final Testing on Production",
+                        "description": "Test all application features on the live URL to ensure everything works as expected.",
+                        "status": "pending"
+                    }
+                ]
+            }
+        ],
+        "metadata": {
+            "created": "2025-07-27T10:00:00.000Z",
+            "updated": "2025-07-27T10:00:00.000Z",
+            "description": "Project plan for the Sleep Data Visualization and Prediction application."
+        }
+    }
+}
