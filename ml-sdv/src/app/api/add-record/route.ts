@@ -112,3 +112,42 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// --- API Handler for adding a new sleep record ---
+export async function addRecord(request: Request) {
+  try {
+    const { start_time, end_time, timezone } = await request.json();
+
+    if (!start_time || !end_time || !timezone) {
+      return NextResponse.json(
+        { error: "Start time, end time, and timezone are required." },
+        { status: 400 }
+      );
+    }
+
+    const newRecord = {
+      start_time,
+      end_time,
+      timezone,
+      sleep_duration:
+        (new Date(end_time).getTime() - new Date(start_time).getTime()) /
+        (1000 * 60),
+    };
+
+    const { data, error } = await supabase
+      .from("sleep_records")
+      .insert(newRecord);
+
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ message: "Record added successfully.", data });
+  } catch (error: unknown) {
+    console.error("Error in /api/add-record:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error", details: (error as Error).message },
+      { status: 500 }
+    );
+  }
+}

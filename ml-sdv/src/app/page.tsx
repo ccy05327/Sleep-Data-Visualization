@@ -3,23 +3,28 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@supabase/supabase-js";
+import Controls from "./components/Controls";
+import PredictionSection from "./components/PredictionSection";
+import AccuracyScore from "./components/AccuracyScore";
+import HistoricalSleepData from "./components/HistoricalSleepData";
+import ManualSleepEntry from "./components/ManualSleepEntry";
 
 // --- Type Definitions ---
-interface SleepRecord {
+export type SleepRecord = {
   id: number;
   start_time: string;
   end_time: string;
   sleep_duration: number | null;
-}
+};
 
-interface Prediction {
+export type Prediction = {
   id: number;
   predicted_for_date: string;
   predicted_start_time: string;
   predicted_end_time: string;
   timezone: string;
   feedback: "accurate" | "inaccurate" | null;
-}
+};
 
 // --- Supabase Client Initialization ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -64,6 +69,12 @@ export default function HomePage() {
 
   // --- NEW --- State for accuracy score
   const [accuracy, setAccuracy] = useState({ score: 0, total: 0 });
+
+  // --- NEW --- State for manual entry form
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // --- Effects ---
   useEffect(() => {
@@ -185,151 +196,42 @@ export default function HomePage() {
         </header>
 
         <main className="max-w-4xl mx-auto space-y-8">
-          <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
-            <h2 className="text-2xl font-semibold mb-6 text-[#e0e1dd]">
-              Controls
-            </h2>
-            <div className="space-y-6">
-              <div>
-                <label
-                  htmlFor="prediction-date"
-                  className="block text-sm font-medium text-[#e0e1dd] mb-1"
-                >
-                  Select Date for Prediction
-                </label>
-                <input
-                  type="date"
-                  id="prediction-date"
-                  value={predictionDate}
-                  onChange={(e) => setPredictionDate(e.target.value)}
-                  className="w-full p-2 border border-[#e0e1dd] rounded-md shadow-sm bg-[#1b263b] text-[#e0e1dd] focus:ring-[#778da9] focus:border-[#778da9]"
-                />
-              </div>
-              <button
-                onClick={handlePrediction}
-                disabled={isPredicting}
-                className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600"
-              >
-                {isPredicting ? "Predicting..." : "Predict Sleep"}
-              </button>
-            </div>
-          </section>
+          <Controls
+            predictionDate={predictionDate}
+            setPredictionDate={setPredictionDate}
+            handlePrediction={handlePrediction}
+            isPredicting={isPredicting}
+          />
 
-          <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
-            <h2 className="text-2xl font-semibold mb-4 text-[#e0e1dd]">
-              Prediction
-            </h2>
-            <div className="bg-[#0d1b2a] p-6 rounded-lg min-h-[120px] flex items-center justify-center border border-[#e0e1dd]">
-              {isPredicting ? (
-                <div className="text-[#e0e1dd]">Generating prediction...</div>
-              ) : predictions.filter(
-                  (p) => p.predicted_for_date === predictionDate
-                ).length > 0 ? (
-                <ul className="space-y-4 w-full">
-                  {predictions
-                    .filter((p) => p.predicted_for_date === predictionDate)
-                    .map((pred) => (
-                      <li
-                        key={pred.id}
-                        className="p-4 bg-[#1b263b] rounded-lg shadow-sm border border-[#415a77]"
-                      >
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold text-[#e0e1dd] text-lg">
-                              {formatTime(
-                                pred.predicted_start_time,
-                                userTimezone
-                              )}{" "}
-                              -{" "}
-                              {formatTime(
-                                pred.predicted_end_time,
-                                userTimezone
-                              )}
-                            </p>
-                            <p className="text-sm text-[#adb5bd]">
-                              Predicted Duration:{" "}
-                              {formatDuration(
-                                pred.predicted_start_time,
-                                pred.predicted_end_time
-                              )}
-                            </p>
-                          </div>
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() =>
-                                handleFeedback(pred.id, "accurate")
-                              }
-                              className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
-                                pred.feedback === "accurate"
-                                  ? "bg-green-500 text-white border-green-500"
-                                  : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
-                              }`}
-                            >
-                              Accurate
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleFeedback(pred.id, "inaccurate")
-                              }
-                              className={`px-3 py-1 text-xs font-semibold rounded-full border transition-colors ${
-                                pred.feedback === "inaccurate"
-                                  ? "bg-red-500 text-white border-red-500"
-                                  : "bg-[#415a77] text-white border-[#778da9] hover:bg-[#778da9]"
-                              }`}
-                            >
-                              Inaccurate
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                </ul>
-              ) : (
-                <p className="text-[#e0e1dd]">
-                  No prediction for this date. Generate one above.
-                </p>
-              )}
-            </div>
-          </section>
+          <PredictionSection
+            predictions={predictions}
+            predictionDate={predictionDate}
+            userTimezone={userTimezone}
+            isPredicting={isPredicting}
+            handleFeedback={handleFeedback}
+          />
 
-          {/* --- NEW --- Accuracy Score Card */}
-          <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
-            <h2 className="text-2xl font-semibold mb-4 text-[#e0e1dd]">
-              Prediction Accuracy
-            </h2>
-            <div className="text-center">
-              {accuracy.total > 0 ? (
-                <>
-                  <p className="text-5xl font-bold text-white">
-                    {accuracy.score}%
-                  </p>
-                  <p className="text-sm text-[#adb5bd] mt-1">
-                    Based on {accuracy.total} feedback entries.
-                  </p>
-                </>
-              ) : (
-                <p className="text-[#adb5bd]">No feedback provided yet.</p>
-              )}
-            </div>
-          </section>
+          <AccuracyScore accuracy={accuracy} />
 
-          <section className="bg-[#1b263b] p-6 sm:p-8 rounded-xl shadow-md border border-[#e0e1dd]">
-            <h2 className="text-2xl font-semibold mb-4 text-[#e0e1dd]">
-              Historical Sleep Data
-            </h2>
-            {isLoading ? (
-              <div className="text-center text-[#e0e1dd] py-10">
-                Loading sleep data...
-              </div>
-            ) : (
-              <CalendarView
-                date={currentDisplayDate}
-                setDate={setCurrentDisplayDate}
-                sleepData={sleepRecords}
-                timezone={userTimezone}
-              />
-            )}
-          </section>
+          <HistoricalSleepData
+            isLoading={isLoading}
+            currentDisplayDate={currentDisplayDate}
+            setCurrentDisplayDate={setCurrentDisplayDate}
+            sleepRecords={sleepRecords}
+            userTimezone={userTimezone}
+          />
+
+          <ManualSleepEntry
+            startTime={startTime}
+            setStartTime={setStartTime}
+            endTime={endTime}
+            setEndTime={setEndTime}
+            isSubmitting={isSubmitting}
+            setIsSubmitting={setIsSubmitting}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
+            userTimezone={userTimezone}
+          />
         </main>
       </div>
     </div>
