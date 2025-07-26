@@ -135,18 +135,63 @@ export const POST = async (req: Request) => {
       );
     }
 
-    const avgAwakeMs =
-      awakeIntervalsMs.reduce((sum, val) => sum + val, 0) /
-      awakeIntervalsMs.length;
-    const avgDurationMs =
-      durationValuesMs.reduce((sum, val) => sum + val, 0) /
-      durationValuesMs.length;
-
     const lastSleepEndTime = new Date(sleepRecords[0].end_time).getTime();
+
+    if (isNaN(lastSleepEndTime)) {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid last sleep end time.",
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const avgAwakeMs =
+      awakeIntervalsMs.length > 0
+        ? awakeIntervalsMs.reduce((sum, val) => sum + val, 0) /
+          awakeIntervalsMs.length
+        : 0;
+
+    const avgDurationMs =
+      durationValuesMs.length > 0
+        ? durationValuesMs.reduce((sum, val) => sum + val, 0) /
+          durationValuesMs.length
+        : 0;
+
+    if (avgAwakeMs <= 0 || avgDurationMs <= 0) {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid average awake or duration values.",
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const predictedStartTime = new Date(lastSleepEndTime + avgAwakeMs);
     const predictedEndTime = new Date(
       predictedStartTime.getTime() + avgDurationMs
     );
+
+    if (
+      isNaN(predictedStartTime.getTime()) ||
+      isNaN(predictedEndTime.getTime())
+    ) {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid predicted start or end time.",
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const generatedPredictions: Prediction[] = [
       {

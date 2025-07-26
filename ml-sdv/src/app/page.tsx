@@ -133,7 +133,8 @@ export default function HomePage() {
       const { data: newPrediction, error } = await supabase
         .from("predictions")
         .select("*")
-        .eq("predicted_start_time", data.predictions[0].predicted_start_time)
+        .order("id", { ascending: false })
+        .limit(1)
         .single();
 
       if (error)
