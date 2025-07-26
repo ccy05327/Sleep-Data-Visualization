@@ -95,13 +95,23 @@ export default function HomePage() {
         }),
       });
 
+      console.log("Raw Response:", response);
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to fetch prediction.");
       }
 
-      const data = await response.json();
-      setPredictions(data.predictions || []);
+      const text = await response.text();
+      console.log("Raw Response Text:", text);
+
+      try {
+        const data = JSON.parse(text);
+        setPredictions(data.predictions || []);
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+        throw new Error("Invalid JSON response from server.");
+      }
     } catch (error) {
       console.error("Prediction error:", error);
       alert((error as Error).message);

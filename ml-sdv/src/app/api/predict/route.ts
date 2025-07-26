@@ -1,7 +1,5 @@
-// In /pages/api/predict.ts
-
 import { createClient } from "@supabase/supabase-js";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
 // --- Type Definitions ---
 interface SleepRecord {
@@ -11,24 +9,12 @@ interface SleepRecord {
   sleep_duration: number | null;
 }
 
-interface RequestBody {
-  date: string;
-  timezone: string; // e.g., "Asia/Taipei"
-}
-
 interface Prediction {
   predicted_for_date: string;
   predicted_start_time: string;
   predicted_end_time: string;
-  timezone: string; // Store the context
+  timezone: string;
 }
-
-type ResponseData = {
-  predictions?: Prediction[];
-  message?: string;
-  error?: string;
-  details?: string;
-};
 
 // --- Supabase Client Initialization ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -42,36 +28,38 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// --- API Handler ---
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
-) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function POST(request: Request) {
   try {
-    const { date, timezone }: RequestBody = req.body;
+    const body = await request.json();
+    const { date, timezone } = body;
+
     if (!date || !timezone) {
-      return res.status(400).json({ error: "Date and timezone are required." });
+      return NextResponse.json(
+        { error: "Date and timezone are required." },
+        { status: 400 }
+      );
     }
 
     const { data: sleepRecords, error: fetchError } = await supabase
       .from("sleep_records")
       .select("*")
-      .order("start_time", { ascending: false })
-      .returns<SleepRecord[]>();
+      .order("start_time", { ascending: false });
 
-    if (fetchError) throw fetchError;
+    if (fetchError) {
+      console.error("Error fetching sleep records:", fetchError);
+      return NextResponse.json(
+        { error: "Failed to fetch sleep records." },
+        { status: 500 }
+      );
+    }
 
     const LOOKBACK_PERIOD = 7;
 
     if (sleepRecords.length < LOOKBACK_PERIOD) {
-      return res
-        .status(200)
-        .json({ message: `Not enough historical data.`, predictions: [] });
+      return NextResponse.json({
+        message: "Not enough historical data.",
+        predictions: [],
+      });
     }
 
     const recentSleeps = sleepRecords.slice(0, LOOKBACK_PERIOD);
@@ -89,7 +77,7 @@ export default async function handler(
     }
 
     if (awakeIntervalsMs.length === 0) {
-      return res.status(200).json({
+      return NextResponse.json({
         message: "Could not calculate awake intervals.",
         predictions: [],
       });
@@ -108,9 +96,10 @@ export default async function handler(
     }
 
     if (durationValuesMs.length === 0) {
-      return res
-        .status(500)
-        .json({ error: "Could not determine sleep duration." });
+      return NextResponse.json(
+        { error: "Could not determine sleep duration." },
+        { status: 500 }
+      );
     }
 
     const avgAwakeMs =
@@ -131,20 +120,27 @@ export default async function handler(
         predicted_for_date: date,
         predicted_start_time: predictedStartTime.toISOString(),
         predicted_end_time: predictedEndTime.toISOString(),
-        timezone: timezone, // Save the provided timezone
+        timezone: timezone,
       },
     ];
 
     const { error: insertError } = await supabase
       .from("predictions")
       .insert(generatedPredictions);
-    if (insertError) throw insertError;
+    if (insertError) {
+      console.error("Error inserting predictions:", insertError);
+      return NextResponse.json(
+        { error: "Failed to save predictions." },
+        { status: 500 }
+      );
+    }
 
-    res.status(200).json({ predictions: generatedPredictions });
+    return NextResponse.json({ predictions: generatedPredictions });
   } catch (error: any) {
     console.error("Error in /api/predict:", error);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: error.message });
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
+    );
   }
 }

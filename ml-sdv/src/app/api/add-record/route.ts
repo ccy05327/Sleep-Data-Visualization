@@ -1,7 +1,7 @@
-// In /pages/api/add-record.ts
+// In /app/api/add-record/route.ts
 
 import { createClient } from "@supabase/supabase-js";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
 // --- Supabase Client Initialization ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -15,23 +15,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// --- API Handler for adding a new sleep record ---
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function POST(request: Request) {
   try {
-    const { startTime, endTime, timezone } = req.body; // Expects local time strings and a timezone
+    const body = await request.json();
+    const { startTime, endTime, timezone } = body; // Expects local time strings and a timezone
 
     if (!startTime || !endTime || !timezone) {
-      return res
-        .status(400)
-        .json({ error: "startTime, endTime, and timezone are required." });
+      return NextResponse.json(
+        { error: "startTime, endTime, and timezone are required." },
+        { status: 400 }
+      );
     }
 
     // Convert the local time strings into Date objects.
@@ -66,13 +59,20 @@ export default async function handler(
       .insert(newRecord)
       .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error inserting sleep record:", error);
+      return NextResponse.json(
+        { error: "Failed to save sleep record." },
+        { status: 500 }
+      );
+    }
 
-    res.status(200).json({ success: true, record: data[0] });
+    return NextResponse.json({ success: true, record: data[0] });
   } catch (error: any) {
     console.error("Error in /api/add-record:", error);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: error.message });
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
+    );
   }
 }
