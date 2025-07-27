@@ -9,19 +9,29 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // --- API Handler for POST requests ---
 export async function POST(request: Request) {
   try {
-    const { start_time, end_time, sleep_duration } = await request.json();
+    const { start_time, end_time, sleep_duration, timezone } =
+      await request.json();
 
-    if (!start_time || !end_time || typeof sleep_duration !== "number") {
+    if (
+      !start_time ||
+      !end_time ||
+      typeof sleep_duration !== "number" ||
+      !timezone
+    ) {
       return NextResponse.json(
-        { error: "start_time, end_time, and sleep_duration are required." },
+        {
+          error:
+            "start_time, end_time, sleep_duration, and timezone are required.",
+        },
         { status: 400 }
       );
     }
 
     const sleepRecord = {
-      start_time,
-      end_time,
+      start_time: new Date(start_time).toISOString(),
+      end_time: new Date(end_time).toISOString(),
       sleep_duration,
+      timezone,
     };
 
     const { error: insertError } = await supabase

@@ -130,7 +130,7 @@
                 "id": 4,
                 "title": "Phase 3: Data Management & Final Touches",
                 "description": "Finalize the application by adding manual data entry and refining the overall user experience. This corresponds to Prompt 6.",
-                "status": "pending",
+                "status": "in-progress",
                 "priority": "low",
                 "dependencies": [
                     3
@@ -141,14 +141,14 @@
                         "parentTaskId": 4,
                         "title": "Create Manual Entry API Endpoint",
                         "description": "Build the `/api/add-record` endpoint that accepts start time, end time, and timezone to create a new sleep record.",
-                        "status": "pending"
+                        "status": "done"
                     },
                     {
                         "id": 402,
                         "parentTaskId": 4,
                         "title": "Build Manual Entry Form",
                         "description": "Create a form in the UI for manual data entry and connect it to the `/api/add-record` endpoint.",
-                        "status": "pending"
+                        "status": "done"
                     },
                     {
                         "id": 403,

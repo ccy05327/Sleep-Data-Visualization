@@ -34,6 +34,7 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
   const [physicalRecovery, setPhysicalRecovery] = useState<number | "">("");
   const [sleepCycles, setSleepCycles] = useState<number | "">("");
   const [isMetricsVisible, setIsMetricsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
@@ -44,8 +45,15 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
     return Math.max(0, Math.floor(duration / 1000 / 60)); // Duration in minutes
   };
 
+  const convertToUTC = (localTime: string): string => {
+    const date = new Date(localTime);
+    return new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    ).toISOString();
+  };
+
   const handleSubmit = async () => {
-    setIsSubmitting(true);
+    setIsLoading(true);
     setErrorMessage("");
 
     try {
@@ -53,15 +61,16 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          start_time: startTime,
-          end_time: endTime,
+          start_time: convertToUTC(startTime),
+          end_time: convertToUTC(endTime),
           sleep_duration: calculateSleepDuration(startTime, endTime),
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to add record.");
+        throw new Error(errorData.message || "Failed to add sleep record.");
       }
 
       alert("Record added successfully!");
@@ -69,7 +78,7 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
     } catch (error) {
       setErrorMessage((error as Error).message);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -231,20 +240,23 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
             <button
               type="button"
               onClick={handleSaveAndClose}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isLoading}
               className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600"
             >
-              {isSubmitting ? "Submitting..." : "Save and Close"}
+              {isSubmitting || isLoading ? "Submitting..." : "Save and Close"}
             </button>
             <button
               type="button"
               onClick={handleSaveAndAddAnother}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isLoading}
               className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600"
             >
-              {isSubmitting ? "Submitting..." : "Save and Add Another"}
+              {isSubmitting || isLoading
+                ? "Submitting..."
+                : "Save and Add Another"}
             </button>
           </div>
+          {isLoading && <div className="spinner">Loading...</div>}
         </form>
       </section>
     </div>
