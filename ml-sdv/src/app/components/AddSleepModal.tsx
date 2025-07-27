@@ -33,7 +33,7 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
   const [sleepScore, setSleepScore] = useState<number | "">("");
   const [mentalRecovery, setMentalRecovery] = useState<number | "">("");
   const [physicalRecovery, setPhysicalRecovery] = useState<number | "">("");
-  const [sleepCycles, setSleepCycles] = useState<number | "">("");
+  const [sleepCycle, setSleepCycle] = useState<number | "">("");
   const [isMetricsVisible, setIsMetricsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -88,10 +88,10 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
           end_time: convertToUTC(endTime),
           sleep_duration: calculateSleepDuration(startTime, endTime),
           timezone: getFormattedTimezone(),
-          sleep_score: sleepScore,
-          mental_recovery: mentalRecovery,
-          physical_recovery: physicalRecovery,
-          sleep_cycles: sleepCycles,
+          sleep_score: sleepScore || null,
+          mental_recovery: mentalRecovery || null,
+          physical_recovery: physicalRecovery || null,
+          sleep_cycle: sleepCycle || null,
         }),
       });
 
@@ -118,12 +118,12 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
   const handleSaveAndAddAnother = async (e: React.FormEvent) => {
     e.preventDefault();
     await handleSubmit();
-    setStartTime(endTime);
+    setStartTime("");
     setEndTime("");
     setSleepScore("");
     setMentalRecovery("");
     setPhysicalRecovery("");
-    setSleepCycles("");
+    setSleepCycle("");
   };
 
   if (!isOpen) return null;
@@ -251,9 +251,9 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
                 <input
                   type="number"
                   id="sleep-cycles"
-                  value={sleepCycles}
+                  value={sleepCycle}
                   onChange={(e) =>
-                    setSleepCycles(
+                    setSleepCycle(
                       e.target.value ? parseInt(e.target.value) : ""
                     )
                   }

@@ -9,8 +9,16 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // --- API Handler for POST requests ---
 export async function POST(request: Request) {
   try {
-    const { start_time, end_time, sleep_duration, timezone } =
-      await request.json();
+    const {
+      start_time,
+      end_time,
+      sleep_duration,
+      timezone,
+      sleep_score,
+      mental_recovery,
+      physical_recovery,
+      sleep_cycle,
+    } = await request.json();
 
     if (
       !start_time ||
@@ -32,6 +40,10 @@ export async function POST(request: Request) {
       end_time: new Date(end_time).toISOString(),
       sleep_duration,
       timezone, // Store formatted timezone (e.g., UTC+8)
+      sleep_score: sleep_score || null,
+      mental_recovery: mental_recovery || null,
+      physical_recovery: physical_recovery || null,
+      sleep_cycle: sleep_cycle || null,
     };
 
     const { error: insertError } = await supabase
