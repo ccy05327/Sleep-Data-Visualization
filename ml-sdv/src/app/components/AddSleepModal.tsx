@@ -70,10 +70,13 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
   };
 
   const convertToUTC = (localTime: string): string => {
-    const date = new Date(localTime);
-    return new Date(
-      date.getTime() - date.getTimezoneOffset() * 60000
-    ).toISOString();
+    // Create a date object from the local datetime string
+    // datetime-local input returns time in "YYYY-MM-DDTHH:MM" format
+    // which is interpreted as local time
+    const localDate = new Date(localTime);
+
+    // Return the ISO string which is in UTC
+    return localDate.toISOString();
   };
 
   const handleSubmit = async () => {
