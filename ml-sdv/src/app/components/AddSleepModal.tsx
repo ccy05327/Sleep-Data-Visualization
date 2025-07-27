@@ -36,6 +36,7 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
   const [sleepCycle, setSleepCycle] = useState<number | "">("");
   const [isMetricsVisible, setIsMetricsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const currentDateTime = new Date()
     .toLocaleString("sv-SE", { hour12: false, timeZoneName: "short" })
@@ -100,7 +101,8 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
         throw new Error(errorData.message || "Failed to add sleep record.");
       }
 
-      alert("Record added successfully!");
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
       await onSave(); // Call onSave prop
     } catch (error) {
       setErrorMessage((error as Error).message);
@@ -264,6 +266,11 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
           )}
           {errorMessage && (
             <p className="text-red-500 text-sm">{errorMessage}</p>
+          )}
+          {showSuccess && (
+            <p className="text-green-400 text-sm font-medium bg-green-900/20 border border-green-400/30 rounded-md p-3">
+              ✓ Record added successfully!
+            </p>
           )}
           <div className="flex space-x-4">
             <button
