@@ -15,13 +15,6 @@ interface Prediction {
   timezone: string; // Store the context
 }
 
-type ResponseData = {
-  predictions?: Prediction[];
-  message?: string;
-  error?: string;
-  details?: string;
-};
-
 interface SleepRecord {
   id: number;
   start_time: string;

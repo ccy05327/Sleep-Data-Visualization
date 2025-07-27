@@ -8,7 +8,15 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 interface TestResult {
   name: string;
   status: string;
-  [key: string]: any;
+  count?: number;
+  error?: string;
+  data?: string;
+  sufficient?: string;
+  fields?: Record<string, string>;
+  sampleRecord?: Record<string, unknown>;
+  recordsFound?: number;
+  readyForTraining?: boolean;
+  hasData?: boolean;
 }
 
 interface Diagnostics {
@@ -27,7 +35,7 @@ interface Diagnostics {
   };
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     console.log("🔍 Starting data diagnostics...");
 
@@ -89,10 +97,7 @@ export async function GET(req: NextRequest) {
 
     // Test 3: Data structure
     try {
-      const {
-        data: sampleData,
-        error: structureError,
-      }: { data: any; error: any } = await supabase
+      const { data: sampleData, error: structureError } = await supabase
         .from("sleep_records")
         .select("*")
         .limit(5);
@@ -122,13 +127,13 @@ export async function GET(req: NextRequest) {
           status: "✅ Analyzed",
           fields: fieldStatus,
           sampleRecord: sampleRecord,
-          error: structureError?.message || null,
+          error: structureError ? String(structureError) : undefined,
         });
       } else {
         diagnostics.tests.push({
           name: "Data Structure",
           status: "⚠️ No data to analyze",
-          error: structureError?.message,
+          error: structureError ? String(structureError) : undefined,
         });
       }
     } catch (error) {
@@ -150,7 +155,7 @@ export async function GET(req: NextRequest) {
         name: "ML Training Query",
         status: mlError ? "❌ Failed" : "✅ Success",
         recordsFound: mlData ? mlData.length : 0,
-        readyForTraining: mlData && mlData.length >= 30,
+        readyForTraining: mlData ? mlData.length >= 30 : false,
         error: mlError?.message,
       });
     } catch (error) {
@@ -173,7 +178,7 @@ export async function GET(req: NextRequest) {
         diagnostics.tests.push({
           name: `Table: ${tableName}`,
           status: tableError ? "❌ Failed" : "✅ Accessible",
-          hasData: tableData && tableData.length > 0,
+          hasData: tableData ? tableData.length > 0 : false,
           error: tableError?.message,
         });
       } catch (error) {

@@ -211,6 +211,7 @@ function calculateDuration(startTime: string, endTime: string): number {
   return (end.getTime() - start.getTime()) / (1000 * 60); // minutes
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function calculateSleepDebt(recentRecords: any[]): number {
   const targetSleep = 8 * 60; // 8 hours in minutes
   let debt = 0;
@@ -223,6 +224,7 @@ function calculateSleepDebt(recentRecords: any[]): number {
   return debt / 60; // return in hours
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function predictValue(input: any, weights: ModelWeights): number {
   return (
     (input.dayOfWeek / 7) * weights.dayOfWeek +
@@ -235,6 +237,7 @@ function predictValue(input: any, weights: ModelWeights): number {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function calculateAverageStartTime(records: any[]) {
   let totalMinutes = 0;
 
@@ -251,6 +254,7 @@ function calculateAverageStartTime(records: any[]) {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function calculateAverageDuration(records: any[]): number {
   let totalDuration = 0;
 

@@ -9,6 +9,7 @@ interface DebugResult {
   tests: Array<{
     name: string;
     status: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }>;
   recommendations?: string[];
@@ -24,7 +25,7 @@ interface DataDebuggerProps {
   userTimezone: string;
 }
 
-const DataDebugger: React.FC<DataDebuggerProps> = ({ userTimezone }) => {
+const DataDebugger: React.FC<DataDebuggerProps> = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [debugResults, setDebugResults] = useState<DebugResult | null>(null);
   const [error, setError] = useState("");

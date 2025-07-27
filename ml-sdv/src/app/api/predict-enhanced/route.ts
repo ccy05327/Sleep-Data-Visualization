@@ -5,8 +5,19 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+interface SleepRecord {
+  id: number;
+  start_time: string;
+  end_time: string;
+  sleep_duration: number | null;
+  sleep_score?: number | null;
+  mental_recovery?: number | null;
+  physical_recovery?: number | null;
+  sleep_cycle?: number | null;
+}
+
 // Enhanced prediction using statistical methods (no external ML libraries required)
-function extractAdvancedFeatures(records: any[], targetDate: string) {
+function extractAdvancedFeatures(records: SleepRecord[], targetDate: string) {
   const targetDateObj = new Date(targetDate);
 
   // Sort records by date
@@ -103,7 +114,32 @@ function extractAdvancedFeatures(records: any[], targetDate: string) {
 }
 
 // Enhanced prediction using pattern recognition
-function predictWithAdvancedHeuristics(features: any, targetDate: string) {
+interface ExtractedFeatures {
+  dayOfWeek: number;
+  isWeekend: boolean;
+  duration7dAvg: number;
+  startHour7dAvg: number;
+  cumulativeSleepDebt: number;
+  durationStd: number;
+  startHourStd: number;
+  recentCount: number;
+  recentAvgStartHour: number;
+  recentAvgDuration: number;
+  weekdayPattern: number;
+  weekendPattern: number;
+  sleepDebt: number;
+  consistencyScore: number;
+  seasonalAdjustment: number;
+  dayOfWeekFactor: number;
+  previousSleepQuality: number;
+  stressLevel: number;
+  recoveryNeeded: number;
+  rollingAvg7: number;
+  rollingAvg30: number;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function predictWithAdvancedHeuristics(features: any) {
   const {
     dayOfWeek,
     isWeekend,
@@ -178,7 +214,8 @@ function predictWithAdvancedHeuristics(features: any, targetDate: string) {
 }
 
 // Simple fallback prediction
-function predictWithFallback(records: any[], targetDate: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function predictWithFallback(records: SleepRecord[]) {
   const recentRecords = records.slice(-7);
 
   if (recentRecords.length === 0) {
@@ -243,7 +280,7 @@ export async function POST(req: NextRequest) {
       if (records && records.length >= 5) {
         // Try enhanced statistical prediction
         const features = extractAdvancedFeatures(records, date);
-        prediction = predictWithAdvancedHeuristics(features, date);
+        prediction = predictWithAdvancedHeuristics(features);
         usedMethod = prediction.method;
 
         console.log(
@@ -258,7 +295,7 @@ export async function POST(req: NextRequest) {
         enhancedError
       );
       // Fall back to simple prediction
-      prediction = predictWithFallback(records || [], date);
+      prediction = predictWithFallback(records || []);
       usedMethod = prediction.method;
     }
 

@@ -36,7 +36,7 @@ interface ModelWeights {
   bias: number;
 }
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     const { data: sleepRecords, error: fetchError } = await supabase
       .from("sleep_records")
@@ -190,7 +190,7 @@ function trainLinearRegression(
   ]);
 
   // Use gradient descent (simplified)
-  let weights = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; // initialize
+  const weights = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; // initialize
   const learningRate = 0.01;
   const epochs = 1000;
 
@@ -270,6 +270,7 @@ function predictValue(input: PredictionInput, weights: ModelWeights): number {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function storeModel(modelData: any) {
   // Store in Supabase or local storage
   // For now, we'll create a simple storage mechanism

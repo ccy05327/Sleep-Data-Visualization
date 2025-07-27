@@ -16,6 +16,7 @@ interface MLTrainingProps {
 const MLTraining: React.FC<MLTrainingProps> = ({ userTimezone }) => {
   const [isTraining, setIsTraining] = useState(false);
   const [modelInfo, setModelInfo] = useState<MLModelInfo | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [trainingResults, setTrainingResults] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
