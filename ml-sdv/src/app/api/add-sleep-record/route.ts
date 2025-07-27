@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       start_time: new Date(start_time).toISOString(),
       end_time: new Date(end_time).toISOString(),
       sleep_duration,
-      timezone,
+      timezone, // Store formatted timezone (e.g., UTC+8)
     };
 
     const { error: insertError } = await supabase

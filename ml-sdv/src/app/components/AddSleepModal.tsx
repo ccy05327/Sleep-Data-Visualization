@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { FaPlus } from "react-icons/fa";
 
 interface ManualSleepEntryProps {
   startTime: string;
@@ -36,13 +37,35 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
   const [isMetricsVisible, setIsMetricsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  if (!isOpen) return null;
+  const currentDateTime = new Date()
+    .toLocaleString("sv-SE", { hour12: false, timeZoneName: "short" })
+    .slice(0, 16)
+    .replace(" ", "T");
+
+  useEffect(() => {
+    if (isOpen) {
+      if (!startTime) setStartTime(currentDateTime);
+      if (!endTime) setEndTime(currentDateTime);
+    }
+  }, [isOpen]);
 
   const calculateSleepDuration = (start: string, end: string) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const duration = endDate.getTime() - startDate.getTime();
     return Math.max(0, Math.floor(duration / 1000 / 60)); // Duration in minutes
+  };
+
+  const getFormattedTimezone = (): string => {
+    const offset = new Date().getTimezoneOffset();
+    const hours = Math.abs(Math.floor(offset / 60))
+      .toString()
+      .padStart(2, "0");
+    const minutes = Math.abs(offset % 60)
+      .toString()
+      .padStart(2, "0");
+    const sign = offset > 0 ? "-" : "+";
+    return `UTC${sign}${hours}${minutes}`;
   };
 
   const convertToUTC = (localTime: string): string => {
@@ -64,7 +87,11 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
           start_time: convertToUTC(startTime),
           end_time: convertToUTC(endTime),
           sleep_duration: calculateSleepDuration(startTime, endTime),
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          timezone: getFormattedTimezone(),
+          sleep_score: sleepScore,
+          mental_recovery: mentalRecovery,
+          physical_recovery: physicalRecovery,
+          sleep_cycles: sleepCycles,
         }),
       });
 
@@ -99,6 +126,8 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
     setSleepCycles("");
   };
 
+  if (!isOpen) return null;
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -122,7 +151,7 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
             <input
               type="datetime-local"
               id="start-time"
-              value={startTime}
+              value={startTime || currentDateTime}
               onChange={(e) => setStartTime(e.target.value)}
               className="w-full p-2 border border-[#e0e1dd] rounded-md shadow-sm bg-[#1b263b] text-[#e0e1dd] focus:ring-[#778da9] focus:border-[#778da9]"
               required
@@ -138,7 +167,7 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
             <input
               type="datetime-local"
               id="end-time"
-              value={endTime}
+              value={endTime || currentDateTime}
               onChange={(e) => setEndTime(e.target.value)}
               className="w-full p-2 border border-[#e0e1dd] rounded-md shadow-sm bg-[#1b263b] text-[#e0e1dd] focus:ring-[#778da9] focus:border-[#778da9]"
               required
@@ -241,19 +270,28 @@ const ManualSleepEntry: React.FC<ManualSleepEntryProps> = ({
               type="button"
               onClick={handleSaveAndClose}
               disabled={isSubmitting || isLoading}
-              className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600"
+              className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600 flex items-center justify-center"
             >
-              {isSubmitting || isLoading ? "Submitting..." : "Save and Close"}
+              {isSubmitting || isLoading ? (
+                "Submitting..."
+              ) : (
+                <FaPlus className="text-xl" />
+              )}
             </button>
             <button
               type="button"
               onClick={handleSaveAndAddAnother}
               disabled={isSubmitting || isLoading}
-              className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600"
+              className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300 disabled:bg-gray-600 flex items-center justify-center"
             >
-              {isSubmitting || isLoading
-                ? "Submitting..."
-                : "Save and Add Another"}
+              {isSubmitting || isLoading ? (
+                "Submitting..."
+              ) : (
+                <span className="flex items-center">
+                  <FaPlus className="text-xl" />
+                  <FaPlus className="text-xl ml-1" />
+                </span>
+              )}
             </button>
           </div>
           {isLoading && <div className="spinner">Loading...</div>}
