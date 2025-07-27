@@ -7,7 +7,7 @@ import Controls from "./components/Controls";
 import PredictionSection from "./components/PredictionSection";
 import AccuracyScore from "./components/AccuracyScore";
 import HistoricalSleepData from "./components/HistoricalSleepData";
-import ManualSleepEntry from "./components/ManualSleepEntry";
+import AddSleepModal from "./components/AddSleepModal";
 
 // --- Type Definitions ---
 export type SleepRecord = {
@@ -75,6 +75,9 @@ export default function HomePage() {
   const [endTime, setEndTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // --- NEW --- State for AddSleepModal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // --- Effects ---
   useEffect(() => {
@@ -183,6 +186,23 @@ export default function HomePage() {
     });
   };
 
+  // --- NEW --- Handler to fetch data
+  const fetchData = async () => {
+    setIsLoading(true);
+    const { data: sleepData } = await supabase
+      .from("sleep_records")
+      .select("*")
+      .order("start_time", { ascending: true });
+    setSleepRecords(sleepData || []);
+
+    const { data: predictionData } = await supabase
+      .from("predictions")
+      .select("*");
+    setPredictions(predictionData || []);
+
+    setIsLoading(false);
+  };
+
   return (
     <div className="bg-[#1b263b] text-[#e0e1dd] min-h-screen font-sans">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -203,6 +223,13 @@ export default function HomePage() {
             isPredicting={isPredicting}
           />
 
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="w-full bg-[#415a77] text-[#e0e1dd] font-bold py-3 px-4 rounded-lg hover:bg-[#778da9] transition duration-300"
+          >
+            Add Sleep Record
+          </button>
+
           <PredictionSection
             predictions={predictions}
             predictionDate={predictionDate}
@@ -220,20 +247,23 @@ export default function HomePage() {
             sleepRecords={sleepRecords}
             userTimezone={userTimezone}
           />
-
-          <ManualSleepEntry
-            startTime={startTime}
-            setStartTime={setStartTime}
-            endTime={endTime}
-            setEndTime={setEndTime}
-            isSubmitting={isSubmitting}
-            setIsSubmitting={setIsSubmitting}
-            errorMessage={errorMessage}
-            setErrorMessage={setErrorMessage}
-            userTimezone={userTimezone}
-          />
         </main>
       </div>
+
+      <AddSleepModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={fetchData}
+        setIsSubmitting={setIsSubmitting}
+        startTime={startTime} // Pass startTime state
+        setStartTime={setStartTime} // Pass setStartTime state
+        endTime={endTime} // Pass endTime state
+        setEndTime={setEndTime} // Pass setEndTime state
+        errorMessage={errorMessage} // Pass errorMessage state
+        setErrorMessage={setErrorMessage} // Pass setErrorMessage state
+        userTimezone={userTimezone} // Pass userTimezone state
+        isSubmitting={isSubmitting} // Pass isSubmitting state
+      />
     </div>
   );
 }

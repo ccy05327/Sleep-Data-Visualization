@@ -14,23 +14,28 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // --- API Handler for POST requests ---
 export async function POST(request: Request) {
   try {
-    const { date, timezone } = await request.json();
-    if (!date || !timezone) {
+    const { startTime, timezone } = await request.json();
+    if (!startTime || !timezone) {
+      console.error("Validation failed: Missing startTime or timezone.");
       return NextResponse.json(
-        { error: "Date and timezone are required." },
+        { error: "Start time and timezone are required." },
         { status: 400 }
       );
     }
 
     const { data: sleepRecords, error: fetchError } = await supabase
       .from("sleep_records")
-      .select("start_time, end_time, sleep_duration") // Only select needed columns
+      .select("start_time, end_time, sleep_duration")
       .order("start_time", { ascending: false });
 
-    if (fetchError) throw fetchError;
+    if (fetchError) {
+      console.error("Error fetching sleep records:", fetchError);
+      throw fetchError;
+    }
 
     const LOOKBACK_PERIOD = 7;
     if (sleepRecords.length < LOOKBACK_PERIOD) {
+      console.warn("Not enough historical data.");
       return NextResponse.json({
         message: `Not enough historical data.`,
         predictions: [],
@@ -52,6 +57,7 @@ export async function POST(request: Request) {
     }
 
     if (awakeIntervalsMs.length === 0) {
+      console.warn("Could not calculate awake intervals.");
       return NextResponse.json({
         message: "Could not calculate awake intervals.",
         predictions: [],
@@ -71,6 +77,7 @@ export async function POST(request: Request) {
     }
 
     if (durationValuesMs.length === 0) {
+      console.warn("Could not determine sleep duration.");
       return NextResponse.json(
         { error: "Could not determine sleep duration." },
         { status: 500 }
@@ -91,7 +98,7 @@ export async function POST(request: Request) {
     );
 
     const predictionToInsert = {
-      predicted_for_date: date,
+      predicted_for_date: startTime,
       predicted_start_time: predictedStartTime.toISOString(),
       predicted_end_time: predictedEndTime.toISOString(),
       timezone: timezone,
@@ -101,11 +108,15 @@ export async function POST(request: Request) {
       .from("predictions")
       .insert(predictionToInsert);
 
-    if (insertError) throw insertError;
+    if (insertError) {
+      console.error("Error inserting prediction:", insertError);
+      throw insertError;
+    }
 
+    console.log("Prediction inserted successfully:", predictionToInsert);
     return NextResponse.json({ predictions: [predictionToInsert] });
   } catch (error: unknown) {
-    console.error("Error in /api/predict:", error);
+    console.error("Unhandled error in /api/add-sleep-record:", error);
     return NextResponse.json(
       { error: "Internal Server Error", details: (error as Error).message },
       { status: 500 }
