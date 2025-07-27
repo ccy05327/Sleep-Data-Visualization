@@ -8,6 +8,8 @@ import PredictionSection from "./components/PredictionSection";
 import AccuracyScore from "./components/AccuracyScore";
 import HistoricalSleepData from "./components/HistoricalSleepData";
 import AddSleepModal from "./components/AddSleepModal";
+import MLTraining from "./components/MLTraining";
+import DataDebugger from "./components/DataDebugger";
 
 // --- Type Definitions ---
 export type SleepRecord = {
@@ -128,7 +130,7 @@ export default function HomePage() {
     );
 
     try {
-      const response = await fetch("/api/predict", {
+      const response = await fetch("/api/predict-enhanced", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -239,6 +241,10 @@ export default function HomePage() {
           />
 
           <AccuracyScore accuracy={accuracy} />
+
+          <MLTraining userTimezone={userTimezone} />
+
+          <DataDebugger userTimezone={userTimezone} />
 
           <HistoricalSleepData
             isLoading={isLoading}

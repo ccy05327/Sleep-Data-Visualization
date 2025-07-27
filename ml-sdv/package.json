@@ -6,11 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup-ml": "node scripts/setup-ml-models.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.52.1",
+    "@tensorflow/tfjs-node": "^4.22.0",
     "@types/papaparse": "^5.3.16",
+    "ml-matrix": "^6.12.1",
     "next": "15.4.4",
     "papaparse": "^5.5.3",
     "react": "19.1.0",

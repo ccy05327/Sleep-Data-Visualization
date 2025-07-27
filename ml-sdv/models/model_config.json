@@ -1,0 +1,31 @@
+{
+  "model_type": "Random Forest",
+  "feature_names": [
+    "start_hour_sin",
+    "start_hour_cos",
+    "day_sin",
+    "day_cos",
+    "month_sin",
+    "month_cos",
+    "is_weekend",
+    "duration_7d_avg",
+    "duration_7d_std",
+    "start_hour_7d_avg",
+    "cumulative_sleep_debt",
+    "prev_duration",
+    "prev_start_hour"
+  ],
+  "performance": {
+    "start_mae": 0.008938547486033505,
+    "start_r2": 0.9999557411710678,
+    "duration_mae": 1.8719748603351953,
+    "duration_r2": 0.3254896645247618
+  },
+  "training_date": "2025-07-27T05:23:00.047507",
+  "data_points": 893,
+  "model_files": [
+    "start_time_model.pkl",
+    "duration_model.pkl"
+  ],
+  "requires_tensorflow": false
+}
